@@ -27,6 +27,12 @@ type Props = {
    * 中文用 ""
    */
   separator?: string;
+
+  /**
+   * 是否隐藏顶部标题区（Back + H1 + description）
+   * 用于外层页面已经提供了自己的 H1/Intro 时，避免重复 H1
+   */
+  hideHeader?: boolean;
 };
 
 function pick<T>(arr: T[]) {
@@ -51,6 +57,7 @@ export default function NameGenerator({
   generateLabel = "Generate",
   copyLabel = "Copy",
   separator = " ", // ✅ 默认英文有空格
+  hideHeader = false,
 }: Props) {
   const [names, setNames] = useState<string[]>(
     () => Array.from({ length: initialCount }, () => makeName(parts, separator))
@@ -60,13 +67,15 @@ export default function NameGenerator({
 
   return (
     <main className="space-y-8">
-      <header className="space-y-2">
-        <a className="text-sm text-blue-600 underline" href={backHref}>
-          ← Back
-        </a>
-        <h1 className="text-4xl font-bold">{title}</h1>
-        <p className="text-zinc-700 max-w-3xl">{description}</p>
-      </header>
+      {!hideHeader && (
+        <header className="space-y-2">
+          <a className="text-sm text-blue-600 underline" href={backHref}>
+            ← Back
+          </a>
+          <h1 className="text-4xl font-bold">{title}</h1>
+          <p className="text-zinc-700 max-w-3xl">{description}</p>
+        </header>
+      )}
 
       <div className="rounded-2xl border border-zinc-200 p-5 shadow-sm space-y-4">
         <div className="flex gap-2">

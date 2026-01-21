@@ -87,6 +87,7 @@ export default function DwarfPage() {
       </section>
 
       <NameGenerator
+        hideHeader
         title={title}
         description={description}
         parts={{
