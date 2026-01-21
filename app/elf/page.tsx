@@ -2,6 +2,15 @@ import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Elf Name Generator for D&D | Fantasy Character Names",
+  description:
+    "Generate elegant elf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
+};
+
+
 export default function ElfPage() {
   const title = "Elf Name Generator";
   const description = "Generate elegant elven names for D&D characters and NPCs.";

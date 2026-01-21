@@ -1,6 +1,13 @@
 import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Orc Name Generator for D&D | Fantasy Character Names",
+  description:
+    "Generate fierce orc names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
+};
 
 export default function OrcPage() {
   const title = "Orc Name Generator";
