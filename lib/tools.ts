@@ -39,6 +39,12 @@ export const TOOLS: ToolLink[] = [
     tags: ["dnd", "orc", "fantasy"],
   },
   {
+    href: "/goblin",
+    title: "Goblin Name Generator",
+    description: "Generate mischievous goblin names for D&D characters and NPCs.",
+    tags: ["dnd", "goblin", "fantasy"],
+  },
+  {
     href: "/halfling",
     title: "Halfling Name Generator",
     description: "Generate charming halfling names for D&D characters and NPCs.",
