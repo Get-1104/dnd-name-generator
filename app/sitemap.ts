@@ -12,8 +12,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
   /** 固定页面 */
-  const staticPaths = ["/", "/en"];
-
+  const staticPaths = ["/", "/en", "/guides/dnd-name-generator-guide"];
   /** 工具页（来自 SSOT） */
   const toolPaths = (TOOLS ?? [])
     .map((t: any) => t.path || t.href || t.slug)
