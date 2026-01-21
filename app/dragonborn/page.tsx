@@ -4,8 +4,7 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
 export default function DragonbornPage() {
   const title = "Dragonborn Name Generator";
-  const description =
-    "Generate powerful dragonborn names for D&D characters and NPCs.";
+  const description = "Generate powerful dragonborn names for D&D characters and NPCs.";
   const path = "/dragonborn";
 
   const jsonLd = buildGeneratorPageJsonLd({
@@ -39,9 +38,9 @@ export default function DragonbornPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      {/* ✅ Visible Intro + internal links */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back（统一返回 /en） */}
+        {/* ✅ Back (always to /en) */}
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -51,13 +50,14 @@ export default function DragonbornPage() {
 
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+
           <p className="text-zinc-700 leading-7">
-            Use this {title.toLowerCase()} to create bold, draconic names for
-            dragonborn in D&amp;D. Dragonborn names often sound strong and
-            rhythmic, and many characters use a clan-style surname that hints at
-            their lineage, oath, or reputation. Generate several options, then
-            tweak syllables to match your campaign’s tone.
+            Use this dragonborn name generator to create bold, draconic names for dragonborn in
+            D&amp;D. Dragonborn names often sound strong and rhythmic, and many characters use a
+            clan-style surname that hints at their lineage, oath, or reputation. Generate several
+            options, then tweak syllables to match your campaign’s tone.
           </p>
+
           <p className="text-zinc-700 leading-7">
             Want to compare naming styles? Explore the full{" "}
             <Link href="/en" className="underline underline-offset-4">
@@ -96,6 +96,12 @@ export default function DragonbornPage() {
               </Link>{" "}
               — sturdy, clan-based names for warriors and smiths.
             </li>
+            <li>
+              <Link href="/eastern" className="underline underline-offset-4">
+                Eastern Fantasy Name Generator
+              </Link>{" "}
+              — wuxia/xianxia-style Chinese name inspiration.
+            </li>
           </ul>
         </div>
       </section>
@@ -106,31 +112,9 @@ export default function DragonbornPage() {
         description={description}
         parts={{
           first: ["Arj", "Bal", "Dar", "Fen", "Gor", "Har", "Jar", "Kor", "Mor", "Vor"],
-          second: ["han", "rax", "dun", "mir", "thor", "vyr", "zhan", "drak", "gor", "mir"],
-          lastA: [
-            "Flame",
-            "Scale",
-            "Storm",
-            "Iron",
-            "Sky",
-            "Ember",
-            "Stone",
-            "Frost",
-            "Thunder",
-            "Gold",
-          ],
-          lastB: [
-            "fang",
-            "claw",
-            "heart",
-            "wing",
-            "spire",
-            "breath",
-            "shield",
-            "binder",
-            "song",
-            "hide",
-          ],
+          second: ["han", "rax", "dun", "mir", "thor", "vyr", "zhan", "drak", "gor", "sar"],
+          lastA: ["Flame", "Scale", "Storm", "Iron", "Sky", "Ember", "Stone", "Frost", "Thunder", "Gold"],
+          lastB: ["fang", "claw", "heart", "wing", "spire", "breath", "shield", "binder", "song", "hide"],
         }}
         initialCount={10}
         examples={[
