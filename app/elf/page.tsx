@@ -91,6 +91,7 @@ export default function ElfPage() {
       </section>
 
       <NameGenerator
+        hideHeader
         title={title}
         description={description}
         parts={{
