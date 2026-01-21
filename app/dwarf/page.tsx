@@ -40,6 +40,14 @@ export default function DwarfPage() {
 
       {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
+        {/* ✅ Back（放在 Intro 顶部，替代 NameGenerator 里被 hideHeader 隐藏的 Back） */}
+        <Link
+          href="/en"
+          className="inline-block text-sm text-blue-600 underline underline-offset-4"
+        >
+          ← Back to all D&amp;D name generators
+        </Link>
+
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="text-zinc-700 leading-7">
