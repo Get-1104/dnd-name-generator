@@ -4,8 +4,7 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
 export default function TieflingPage() {
   const title = "Tiefling Name Generator";
-  const description =
-    "Generate infernal tiefling names for D&D characters and NPCs.";
+  const description = "Generate infernal tiefling names for D&D characters and NPCs.";
   const path = "/tiefling";
 
   const jsonLd = buildGeneratorPageJsonLd({
@@ -39,9 +38,8 @@ export default function TieflingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      {/* ✅ Visible Intro + internal links */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back（统一返回 /en） */}
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -51,13 +49,14 @@ export default function TieflingPage() {
 
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+
           <p className="text-zinc-700 leading-7">
-            Use this {title.toLowerCase()} to create dark, infernal names for
-            tieflings in D&amp;D. Tiefling names often reflect fiendish heritage,
-            personal rebellion, or ominous symbolism rather than traditional
-            family lines. Generate multiple options, then tweak spelling or tone
-            to fit your character’s backstory.
+            Use this tiefling name generator to create dark, infernal names for tieflings in
+            D&amp;D. Tiefling names often reflect fiendish heritage, personal rebellion, or
+            ominous symbolism rather than traditional family lines. Generate multiple options,
+            then tweak spelling or tone to fit your character’s backstory.
           </p>
+
           <p className="text-zinc-700 leading-7">
             Want to compare naming styles? Explore the full{" "}
             <Link href="/en" className="underline underline-offset-4">
@@ -79,6 +78,12 @@ export default function TieflingPage() {
           <h2 className="text-lg font-semibold">Related generators</h2>
           <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
             <li>
+              <Link href="/dragonborn" className="underline underline-offset-4">
+                Dragonborn Name Generator
+              </Link>{" "}
+              — powerful draconic names inspired by honor and lineage.
+            </li>
+            <li>
               <Link href="/elf" className="underline underline-offset-4">
                 Elf Name Generator
               </Link>{" "}
@@ -91,10 +96,10 @@ export default function TieflingPage() {
               — sturdy, clan-based names for warriors and smiths.
             </li>
             <li>
-              <Link href="/dragonborn" className="underline underline-offset-4">
-                Dragonborn Name Generator
+              <Link href="/eastern" className="underline underline-offset-4">
+                Eastern Fantasy Name Generator
               </Link>{" "}
-              — powerful draconic names inspired by honor and lineage.
+              — wuxia/xianxia-style Chinese name inspiration.
             </li>
           </ul>
         </div>
@@ -106,42 +111,9 @@ export default function TieflingPage() {
         description={description}
         parts={{
           first: ["Az", "Bel", "Mal", "Zar", "Vor", "Xan", "Lil", "Rak", "Sar", "Kor"],
-          second: [
-            "reth",
-            "zeth",
-            "morn",
-            "vash",
-            "riel",
-            "thrax",
-            "gorn",
-            "zair",
-            "lek",
-            "mos",
-          ],
-          lastA: [
-            "Ash",
-            "Dark",
-            "Hell",
-            "Blood",
-            "Shadow",
-            "Flame",
-            "Void",
-            "Night",
-            "Inferno",
-            "Dread",
-          ],
-          lastB: [
-            "born",
-            "brand",
-            "caller",
-            "spawn",
-            "binder",
-            "flame",
-            "whisper",
-            "reaver",
-            "fiend",
-            "mark",
-          ],
+          second: ["reth", "zeth", "morn", "vash", "riel", "thrax", "gorn", "zair", "lek", "mos"],
+          lastA: ["Ash", "Dark", "Hell", "Blood", "Shadow", "Flame", "Void", "Night", "Inferno", "Dread"],
+          lastB: ["born", "brand", "caller", "spawn", "binder", "flame", "whisper", "reaver", "fiend", "mark"],
         }}
         initialCount={10}
         examples={[
