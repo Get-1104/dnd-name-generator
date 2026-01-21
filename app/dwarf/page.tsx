@@ -38,9 +38,9 @@ export default function DwarfPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      {/* ✅ Visible Intro + internal links */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back（放在 Intro 顶部，替代 NameGenerator 里被 hideHeader 隐藏的 Back） */}
+        {/* ✅ Back (always to /en) */}
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -50,12 +50,14 @@ export default function DwarfPage() {
 
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+
           <p className="text-zinc-700 leading-7">
-            Use this {title.toLowerCase()} to create strong, sturdy names for dwarves in D&amp;D.
+            Use this dwarf name generator to create strong, sturdy names for dwarves in D&amp;D.
             Dwarf names often reflect clan heritage, craftsmanship, and a deep connection to stone,
             forge, and tradition. Generate a shortlist for player characters, NPCs, or entire
             family lineages, then adjust syllables to match your campaign’s culture.
           </p>
+
           <p className="text-zinc-700 leading-7">
             You can explore all available tools on the{" "}
             <Link href="/en" className="underline underline-offset-4">
@@ -89,6 +91,12 @@ export default function DwarfPage() {
                 Dragonborn Name Generator
               </Link>{" "}
               — powerful draconic names inspired by honor and lineage.
+            </li>
+            <li>
+              <Link href="/eastern" className="underline underline-offset-4">
+                Eastern Fantasy Name Generator
+              </Link>{" "}
+              — wuxia/xianxia-style Chinese name inspiration.
             </li>
           </ul>
         </div>
