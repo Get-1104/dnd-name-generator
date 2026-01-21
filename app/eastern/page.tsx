@@ -49,7 +49,7 @@ export default function EasternPage() {
 
       {/* ✅ 可见 Intro + 内链（可收录） */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ 统一 Back：回 /en（英文总入口） */}
+        {/* ✅ Back：统一回 /en */}
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -61,23 +61,22 @@ export default function EasternPage() {
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
           <p className="text-zinc-700 leading-7">
-            这个东方国风名字生成器用于生成仙侠、武侠、古风世界观下的中文姓名。
-            名字通常由姓氏（含复姓）与富有意境的名字组合而成，适合用于 D&amp;D
-            角色、NPC、门派人物，或小说与游戏角色命名灵感。
+            这个东方国风名字生成器用于生成仙侠、武侠、古风世界观下的中文姓名。名字通常由姓氏（含复姓）
+            与富有意境的名字组合而成，适合用于 D&amp;D 角色、NPC、门派人物，或小说与游戏角色命名灵感。
           </p>
 
           <p className="text-zinc-700 leading-7">
-            想要更多风格？你可以浏览{" "}
+            想要更多风格？你可以浏览完整的{" "}
             <Link href="/en" className="underline underline-offset-4">
               D&amp;D Name Generators（English）
             </Link>{" "}
-            ，或对比不同种族风格：{" "}
+            列表，或对比其他种族的命名风格，例如{" "}
             <Link href="/elf" className="underline underline-offset-4">
-              elf names
+              Elf Name Generator
             </Link>{" "}
-            /{" "}
+            与{" "}
             <Link href="/dwarf" className="underline underline-offset-4">
-              dwarf names
+              Dwarf Name Generator
             </Link>
             。
           </p>
@@ -90,19 +89,19 @@ export default function EasternPage() {
               <Link href="/elf" className="underline underline-offset-4">
                 Elf Name Generator
               </Link>{" "}
-              — elegant, melodic names for fantasy elves.
+              — 西方奇幻风格的优雅精灵英文名。
             </li>
             <li>
               <Link href="/dwarf" className="underline underline-offset-4">
                 Dwarf Name Generator
               </Link>{" "}
-              — sturdy, clan-based names for dwarves.
+              — 偏重氏族与传统感的矮人英文名。
             </li>
             <li>
               <Link href="/tiefling" className="underline underline-offset-4">
                 Tiefling Name Generator
               </Link>{" "}
-              — infernal-flavored names with an edge.
+              — 更黑暗、异界感更强的西方奇幻命名风格。
             </li>
           </ul>
         </div>

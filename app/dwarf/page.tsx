@@ -4,10 +4,11 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Elf Name Generator for D&D | Fantasy Character Names",
+  title: "Dwarf Name Generator for D&D | Fantasy Character Names",
   description:
-    "Generate elegant elf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
+    "Generate sturdy dwarf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
 };
+
 
 export default function DwarfPage() {
   const title = "Dwarf Name Generator";
