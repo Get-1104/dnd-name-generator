@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
@@ -37,6 +38,54 @@ export default function DwarfPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
+        <header className="space-y-3">
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-zinc-700 leading-7">
+            Use this {title.toLowerCase()} to create strong, sturdy names for dwarves in D&amp;D.
+            Dwarf names often reflect clan heritage, craftsmanship, and a deep connection to stone,
+            forge, and tradition. Generate a shortlist for player characters, NPCs, or entire
+            family lineages, then adjust syllables to match your campaign’s culture.
+          </p>
+          <p className="text-zinc-700 leading-7">
+            You can explore all available tools on the{" "}
+            <Link href="/en" className="underline underline-offset-4">
+              D&amp;D name generators
+            </Link>{" "}
+            page, or compare styles with the more melodic{" "}
+            <Link href="/elf" className="underline underline-offset-4">
+              elf name generator
+            </Link>
+            .
+          </p>
+        </header>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-semibold">Related generators</h2>
+          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
+            <li>
+              <Link href="/elf" className="underline underline-offset-4">
+                Elf Name Generator
+              </Link>{" "}
+              — elegant, melodic names for ancient fantasy races.
+            </li>
+            <li>
+              <Link href="/tiefling" className="underline underline-offset-4">
+                Tiefling Name Generator
+              </Link>{" "}
+              — infernal-flavored names with a mysterious edge.
+            </li>
+            <li>
+              <Link href="/dragonborn" className="underline underline-offset-4">
+                Dragonborn Name Generator
+              </Link>{" "}
+              — powerful draconic names inspired by honor and lineage.
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <NameGenerator
         title={title}
         description={description}
@@ -54,9 +103,6 @@ export default function DwarfPage() {
           "Kazdor Deepdelve",
           "Morli Forgebeard",
         ]}
-        // 中文按钮想用就打开：
-        // generateLabel="生成"
-        // copyLabel="复制"
       />
     </>
   );
