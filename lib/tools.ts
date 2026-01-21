@@ -30,6 +30,39 @@ export const TOOLS: ToolLink[] = [
     description: "Generate powerful dragonborn names for D&D characters and NPCs.",
     tags: ["dnd", "dragonborn", "fantasy"],
   },
+
+  // ✅ New pages (fast expansion, still human-looking)
+  {
+    href: "/orc",
+    title: "Orc Name Generator",
+    description: "Generate fierce orc names for D&D characters and NPCs.",
+    tags: ["dnd", "orc", "fantasy"],
+  },
+  {
+    href: "/human",
+    title: "Human Name Generator",
+    description: "Generate flexible human names for D&D characters and NPCs.",
+    tags: ["dnd", "human", "fantasy"],
+  },
+  {
+    href: "/gnome",
+    title: "Gnome Name Generator",
+    description: "Generate clever gnome names for D&D characters and NPCs.",
+    tags: ["dnd", "gnome", "fantasy"],
+  },
+  {
+    href: "/angel",
+    title: "Angel Name Generator",
+    description: "Generate celestial angel names for D&D campaigns and fantasy worlds.",
+    tags: ["dnd", "angel", "celestial", "fantasy"],
+  },
+  {
+    href: "/demon",
+    title: "Demon Name Generator",
+    description: "Generate sinister demon names for D&D villains and dark fantasy settings.",
+    tags: ["dnd", "demon", "fiend", "fantasy"],
+  },
+
   {
     href: "/eastern",
     title: "东方国风名字生成器",
