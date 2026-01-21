@@ -1,3 +1,4 @@
+import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
@@ -38,7 +39,69 @@ export default function DragonbornPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
+      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
+        {/* ✅ Back（统一返回 /en） */}
+        <Link
+          href="/en"
+          className="inline-block text-sm text-blue-600 underline underline-offset-4"
+        >
+          ← Back to all D&amp;D name generators
+        </Link>
+
+        <header className="space-y-3">
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+          <p className="text-zinc-700 leading-7">
+            Use this {title.toLowerCase()} to create bold, draconic names for
+            dragonborn in D&amp;D. Dragonborn names often sound strong and
+            rhythmic, and many characters use a clan-style surname that hints at
+            their lineage, oath, or reputation. Generate several options, then
+            tweak syllables to match your campaign’s tone.
+          </p>
+          <p className="text-zinc-700 leading-7">
+            Want to compare naming styles? Explore the full{" "}
+            <Link href="/en" className="underline underline-offset-4">
+              D&amp;D name generators
+            </Link>{" "}
+            collection, or try a different ancestry like{" "}
+            <Link href="/tiefling" className="underline underline-offset-4">
+              tiefling names
+            </Link>{" "}
+            or{" "}
+            <Link href="/elf" className="underline underline-offset-4">
+              elf names
+            </Link>
+            .
+          </p>
+        </header>
+
+        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <h2 className="text-lg font-semibold">Related generators</h2>
+          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
+            <li>
+              <Link href="/tiefling" className="underline underline-offset-4">
+                Tiefling Name Generator
+              </Link>{" "}
+              — infernal-flavored names with a mysterious edge.
+            </li>
+            <li>
+              <Link href="/elf" className="underline underline-offset-4">
+                Elf Name Generator
+              </Link>{" "}
+              — elegant, melodic names for ancient fantasy races.
+            </li>
+            <li>
+              <Link href="/dwarf" className="underline underline-offset-4">
+                Dwarf Name Generator
+              </Link>{" "}
+              — sturdy, clan-based names for warriors and smiths.
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <NameGenerator
+        hideHeader
         title={title}
         description={description}
         parts={{
