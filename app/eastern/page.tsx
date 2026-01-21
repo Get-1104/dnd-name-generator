@@ -1,6 +1,13 @@
 import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "东方国风名字生成器 | 仙侠武侠风格中文名字",
+  description:
+    "生成仙侠、武侠、国风风格的中文名字灵感，适用于角色设定、小说创作与世界观构建。",
+};
 
 export default function EasternPage() {
   const title = "东方国风名字生成器";

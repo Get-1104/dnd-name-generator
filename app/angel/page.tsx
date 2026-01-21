@@ -1,6 +1,13 @@
 import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Angel Name Generator for D&D | Fantasy Character Names",
+  description:
+    "Generate celestial angel names for Dungeons & Dragons campaigns and fantasy worlds. Fast, free, and easy to use.",
+};
 
 export default function AngelPage() {
   const title = "Angel Name Generator";

@@ -1,6 +1,13 @@
 import Link from "next/link";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Demon Name Generator for D&D | Fantasy Character Names",
+  description:
+    "Generate sinister demon names for Dungeons & Dragons villains and dark fantasy settings. Fast, free, and easy to use.",
+};
 
 export default function DemonPage() {
   const title = "Demon Name Generator";
