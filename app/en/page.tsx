@@ -80,15 +80,15 @@ export default function EnHomePage() {
         searchPlaceholder="Search: dwarf, elf, tiefling, dragonborn, xianxia..."
       />
 
-      {/* ✅ 新增：可见 SEO 内容块（不影响你原有布局） */}
+      {/* ✅ 可见 SEO 内容块 */}
       <section className="mt-10 space-y-8 max-w-3xl">
         <div className="space-y-3">
           <h2 className="text-2xl font-semibold">What is a D&amp;D Name Generator?</h2>
           <p className="text-zinc-700 leading-7">
-            A D&amp;D name generator helps you create fantasy names that fit your character,
-            NPC, or campaign setting—fast. Whether you&apos;re rolling up a new hero, improvising
-            an NPC, or building world lore, the goal is the same: names that sound right and stay
-            consistent at the table.
+            A D&amp;D name generator helps you create fantasy names that fit your character, NPC,
+            or campaign setting—fast. Whether you&apos;re rolling up a new hero, improvising an NPC,
+            or building world lore, the goal is the same: names that sound right and stay consistent
+            at the table.
           </p>
           <p className="text-zinc-700 leading-7">
             Start with popular options like{" "}
@@ -122,40 +122,63 @@ export default function EnHomePage() {
 
         <div className="space-y-3">
           <h2 className="text-2xl font-semibold">Popular generators</h2>
-          <p className="text-zinc-700 leading-7">
-            These are common needs in most campaigns:
-          </p>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <p className="text-zinc-700 leading-7">These are common needs in most campaigns:</p>
+
+          <ul className="space-y-3">
             <li>
-              <Link href="/elf" className="underline underline-offset-4 text-zinc-700">
+              <Link href="/elf" className="underline underline-offset-4 font-medium text-zinc-900">
                 Elf Name Generator
               </Link>
+              <span className="text-zinc-700">
+                {" "}
+                — elegant, melodic names for ancient fantasy races; great for rangers, mages, and nobles.
+              </span>
             </li>
+
             <li>
-              <Link href="/dwarf" className="underline underline-offset-4 text-zinc-700">
+              <Link href="/dwarf" className="underline underline-offset-4 font-medium text-zinc-900">
                 Dwarf Name Generator
               </Link>
+              <span className="text-zinc-700">
+                {" "}
+                — sturdy, clan-based names for warriors, smiths, and mountain folk in classic D&amp;D settings.
+              </span>
             </li>
+
             <li>
-              <Link href="/tiefling" className="underline underline-offset-4 text-zinc-700">
+              <Link href="/tiefling" className="underline underline-offset-4 font-medium text-zinc-900">
                 Tiefling Name Generator
               </Link>
+              <span className="text-zinc-700">
+                {" "}
+                — dark, infernal-flavored names with a mysterious edge, perfect for warlocks and outsiders.
+              </span>
             </li>
+
             <li>
-              <Link href="/dragonborn" className="underline underline-offset-4 text-zinc-700">
+              <Link href="/dragonborn" className="underline underline-offset-4 font-medium text-zinc-900">
                 Dragonborn Name Generator
               </Link>
+              <span className="text-zinc-700">
+                {" "}
+                — strong, draconic names inspired by honor, lineage, and ancient dragon bloodlines.
+              </span>
             </li>
+
             <li>
-              <Link href="/eastern" className="underline underline-offset-4 text-zinc-700">
+              <Link href="/eastern" className="underline underline-offset-4 font-medium text-zinc-900">
                 Eastern Fantasy Name Generator
               </Link>
+              <span className="text-zinc-700">
+                {" "}
+                — Eastern and xianxia-style fantasy names, suitable for cultivators and mythic heroes.
+              </span>
             </li>
           </ul>
         </div>
       </section>
 
-      {/* 👇 你原来的“可见 FAQ”（保留） */}
+      {/* 👇 可见 FAQ（保留） */}
       <section className="mt-12 space-y-4 max-w-3xl">
         <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
         <ul className="space-y-3">
