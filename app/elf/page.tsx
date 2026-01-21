@@ -38,9 +38,9 @@ export default function ElfPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* ✅ 可见 Intro + 内链（Day 2 核心） */}
+      {/* ✅ Visible Intro + internal links */}
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back（放在 Intro 顶部，替代 NameGenerator 里被 hideHeader 隐藏的 Back） */}
+        {/* ✅ Back (always to /en) */}
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -50,12 +50,14 @@ export default function ElfPage() {
 
         <header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+
           <p className="text-zinc-700 leading-7">
-            Use this {title.toLowerCase()} to quickly create elegant, melodic names for elves in
+            Use this elf name generator to quickly create elegant, melodic names for elves in
             D&amp;D. Whether you&apos;re naming a new player character, improvising an NPC, or
             drafting ancient family lineages, generate a shortlist and tweak spelling or syllables
             to match your setting’s tone.
           </p>
+
           <p className="text-zinc-700 leading-7">
             Looking for more options? Browse the full{" "}
             <Link href="/en" className="underline underline-offset-4">
@@ -93,6 +95,12 @@ export default function ElfPage() {
                 Dragonborn Name Generator
               </Link>{" "}
               — strong draconic names inspired by honor and lineage.
+            </li>
+            <li>
+              <Link href="/eastern" className="underline underline-offset-4">
+                Eastern Fantasy Name Generator
+              </Link>{" "}
+              — wuxia/xianxia-style Chinese name inspiration.
             </li>
           </ul>
         </div>
