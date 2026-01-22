@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { SEARCH_ITEMS, POPULAR_ITEMS, type SearchItem } from "@/lib/searchIndex";
-
+import { appendSearchLog } from "@/lib/searchAnalytics";
 
 function normalize(s: string) {
   return s.toLowerCase().trim();
@@ -17,26 +17,18 @@ function scoreItem(q: string, item: SearchItem) {
   const desc = normalize(item.description ?? "");
   const keywords = (item.keywords ?? []).map(normalize);
 
-  // 强匹配：title 前缀
   if (title.startsWith(query)) return 100;
-
-  // title 包含
   if (title.includes(query)) return 80;
-
-  // href 包含（例如输入 "dragon" -> /dragonborn）
   if (normalize(item.href).includes(query)) return 70;
 
-  // keyword 命中
   for (const k of keywords) {
     if (k === query) return 75;
     if (k.startsWith(query)) return 68;
     if (k.includes(query)) return 60;
   }
 
-  // description 命中
   if (desc.includes(query)) return 45;
 
-  // token 模糊（支持 "elf name"）
   const tokens = query.split(/\s+/).filter(Boolean);
   if (tokens.length > 1) {
     let hit = 0;
@@ -79,20 +71,22 @@ export default function SmartSearch() {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
+  // ✅ 必须在组件内部
+  const lastOpenAtRef = useRef(0);
+
+  // ✅ 清洗 query：太短就记空
+  const cleanedQuery = value.trim();
+  const qForLog = cleanedQuery.length >= 2 ? cleanedQuery : "";
+
   const results = useMemo(() => {
     const q = value.trim();
-    if (!q) return [];
+    if (!q) return POPULAR_ITEMS.slice(0, 8);
 
-    const scored = SEARCH_ITEMS.map((item) => ({
-      item,
-      score: scoreItem(q, item),
-    }))
+    return SEARCH_ITEMS.map((item) => ({ item, score: scoreItem(q, item) }))
       .filter((x) => x.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 8)
       .map((x) => x.item);
-
-    return scored;
   }, [value]);
 
   useEffect(() => {
@@ -104,17 +98,42 @@ export default function SmartSearch() {
     function onDocClick(e: MouseEvent) {
       const el = containerRef.current;
       if (!el) return;
-      if (e.target instanceof Node && !el.contains(e.target)) {
-        setOpen(false);
-      }
+      if (e.target instanceof Node && !el.contains(e.target)) setOpen(false);
     }
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
+  function logOpen(q: string) {
+    const now = Date.now();
+    if (now - lastOpenAtRef.current < 800) return;
+    lastOpenAtRef.current = now;
+
+    const qq = q.trim();
+    appendSearchLog({
+      type: "search_open",
+      ts: now,
+      query: qq.length >= 2 ? qq : "",
+    });
+  }
+
+  function logSelect(item: SearchItem, position: number, method: "click" | "enter") {
+    appendSearchLog({
+      type: "search_select",
+      ts: Date.now(),
+      query: qForLog,
+      href: item.href,
+      title: item.title,
+      itemType: item.type,
+      position,
+      method,
+    });
+  }
+
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (!open && (e.key === "ArrowDown" || e.key === "Enter")) {
       setOpen(true);
+      logOpen(value);
       return;
     }
 
@@ -132,20 +151,21 @@ export default function SmartSearch() {
       e.preventDefault();
       setActive((i) => Math.max(i - 1, 0));
     } else if (e.key === "Enter") {
-      // 直接跳转到高亮项
       const target = results[active];
       if (target) {
+        logSelect(target, active + 1, "enter");
         window.location.href = target.href;
       }
     }
   }
 
-  const show = open && (value.trim().length > 0) && results.length > 0;
+  const show = open && results.length > 0;
 
   return (
     <div ref={containerRef} className="relative">
       <div className="flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-4 py-3 shadow-sm">
         <span className="text-zinc-500">🔎</span>
+
         <input
           ref={inputRef}
           value={value}
@@ -153,20 +173,25 @@ export default function SmartSearch() {
             setValue(e.target.value);
             setOpen(true);
           }}
-          onFocus={() => setOpen(true)}
+          onFocus={() => {
+            setOpen(true);
+            logOpen(value);
+          }}
           onKeyDown={onKeyDown}
           placeholder='Search “elf”, “dwarf clan”, “dragonborn”…'
           className="w-full bg-transparent outline-none text-zinc-900 placeholder:text-zinc-400"
           aria-label="Search generators and guides"
         />
+
         {value.length > 0 && (
           <button
             type="button"
             className="text-sm text-zinc-500 hover:text-zinc-700"
             onClick={() => {
               setValue("");
-              setOpen(false);
+              setOpen(true);
               inputRef.current?.focus();
+              logOpen("");
             }}
             aria-label="Clear search"
           >
@@ -176,14 +201,17 @@ export default function SmartSearch() {
       </div>
 
       {show && (
-        <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
+        <div className="absolute z-[9999] mt-2 w-full overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-lg">
           <div className="px-4 py-2 text-xs text-zinc-500">
-            Suggestions (↑↓ to navigate, Enter to open)
+            {value.trim()
+              ? "Suggestions (↑↓ to navigate, Enter to open)"
+              : "Popular (↑↓ to navigate, Enter to open)"}
           </div>
 
           <ul className="max-h-80 overflow-auto">
             {results.map((r, idx) => {
               const isActive = idx === active;
+
               return (
                 <li key={`${r.type}:${r.href}`}>
                   <Link
@@ -194,11 +222,14 @@ export default function SmartSearch() {
                       "hover:bg-zinc-50",
                     ].join(" ")}
                     onMouseEnter={() => setActive(idx)}
-                    onClick={() => setOpen(false)}
+                    onClick={() => {
+                      logSelect(r, idx + 1, "click");
+                      setOpen(false);
+                    }}
                   >
                     <div className="flex items-center justify-between gap-3">
                       <div className="text-sm text-zinc-900">
-                        {highlight(r.title, value)}
+                        {value.trim() ? highlight(r.title, value) : r.title}
                       </div>
                       <span className="shrink-0 rounded-full border border-zinc-200 px-2 py-0.5 text-xs text-zinc-600">
                         {r.type === "guide" ? "Guide" : "Generator"}
