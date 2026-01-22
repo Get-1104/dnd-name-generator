@@ -77,3 +77,20 @@ export const SEARCH_ITEMS: SearchItem[] = [
   ...GUIDE_ITEMS,
   ...GENERATOR_ITEMS,
 ];
+
+// -------------------------
+// Popular items (query empty)
+// -------------------------
+const pick = (href: string) => SEARCH_ITEMS.find((x) => x.href === href);
+
+export const POPULAR_ITEMS: SearchItem[] = [
+  pick("/elf"),
+  pick("/dwarf"),
+  pick("/tiefling"),
+  pick("/dragonborn"),
+  pick("/goblin"),
+  pick("/guides/how-to-name-a-dnd-character"),
+  pick("/guides/dnd-name-generator-guide"),
+  pick("/guides/elf-naming-conventions"),
+  pick("/guides/dwarf-clan-names-and-traditions"),
+].filter(Boolean) as SearchItem[];

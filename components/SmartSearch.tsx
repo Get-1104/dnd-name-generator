@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { SEARCH_ITEMS, type SearchItem } from "@/lib/searchIndex";
+import { SEARCH_ITEMS, POPULAR_ITEMS, type SearchItem } from "@/lib/searchIndex";
+
 
 function normalize(s: string) {
   return s.toLowerCase().trim();
