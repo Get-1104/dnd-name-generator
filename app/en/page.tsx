@@ -1,6 +1,6 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
-import HomeSearch from "@/components/HomeSearch";
+import SmartSearch from "@/components/SmartSearch";
 import { TOOLS } from "@/lib/tools";
 import { getPageUrl } from "@/lib/site";
 import type { Metadata } from "next";
@@ -81,25 +81,76 @@ export default function EnHomePage() {
       <JsonLd data={jsonLd} />
 
       <main className="mx-auto max-w-5xl px-4">
-        <HomeSearch
-          tools={TOOLS}
-          headline="D&D Name Generators"
-          subhead="Pick a generator, generate names, and copy your favorites."
-          searchPlaceholder="Search: dwarf, elf, tiefling, dragonborn, xianxia..."
-        />
+        {/* ✅ HERO: 标题 + 唯一搜索框（放最上面，防止用户点错） */}
+        <header className="mt-10 max-w-3xl space-y-4">
+          <h1 className="text-4xl font-semibold tracking-tight">
+            D&amp;D Name Generators
+          </h1>
+          <p className="text-zinc-700 leading-7">
+            Pick a generator, generate names, and copy your favorites.
+          </p>
 
-        {/* ✅ 可见 SEO 正文 */}
-        <section className="mt-10 space-y-8 max-w-3xl">
+          <div className="relative">
+            <SmartSearch />
+          </div>
+
+          <p className="text-sm text-zinc-500">
+            Try: <span className="font-medium text-zinc-700">elf</span>,{" "}
+            <span className="font-medium text-zinc-700">dwarf clan</span>,{" "}
+            <span className="font-medium text-zinc-700">tiefling</span>,{" "}
+            <span className="font-medium text-zinc-700">dragonborn</span>
+          </p>
+        </header>
+
+        {/* ✅ Generator cards grid（原来的核心列表，继续保留） */}
+        <section className="mt-10">
+          <h2 className="sr-only">All generators</h2>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            {TOOLS.map((t) => (
+              <Link
+                key={t.href}
+                href={t.href}
+                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+              >
+                <div className="space-y-2">
+                  <div className="text-lg font-semibold text-zinc-900">
+                    {t.title}
+                  </div>
+                  {t.description && (
+                    <p className="text-zinc-700 leading-7">{t.description}</p>
+                  )}
+                </div>
+
+                {/* tags（如果你 TOOLS 有 tags 就显示；没有也不会报错） */}
+                {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    {(t as any).tags.slice(0, 6).map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* ✅ Visible SEO body */}
+        <section className="mt-14 space-y-8 max-w-3xl">
           <div className="space-y-3">
             <h2 className="text-2xl font-semibold">
               What is a D&amp;D Name Generator?
             </h2>
             <p className="text-zinc-700 leading-7">
-              A D&amp;D name generator helps you create fantasy names that fit
-              your character, NPC, or campaign setting—fast. Whether you&apos;re
-              rolling up a new hero, improvising an NPC, or building world lore,
-              the goal is the same: names that sound right and stay consistent at
-              the table.
+              A D&amp;D name generator helps you create fantasy names that fit your character,
+              NPC, or campaign setting—fast. Whether you&apos;re rolling up a new hero,
+              improvising an NPC, or building world lore, the goal is the same: names that
+              sound right and stay consistent at the table.
             </p>
             <p className="text-zinc-700 leading-7">
               Start with popular options like{" "}
@@ -119,24 +170,19 @@ export default function EnHomePage() {
           </div>
 
           <div className="space-y-3">
-            <h2 className="text-2xl font-semibold">
-              How to use these generators
-            </h2>
+            <h2 className="text-2xl font-semibold">How to use these generators</h2>
             <ol className="list-decimal pl-5 space-y-2 text-zinc-700 leading-7">
               <li>
-                Pick a generator that matches your character concept (ancestry,
-                culture, or vibe).
+                Pick a generator that matches your character concept (ancestry, culture, or vibe).
               </li>
               <li>Click Generate until you find a name you like.</li>
               <li>
-                Copy your favorites and save them for future characters, NPCs,
-                towns, or factions.
+                Copy your favorites and save them for future characters, NPCs, towns, or factions.
               </li>
             </ol>
             <p className="text-zinc-700 leading-7">
-              DM tip: keep a short list ready for merchants, guards, tavern
-              owners, and travelers—your world will feel more alive with zero
-              extra prep.
+              DM tip: keep a short list ready for merchants, guards, tavern owners, and travelers—your
+              world will feel more alive with zero extra prep.
             </p>
           </div>
 
@@ -144,46 +190,31 @@ export default function EnHomePage() {
             <h2 className="text-2xl font-semibold">Popular generators</h2>
             <ul className="space-y-3">
               <li>
-                <Link
-                  href="/elf"
-                  className="underline underline-offset-4 font-medium"
-                >
+                <Link href="/elf" className="underline underline-offset-4 font-medium">
                   Elf Name Generator
                 </Link>{" "}
                 — elegant, melodic names for ancient fantasy races.
               </li>
               <li>
-                <Link
-                  href="/dwarf"
-                  className="underline underline-offset-4 font-medium"
-                >
+                <Link href="/dwarf" className="underline underline-offset-4 font-medium">
                   Dwarf Name Generator
                 </Link>{" "}
                 — sturdy, clan-based names for warriors and smiths.
               </li>
               <li>
-                <Link
-                  href="/tiefling"
-                  className="underline underline-offset-4 font-medium"
-                >
+                <Link href="/tiefling" className="underline underline-offset-4 font-medium">
                   Tiefling Name Generator
                 </Link>{" "}
                 — infernal-flavored names with a mysterious edge.
               </li>
               <li>
-                <Link
-                  href="/dragonborn"
-                  className="underline underline-offset-4 font-medium"
-                >
+                <Link href="/dragonborn" className="underline underline-offset-4 font-medium">
                   Dragonborn Name Generator
                 </Link>{" "}
                 — powerful draconic names inspired by honor and lineage.
               </li>
               <li>
-                <Link
-                  href="/eastern"
-                  className="underline underline-offset-4 font-medium"
-                >
+                <Link href="/eastern" className="underline underline-offset-4 font-medium">
                   Eastern Fantasy Name Generator
                 </Link>{" "}
                 — wuxia/xianxia-style Chinese name inspiration.
@@ -192,7 +223,7 @@ export default function EnHomePage() {
           </div>
         </section>
 
-        {/* ✅ 可见 FAQ（与 JSON-LD 对齐） */}
+        {/* ✅ Visible FAQ (aligned with JSON-LD) */}
         <section className="mt-16 space-y-6 max-w-3xl">
           <h2 className="text-2xl font-semibold">
             Frequently Asked Questions about D&amp;D Name Generators
