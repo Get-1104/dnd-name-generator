@@ -1,6 +1,7 @@
+// app/page.tsx
 import HomeSearch from "@/components/HomeSearch";
 import JsonLd from "@/components/JsonLd";
-import { SITE } from "@/lib/site";
+import { SITE, getPageUrl } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
 
 export default function HomePage() {
@@ -9,12 +10,12 @@ export default function HomePage() {
       "@context": "https://schema.org",
       "@type": "WebSite",
       name: SITE.name,
-      url: SITE.url,
+      url: getPageUrl("/"),
       description: SITE.description,
       inLanguage: SITE.language,
       potentialAction: {
         "@type": "SearchAction",
-        target: `${SITE.url}/?q={search_term_string}`,
+        target: `${getPageUrl("/")}?q={search_term_string}`,
         "query-input": "required name=search_term_string",
       },
     },
@@ -26,7 +27,7 @@ export default function HomePage() {
         "@type": "ListItem",
         position: idx + 1,
         name: t.title,
-        url: `${SITE.url}${t.href}`,
+        url: getPageUrl(t.href),
       })),
     },
   ];

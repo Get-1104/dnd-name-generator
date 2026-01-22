@@ -26,29 +26,36 @@ function getToolDesc(t: ToolLike) {
 }
 
 export default function EnSeoIntro() {
-  // 你现在已有的工具（从 SSOT 读取）
-  const tools = (TOOLS as ToolLike[]).map((t) => ({
-    path: getToolPath(t),
-    name: getToolName(t),
-    description: getToolDesc(t),
-  }));
+  // SSOT: TOOLS
+  const tools = (TOOLS as ToolLike[])
+    .map((t) => ({
+      path: getToolPath(t),
+      name: getToolName(t),
+      description: getToolDesc(t),
+    }))
+    .filter((t) => Boolean(t.path)); // ✅ 防止空 path
 
-  // 首页“重点内链”优先展示（按你现有页面）
+  /**
+   * Featured internal links
+   * ✅ 保持 /en 主主题：D&D generators
+   * ❌ 不把 /eastern 抬到 featured（避免“刻意指向”）
+   */
   const featured = [
     "/dwarf",
     "/elf",
     "/tiefling",
     "/dragonborn",
-    "/eastern",
+    "/orc", // ✅ 你现在也有 orc 了，更自然
   ];
 
   const featuredTools = featured
     .map((p) => tools.find((t) => t.path === p))
     .filter(Boolean) as { path: string; name: string; description: string }[];
 
-  // 其余工具（如果以后你加到 TOOLS，会自动出现在这里）
+  // 其余工具（稳定顺序）
   const restTools = tools
     .filter((t) => t.path && !featured.includes(t.path))
+    .sort((a, b) => a.path.localeCompare(b.path))
     .slice(0, 24);
 
   return (
@@ -166,9 +173,7 @@ export default function EnSeoIntro() {
 
       {/* Lightweight E-E-A-T style block */}
       <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Who is this for?
-        </h2>
+        <h2 className="text-2xl font-semibold tracking-tight">Who is this for?</h2>
         <div className="mt-3 space-y-3 text-base leading-7 text-gray-700">
           <p>
             <strong>Players</strong> who want names that match a character&apos;s

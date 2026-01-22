@@ -1,3 +1,4 @@
+// app/sitemap.ts
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
 import { getPageUrl } from "@/lib/site";
@@ -20,37 +21,45 @@ function isoNow() {
 export default function sitemap(): MetadataRoute.Sitemap {
   const lastModified = isoNow();
 
-  // 首页 & 入口页
+  /* --------------------
+   * 核心入口页
+   * ------------------ */
   const staticPages: MetadataRoute.Sitemap = [
     {
       url: getPageUrl("/"),
       lastModified,
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 1.0,
     },
     {
       url: getPageUrl("/en"),
       lastModified,
       changeFrequency: "weekly",
-      priority: 1,
+      priority: 1.0,
     },
   ];
 
-  // 工具页（generators）
-  const toolPages: MetadataRoute.Sitemap = TOOLS.map((t) => ({
-    url: getPageUrl(t.href),
-    lastModified,
-    changeFrequency: "monthly",
-    priority: 0.8,
-  }));
+  /* --------------------
+   * 工具页（Generators）
+   * ------------------ */
+  const toolPages: MetadataRoute.Sitemap = [...TOOLS]
+    .sort((a, b) => a.href.localeCompare(b.href))
+    .map((t) => ({
+      url: getPageUrl(t.href),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    }));
 
-  // 指南页（guides）
+  /* --------------------
+   * 指南页（Guides）
+   * ------------------ */
   const guidePages: MetadataRoute.Sitemap = GUIDE_PATHS.map((p) => ({
     url: getPageUrl(p),
     lastModified,
     changeFrequency: "monthly",
-    priority: 0.8,
+    priority: 0.7,
   }));
 
-  return [...staticPages, ...guidePages, ...toolPages];
+  return [...staticPages, ...toolPages, ...guidePages];
 }

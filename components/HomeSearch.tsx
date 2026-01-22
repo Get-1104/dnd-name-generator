@@ -13,7 +13,6 @@ export type ToolLink = {
 type Props = {
   tools: ToolLink[];
 
-  // ✅ 新增：可选的英文/多语言文案（不传则使用默认）
   headline?: string;
   subhead?: string;
   searchPlaceholder?: string;
@@ -23,7 +22,8 @@ export default function HomeSearch({
   tools,
   headline = "D&D Name Generators",
   subhead = "Pick a generator, generate names, and copy your favorites.",
-  searchPlaceholder = "Search: elf, dwarf, 东方, xianxia...",
+  // ✅ 更中性：不刻意 push xianxia/wuxia
+  searchPlaceholder = "Search: elf, dwarf, tiefling, dragonborn, 东方…",
 }: Props) {
   const [q, setQ] = useState("");
 
@@ -32,12 +32,7 @@ export default function HomeSearch({
     if (!query) return tools;
 
     return tools.filter((t) => {
-      const haystack = [
-        t.title,
-        t.description,
-        t.href,
-        ...(t.tags || []),
-      ]
+      const haystack = [t.title, t.description, t.href, ...(t.tags || [])]
         .join(" ")
         .toLowerCase();
 
@@ -51,12 +46,25 @@ export default function HomeSearch({
         <h1 className="text-4xl font-bold">{headline}</h1>
         <p className="text-zinc-700 max-w-2xl">{subhead}</p>
 
-        <input
-          value={q}
-          onChange={(e) => setQ(e.target.value)}
-          placeholder={searchPlaceholder}
-          className="w-full max-w-xl rounded-xl border border-zinc-200 px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-200"
-        />
+        <div className="flex w-full max-w-xl items-center gap-2">
+          <input
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder={searchPlaceholder}
+            className="w-full rounded-xl border border-zinc-200 px-4 py-3 outline-none focus:ring-2 focus:ring-zinc-200"
+          />
+          {q.trim().length > 0 && (
+            <button
+              type="button"
+              onClick={() => setQ("")}
+              className="rounded-xl border border-zinc-200 bg-white px-3 py-3 text-sm text-zinc-700 hover:bg-zinc-50"
+              aria-label="Clear search"
+              title="Clear"
+            >
+              Clear
+            </button>
+          )}
+        </div>
       </header>
 
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -84,6 +92,12 @@ export default function HomeSearch({
           </Link>
         ))}
       </section>
+
+      {filtered.length === 0 && (
+        <p className="text-sm text-zinc-600">
+          No results. Try a race (elf, dwarf, orc) or browse the full list above.
+        </p>
+      )}
     </main>
   );
 }

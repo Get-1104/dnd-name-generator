@@ -178,7 +178,7 @@ export default function SmartSearch() {
             logOpen(value);
           }}
           onKeyDown={onKeyDown}
-          placeholder='Search “elf”, “dwarf clan”, “dragonborn”…'
+          placeholder="Search generators or guides…"
           className="w-full bg-transparent outline-none text-zinc-900 placeholder:text-zinc-400"
           aria-label="Search generators and guides"
         />
@@ -248,7 +248,7 @@ export default function SmartSearch() {
           </ul>
 
           <div className="border-t border-zinc-100 px-4 py-2 text-xs text-zinc-500">
-            Tip: Try “elf naming”, “dwarf clan”, “tiefling”, “dragonborn”.
+            Tip: try a race (e.g. elf, dwarf) or a topic (e.g. naming conventions).
           </div>
         </div>
       )}

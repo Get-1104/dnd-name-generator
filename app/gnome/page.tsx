@@ -1,7 +1,10 @@
 import Link from "next/link";
-import NameGenerator from "@/components/NameGenerator";
-import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import type { Metadata } from "next";
+
+import JsonLd from "@/components/JsonLd";
+import NameGenerator from "@/components/NameGenerator";
+import RelatedGenerators from "@/components/RelatedGenerators";
+import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Gnome Name Generator for D&D | Fantasy Character Names",
@@ -14,38 +17,38 @@ export default function GnomePage() {
   const description = "Generate clever gnome names for D&D characters and NPCs.";
   const path = "/gnome";
 
+  const faq = [
+    {
+      q: "What is a gnome name generator?",
+      a: "A gnome name generator creates gnome-style fantasy names you can use for D&D characters, NPCs, and stories.",
+    },
+    {
+      q: "How do I use this gnome name generator?",
+      a: "Click Generate to create a fresh list of gnome names, then use Copy to copy your favorites for your character sheet or notes.",
+    },
+    {
+      q: "What makes a name feel gnome?",
+      a: "Gnome names often feel playful and clever, with bouncy syllables and sometimes longer given names. Many gnomes also use nicknames that are easier at the table.",
+    },
+    {
+      q: "Are these names official D&D names?",
+      a: "They are randomly generated fantasy-style names intended for inspiration and are not official D&D canon content.",
+    },
+  ];
+
   const jsonLd = buildGeneratorPageJsonLd({
     path,
     title,
     description,
-    faq: [
-      {
-        q: "What is a gnome name generator?",
-        a: "A gnome name generator creates whimsical fantasy gnome names for D&D characters, NPCs, and worldbuilding.",
-      },
-      {
-        q: "Do these names fit rock gnomes and forest gnomes?",
-        a: "Yes. The names are flexible and can work for different gnome cultures—adjust spelling or add a nickname to fit your setting.",
-      },
-      {
-        q: "How do I get more name options?",
-        a: "Click Generate again for a fresh list. You can also mix parts or combine names to create your own variants.",
-      },
-      {
-        q: "Can I use these names in my campaign freely?",
-        a: "Yes. The names are original fantasy-style results intended for inspiration and use in your projects.",
-      },
-    ],
+    faq,
   });
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+      <JsonLd data={jsonLd} />
 
-      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
+      {/* Top intro */}
+      <header className="space-y-3">
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -53,83 +56,126 @@ export default function GnomePage() {
           ← Back to all D&amp;D name generators
         </Link>
 
-        <header className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
-          <p className="text-zinc-700 leading-7">
-            Gnomes are curious, inventive, and full of personality in D&amp;D.
-            Whether you&apos;re naming a clever artificer, a mischievous illusionist,
-            or a scholar with a pocket full of gadgets, a gnome name should feel
-            light, lively, and memorable.
-          </p>
+        <p className="text-zinc-700 leading-7">
+          Use this gnome name generator to create playful, clever names for gnome
+          characters and NPCs in D&amp;D. Gnome names often have bouncy syllables,
+          quirky rhythms, and fun nicknames—great for inventors, illusionists, tinkerers,
+          and curious explorers. Generate a shortlist, then refine spellings or pick a
+          shorter nickname for table play.
+        </p>
 
-          <p className="text-zinc-700 leading-7">
-            Want a different vibe? Browse the{" "}
-            <Link href="/en" className="underline underline-offset-4">
-              D&amp;D name generators
-            </Link>{" "}
-            hub, or try something sturdier like{" "}
-            <Link href="/dwarf" className="underline underline-offset-4">
-              dwarf names
-            </Link>{" "}
-            or more elegant like{" "}
-            <Link href="/elf" className="underline underline-offset-4">
-              elf names
-            </Link>
-            .
-          </p>
-        </header>
+        <p className="text-zinc-700 leading-7">
+          Want more naming styles? Browse the full{" "}
+          <Link href="/en" className="underline underline-offset-4">
+            D&amp;D name generators
+          </Link>{" "}
+          collection, or compare with{" "}
+          <Link href="/halfling" className="underline underline-offset-4">
+            halfling names
+          </Link>{" "}
+          and{" "}
+          <Link href="/human" className="underline underline-offset-4">
+            human names
+          </Link>
+          .
+        </p>
+      </header>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-          <h2 className="text-lg font-semibold">Related generators</h2>
-          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
-            <li>
-              <Link href="/dwarf" className="underline underline-offset-4">
-                Dwarf Name Generator
-              </Link>{" "}
-              — grounded names that work well for close-knit clans.
-            </li>
-            <li>
-              <Link href="/elf" className="underline underline-offset-4">
-                Elf Name Generator
-              </Link>{" "}
-              — melodic names for ancient forests and noble courts.
-            </li>
-            <li>
-              <Link href="/human" className="underline underline-offset-4">
-                Human Name Generator
-              </Link>{" "}
-              — flexible names for any region or background.
-            </li>
-            <li>
-              <Link href="/eastern" className="underline underline-offset-4">
-                Eastern Fantasy Name Generator
-              </Link>{" "}
-              — wuxia/xianxia-style Chinese name inspiration.
-            </li>
-          </ul>
+      {/* Generator */}
+      <section className="space-y-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <NameGenerator
+            hideHeader
+            title={title}
+            description={description}
+            parts={{
+              first: ["Fizz", "Bim", "Tink", "Nim", "Pip", "Wiz", "Gim", "Zan", "Rill", "Quin"],
+              second: ["wick", "ble", "nock", "berry", "tock", "whistle", "spar", "dle", "vix", "len"],
+              lastA: ["Copper", "Gear", "Bright", "Quick", "Spark", "Moss", "Glimmer", "Puddle", "Thistle", "Wind"],
+              lastB: ["top", "whisk", "bender", "foot", "spinner", "glove", "branch", "button", "brook", "fizzle"],
+            }}
+            initialCount={10}
+            examples={[
+              "Fizzwick Coppertop",
+              "Tinkble Gearbender",
+              "Nimberry Brightbutton",
+              "Quinwhistle Sparkbrook",
+              "Rillnock Thistlebranch",
+            ]}
+          />
+        </div>
+
+        <p className="text-xs text-zinc-500">
+          Tip: Gnome names often feel right when you keep the given name bouncy
+          and playful—then use a surname tied to tinkering, nature, or a quirky trait.
+        </p>
+      </section>
+
+      {/* ✅ Generator → Guide internal links (闭环) */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Make gnome names easy at the table</h2>
+        <p className="text-zinc-700 leading-7">
+          Gnome names can be longer—so nicknames help. These guides show practical
+          ways to build names that are memorable, pronounceable, and consistent with
+          your character’s vibe.
+        </p>
+
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link
+            href="/guides/how-to-name-a-dnd-character"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            How to Name a D&amp;D Character (Guide)
+          </Link>
+          <Link
+            href="/guides/dnd-name-generator-guide"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            What Is a D&amp;D Name Generator? (Guide)
+          </Link>
         </div>
       </section>
 
-      <NameGenerator
-        hideHeader
-        title={title}
-        description={description}
-        parts={{
-          first: ["Bil", "Fen", "Nib", "Pip", "Tink", "Wen", "Zan", "Mop", "Rin", "Quil"],
-          second: ["lo", "wick", "pin", "ber", "nock", "fiz", "dle", "mop", "zin", "bim"],
-          lastA: ["Copper", "Clock", "Spark", "Tangle", "Mirth", "Whistle", "Gadget", "Bristle", "Nimble", "Twinkle"],
-          lastB: ["top", "maker", "whisk", "button", "gear", "bloom", "wink", "whittle", "snap", "glimmer"],
-        }}
-        initialCount={10}
-        examples={[
-          "Fenwick Coppermaker",
-          "Tinkfiz Clockgear",
-          "Pipnock Sparkglimmer",
-          "Bilpin Whistlebloom",
-          "Quilzin Gadgetwink",
-        ]}
+      {/* ✅ Related generators (统一组件) */}
+      <RelatedGenerators
+        hrefs={["/halfling", "/human", "/goblin", "/elf"]}
+        title="Try related name generators"
+        note="Tip: If you want a gnome name to sound more serious, keep the given name short and pair it with a grounded human-style surname."
       />
-    </>
+
+      {/* Visible FAQ */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">FAQ</h2>
+
+        <div className="space-y-3">
+          {faq.map((f) => (
+            <div
+              key={f.q}
+              className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"
+            >
+              <div className="font-medium">{f.q}</div>
+              <p className="text-zinc-700 leading-7 mt-1">{f.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className="pt-2 text-sm text-zinc-600">
+        Explore more:{" "}
+        <Link className="underline" href="/halfling">
+          Halfling
+        </Link>{" "}
+        ·{" "}
+        <Link className="underline" href="/human">
+          Human
+        </Link>{" "}
+        ·{" "}
+        <Link className="underline" href="/goblin">
+          Goblin
+        </Link>
+      </footer>
+    </main>
   );
 }

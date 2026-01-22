@@ -2,6 +2,7 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
 import type { Metadata } from "next";
+import RelatedGenerators from "@/components/RelatedGenerators";
 
 export const metadata: Metadata = {
   title: "Elf Naming Conventions in D&D | Rules, Syllables + Examples",
@@ -380,6 +381,11 @@ export default function ElfNamingConventionsPage() {
             ))}
           </ul>
         </section>
+        <RelatedGenerators
+          hrefs={["/elf", "/half-elf", "/human"]}
+          title="Try related name generators"
+          note="Many half-elves use elven naming traditions with human simplifications."
+        />
       </article>
     </>
   );

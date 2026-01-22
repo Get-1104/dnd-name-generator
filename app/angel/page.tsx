@@ -1,51 +1,55 @@
 import Link from "next/link";
-import NameGenerator from "@/components/NameGenerator";
-import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import type { Metadata } from "next";
 
+import JsonLd from "@/components/JsonLd";
+import NameGenerator from "@/components/NameGenerator";
+import RelatedGenerators from "@/components/RelatedGenerators";
+import { buildGeneratorPageJsonLd } from "@/lib/seo";
+
 export const metadata: Metadata = {
-  title: "Angel Name Generator for D&D | Fantasy Character Names",
+  title: "Angel Name Generator for D&D | Celestial Fantasy Names",
   description:
-    "Generate celestial angel names for Dungeons & Dragons campaigns and fantasy worlds. Fast, free, and easy to use.",
+    "Generate celestial angel names for D&D campaigns and fantasy worlds. Fast, free, and easy to use.",
 };
 
 export default function AngelPage() {
   const title = "Angel Name Generator";
-  const description = "Generate celestial angel names for D&D campaigns and fantasy worlds.";
+  const description =
+    "Generate celestial angel names for D&D campaigns and fantasy worlds.";
   const path = "/angel";
+
+  const faq = [
+    {
+      q: "What is an angel name generator?",
+      a: "An angel name generator creates celestial-style names you can use for angels, devas, heralds, and holy NPCs in D&D and fantasy settings.",
+    },
+    {
+      q: "How do I use this angel name generator?",
+      a: "Click Generate to create a fresh list of angel names, then use Copy to copy your favorites for your campaign notes or character sheet.",
+    },
+    {
+      q: "What makes a name feel angelic or celestial?",
+      a: "Celestial names often sound melodic and dignified, with flowing syllables and bright, uplifting themes. Titles like “Herald”, “Warden”, or “Lightbearer” can add weight.",
+    },
+    {
+      q: "Are these names official D&D names?",
+      a: "They are randomly generated fantasy-style names intended for inspiration and are not official D&D canon content.",
+    },
+  ];
 
   const jsonLd = buildGeneratorPageJsonLd({
     path,
     title,
     description,
-    faq: [
-      {
-        q: "What is an angel name generator?",
-        a: "An angel name generator creates celestial, fantasy-style names suitable for divine NPCs, holy warriors, and messengers.",
-      },
-      {
-        q: "Can I use these names in a D&D campaign?",
-        a: "Yes. These names are designed for D&D and fantasy settings and can be adapted to your pantheon, alignment, or lore.",
-      },
-      {
-        q: "Do angel names have to sound 'holy'?",
-        a: "Not necessarily. Some can be serene and graceful, while others can be stern and authoritative—choose what fits your character.",
-      },
-      {
-        q: "Are these names from real-world religions?",
-        a: "No. The generator outputs original fantasy-style names intended for inspiration in fictional worlds.",
-      },
-    ],
+    faq,
   });
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+      <JsonLd data={jsonLd} />
 
-      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
+      {/* Top intro */}
+      <header className="space-y-3">
         <Link
           href="/en"
           className="inline-block text-sm text-blue-600 underline underline-offset-4"
@@ -53,79 +57,122 @@ export default function AngelPage() {
           ← Back to all D&amp;D name generators
         </Link>
 
-        <header className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
-          <p className="text-zinc-700 leading-7">
-            Angels in fantasy settings often represent divine power, judgment, and
-            celestial order. Whether they appear as messengers, guardians, or
-            radiant warriors, angelic characters benefit from names that feel
-            ancient, graceful, and otherworldly.
-          </p>
+        <p className="text-zinc-700 leading-7">
+          Use this angel name generator to create celestial, uplifting names for
+          angels, heralds, and holy NPCs in D&amp;D. Angelic names often sound
+          melodic and dignified—perfect for guardians, messengers, and beings of
+          radiant purpose. Generate a shortlist, then refine spellings or add a
+          title to match your world’s cosmology.
+        </p>
 
-          <p className="text-zinc-700 leading-7">
-            Looking for a darker counterpart? Try{" "}
-            <Link href="/demon" className="underline underline-offset-4">
-              demon names
-            </Link>{" "}
-            — or browse the full{" "}
-            <Link href="/en" className="underline underline-offset-4">
-              D&amp;D name generators
-            </Link>{" "}
-            collection.
-          </p>
-        </header>
+        <p className="text-zinc-700 leading-7">
+          Want darker opposites? Compare with{" "}
+          <Link href="/demon" className="underline underline-offset-4">
+            demon names
+          </Link>{" "}
+          or infernal-flavored{" "}
+          <Link href="/tiefling" className="underline underline-offset-4">
+            tiefling names
+          </Link>
+          .
+        </p>
+      </header>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-          <h2 className="text-lg font-semibold">Related generators</h2>
-          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
-            <li>
-              <Link href="/demon" className="underline underline-offset-4">
-                Demon Name Generator
-              </Link>{" "}
-              — sinister names for fiends and infernal villains.
-            </li>
-            <li>
-              <Link href="/tiefling" className="underline underline-offset-4">
-                Tiefling Name Generator
-              </Link>{" "}
-              — infernal-flavored names with a mysterious edge.
-            </li>
-            <li>
-              <Link href="/human" className="underline underline-offset-4">
-                Human Name Generator
-              </Link>{" "}
-              — flexible names for clerics, paladins, and NPCs.
-            </li>
-            <li>
-              <Link href="/eastern" className="underline underline-offset-4">
-                Eastern Fantasy Name Generator
-              </Link>{" "}
-              — wuxia/xianxia-style Chinese name inspiration.
-            </li>
-          </ul>
+      {/* Generator */}
+      <section className="space-y-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <NameGenerator
+            hideHeader
+            title={title}
+            description={description}
+            parts={{
+              first: ["Ael", "Ser", "Ely", "Aur", "Lumi", "Cael", "Ori", "Iri", "Thael", "Vae"],
+              second: ["riel", "aph", "anor", "iel", "vion", "thiel", "liel", "siel", "miel", "diel"],
+              lastA: ["Radiant", "Dawn", "Sun", "Light", "Silver", "Star", "Sky", "Grace", "Halo", "Golden"],
+              lastB: ["wing", "ward", "bearer", "song", "watcher", "spear", "crown", "shield", "voice", "keeper"],
+            }}
+            initialCount={10}
+            examples={[
+              "Aelriel Radiantwing",
+              "Elyanor Dawnwatcher",
+              "Auriel Lightbearer",
+              "Caelvion Starward",
+              "Lumisiel Gracekeeper",
+            ]}
+          />
+        </div>
+
+        <p className="text-xs text-zinc-500">
+          Tip: Celestial names feel more “mythic” when you add a title: “Herald of
+          Dawn”, “Warden of the Gate”, or “Lightbearer”.
+        </p>
+      </section>
+
+      {/* ✅ Generator → Guide internal links (闭环) */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">Make celestial names memorable</h2>
+        <p className="text-zinc-700 leading-7">
+          Celestial NPCs often appear as major story beats. These guides help you
+          create names that are easy to say, consistent with your world, and
+          instantly recognizable at the table.
+        </p>
+
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link
+            href="/guides/how-to-name-a-dnd-character"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            How to Name a D&amp;D Character (Guide)
+          </Link>
+          <Link
+            href="/guides/dnd-name-generator-guide"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            What Is a D&amp;D Name Generator? (Guide)
+          </Link>
         </div>
       </section>
 
-      <NameGenerator
-        hideHeader
-        title={title}
-        description={description}
-        parts={{
-          first: ["Aza", "Eli", "Ser", "Uri", "Rafa", "Cae", "Theo", "Lumi", "Aure", "Vera"],
-          second: ["el", "iel", "aph", "ion", "ara", "ora", "eth", "ira", "eus", "ina"],
-          lastA: ["Dawn", "Light", "Silver", "Star", "Halo", "Sun", "Radiant", "Sky", "Grace", "Heaven"],
-          lastB: ["keeper", "wing", "warden", "song", "bearer", "shield", "glory", "seer", "blade", "watcher"],
-        }}
-        initialCount={10}
-        examples={[
-          "Azaiel Dawnkeeper",
-          "Seraph Starwarden",
-          "Uriara Lightshield",
-          "Aureion Halowatcher",
-          "Veraeth Radiantwing",
-        ]}
+      {/* ✅ Related generators */}
+      <RelatedGenerators
+        hrefs={["/demon", "/tiefling", "/elf", "/dragonborn"]}
+        title="Try related name generators"
+        note="Tip: Give angels longer, ceremonial titles, but keep a short nickname for table play if they appear frequently."
       />
-    </>
+
+      {/* Visible FAQ */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">FAQ</h2>
+
+        <div className="space-y-3">
+          {faq.map((f) => (
+            <div
+              key={f.q}
+              className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"
+            >
+              <div className="font-medium">{f.q}</div>
+              <p className="text-zinc-700 leading-7 mt-1">{f.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <footer className="pt-2 text-sm text-zinc-600">
+        Explore more:{" "}
+        <Link className="underline" href="/demon">
+          Demon
+        </Link>{" "}
+        ·{" "}
+        <Link className="underline" href="/tiefling">
+          Tiefling
+        </Link>{" "}
+        ·{" "}
+        <Link className="underline" href="/elf">
+          Elf
+        </Link>
+      </footer>
+    </main>
   );
 }

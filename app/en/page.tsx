@@ -1,6 +1,6 @@
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
 import SmartSearch from "@/components/SmartSearch";
+import JsonLd from "@/components/JsonLd";
 import { TOOLS } from "@/lib/tools";
 import { getPageUrl } from "@/lib/site";
 import type { Metadata } from "next";
@@ -29,7 +29,7 @@ export default function EnHomePage() {
     },
     {
       q: "How do I choose the right name for my character?",
-      a: "Start with a generator that matches your character’s race or background, then generate several options. You can tweak spelling, add titles, or combine elements until the name fits your character’s story.",
+      a: "Start with a generator that matches your character’s ancestry or concept, then generate several options. Tweak spelling, add titles, or combine elements until the name fits your character’s story.",
     },
     {
       q: "Do different fantasy races have different naming styles?",
@@ -81,7 +81,7 @@ export default function EnHomePage() {
       <JsonLd data={jsonLd} />
 
       <main className="mx-auto max-w-5xl px-4">
-        {/* ✅ HERO: 标题 + 唯一搜索框（放最上面，防止用户点错） */}
+        {/* HERO */}
         <header className="mt-10 max-w-3xl space-y-4">
           <h1 className="text-4xl font-semibold tracking-tight">
             D&amp;D Name Generators
@@ -100,9 +100,25 @@ export default function EnHomePage() {
             <span className="font-medium text-zinc-700">tiefling</span>,{" "}
             <span className="font-medium text-zinc-700">dragonborn</span>
           </p>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Link
+              href="/"
+              className="text-sm text-blue-600 underline underline-offset-4"
+            >
+              Prefer the main homepage?
+            </Link>
+            <span className="text-sm text-zinc-400">·</span>
+            <Link
+              href="/guides"
+              className="text-sm text-blue-600 underline underline-offset-4"
+            >
+              Read naming guides
+            </Link>
+          </div>
         </header>
 
-        {/* ✅ Generator cards grid（原来的核心列表，继续保留） */}
+        {/* Generator cards */}
         <section className="mt-10">
           <h2 className="sr-only">All generators</h2>
 
@@ -122,7 +138,7 @@ export default function EnHomePage() {
                   )}
                 </div>
 
-                {/* tags（如果你 TOOLS 有 tags 就显示；没有也不会报错） */}
+                {/* tags（可选） */}
                 {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
                   <div className="mt-4 flex flex-wrap gap-2">
                     {(t as any).tags.slice(0, 6).map((tag: string) => (
@@ -140,30 +156,34 @@ export default function EnHomePage() {
           </div>
         </section>
 
-        {/* ✅ Visible SEO body */}
-        <section className="mt-14 space-y-8 max-w-3xl">
+        {/* SEO body */}
+        <section className="mt-14 space-y-10 max-w-3xl">
           <div className="space-y-3">
             <h2 className="text-2xl font-semibold">
               What is a D&amp;D Name Generator?
             </h2>
             <p className="text-zinc-700 leading-7">
               A D&amp;D name generator helps you create fantasy names that fit your character,
-              NPC, or campaign setting—fast. Whether you&apos;re rolling up a new hero,
+              NPC, or campaign setting—fast. Whether you’re rolling up a new hero,
               improvising an NPC, or building world lore, the goal is the same: names that
               sound right and stay consistent at the table.
             </p>
             <p className="text-zinc-700 leading-7">
               Start with popular options like{" "}
               <Link href="/elf" className="underline underline-offset-4">
-                elf name generator
+                elf names
               </Link>
               ,{" "}
               <Link href="/dwarf" className="underline underline-offset-4">
-                dwarf name generator
+                dwarf names
               </Link>
-              , or{" "}
+              ,{" "}
               <Link href="/tiefling" className="underline underline-offset-4">
-                tiefling name generator
+                tiefling names
+              </Link>
+              , and{" "}
+              <Link href="/dragonborn" className="underline underline-offset-4">
+                dragonborn names
               </Link>
               —then tweak spelling or syllables to make the result uniquely yours.
             </p>
@@ -188,7 +208,7 @@ export default function EnHomePage() {
 
           <div className="space-y-3">
             <h2 className="text-2xl font-semibold">Popular generators</h2>
-            <ul className="space-y-3">
+            <ul className="space-y-3 text-zinc-700 leading-7">
               <li>
                 <Link href="/elf" className="underline underline-offset-4 font-medium">
                   Elf Name Generator
@@ -213,18 +233,20 @@ export default function EnHomePage() {
                 </Link>{" "}
                 — powerful draconic names inspired by honor and lineage.
               </li>
-              <li>
-                <Link href="/eastern" className="underline underline-offset-4 font-medium">
-                  Eastern Fantasy Name Generator
-                </Link>{" "}
-                — wuxia/xianxia-style Chinese name inspiration.
-              </li>
             </ul>
+
+            <p className="text-sm text-zinc-500">
+              Want more? Browse the full list above, or head to{" "}
+              <Link href="/guides" className="underline underline-offset-4">
+                naming guides
+              </Link>{" "}
+              for conventions and tips.
+            </p>
           </div>
         </section>
 
-        {/* ✅ Visible FAQ (aligned with JSON-LD) */}
-        <section className="mt-16 space-y-6 max-w-3xl">
+        {/* Visible FAQ */}
+        <section className="mt-16 space-y-6 max-w-3xl pb-16">
           <h2 className="text-2xl font-semibold">
             Frequently Asked Questions about D&amp;D Name Generators
           </h2>

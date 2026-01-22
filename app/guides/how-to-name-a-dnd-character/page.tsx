@@ -1,7 +1,9 @@
 import Link from "next/link";
-import JsonLd from "@/components/JsonLd";
-import { getPageUrl } from "@/lib/site";
 import type { Metadata } from "next";
+
+import JsonLd from "@/components/JsonLd";
+import RelatedGenerators from "@/components/RelatedGenerators";
+import { buildGuidePageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "How to Name a D&D Character | 7 Proven Methods + Examples",
@@ -11,7 +13,9 @@ export const metadata: Metadata = {
 
 export default function HowToNameADndCharacterPage() {
   const path = "/guides/how-to-name-a-dnd-character";
-  const pageUrl = getPageUrl(path);
+  const title = "How to Name a D&D Character (7 Proven Methods)";
+  const description =
+    "Learn how to name a D&D character with 7 practical methods, race-inspired tips, and ready-to-use name formulas. Includes examples and FAQs.";
 
   const faq = [
     {
@@ -36,55 +40,37 @@ export default function HowToNameADndCharacterPage() {
     },
   ];
 
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: "How to Name a D&D Character | 7 Proven Methods + Examples",
-      url: pageUrl,
-      inLanguage: "en",
-      description:
-        "Learn how to name a D&D character with 7 practical methods, race-inspired tips, and ready-to-use name formulas.",
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: f.a,
-        },
-      })),
-    },
-  ];
+  const jsonLd = buildGuidePageJsonLd({
+    path,
+    title,
+    description,
+    faq,
+    language: "en",
+  });
 
   return (
-    <>
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
       <JsonLd data={jsonLd} />
 
-      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-10">
-        <Link
-          href="/en"
-          className="inline-block text-sm text-blue-600 underline underline-offset-4"
-        >
-          ← Back to all D&amp;D name generators
-        </Link>
+      <Link
+        href="/en"
+        className="inline-block text-sm text-blue-600 underline underline-offset-4"
+      >
+        ← Back to all D&amp;D name generators
+      </Link>
 
+      <article className="space-y-10">
         <header className="space-y-4">
-          <h1 className="text-3xl font-semibold tracking-tight">
-            How to Name a D&amp;D Character (7 Proven Methods)
-          </h1>
+          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
           <p className="text-zinc-700 leading-7">
-            The best D&amp;D character names are easy to say out loud, fit the character’s
-            ancestry or culture, and give your table a memorable “hook.” Below are seven
-            practical methods you can use in under 5 minutes—plus examples and ready-to-copy
-            name formulas.
+            The best D&amp;D character names are easy to say out loud, fit the
+            character’s ancestry or culture, and give your table a memorable
+            “hook.” Below are seven practical methods you can use in under 5
+            minutes—plus examples and ready-to-copy name formulas.
           </p>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
             <h2 className="text-lg font-semibold">Quick links</h2>
             <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
               <li>
@@ -120,8 +106,8 @@ export default function HowToNameADndCharacterPage() {
         <section className="space-y-3">
           <h2 className="text-2xl font-semibold">1) The “table test” (say it 3 times)</h2>
           <p className="text-zinc-700 leading-7">
-            If your name is hard to pronounce, it won’t get used. Say it three times quickly.
-            If you stumble, shorten it or create a nickname.
+            If your name is hard to pronounce, it won’t get used. Say it three times
+            quickly. If you stumble, shorten it or create a nickname.
           </p>
           <ul className="list-disc pl-5 space-y-2 text-zinc-700 leading-7">
             <li>Long: “Aeltheryn Vaeloriandor” → Short: “Ael” / “Vaelor”</li>
@@ -135,7 +121,7 @@ export default function HowToNameADndCharacterPage() {
             A simple formula makes names feel consistent with your world.
           </p>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
             <h3 className="font-medium">Copy-paste formulas</h3>
             <ul className="mt-2 list-disc pl-5 space-y-2 text-zinc-700 leading-7">
               <li>
@@ -164,7 +150,7 @@ export default function HowToNameADndCharacterPage() {
             You don’t need “official” lore—just consistent phonetics.
           </p>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
             <ul className="space-y-2 text-zinc-700">
               <li>
                 <span className="font-medium text-zinc-900">Elf (melodic):</span>{" "}
@@ -189,8 +175,8 @@ export default function HowToNameADndCharacterPage() {
         <section className="space-y-3">
           <h2 className="text-2xl font-semibold">4) Tie the name to backstory (one hook)</h2>
           <p className="text-zinc-700 leading-7">
-            Pick one detail: origin, oath, mentor, tragedy, or goal. Then add a word, title,
-            or surname that reflects it.
+            Pick one detail: origin, oath, mentor, tragedy, or goal. Then add a word,
+            title, or surname that reflects it.
           </p>
           <ul className="list-disc pl-5 space-y-2 text-zinc-700 leading-7">
             <li>Oath → “Elyra Oathbinder”</li>
@@ -237,6 +223,13 @@ export default function HowToNameADndCharacterPage() {
           </p>
         </section>
 
+        {/* ✅ Guide → Generator internal links (template) */}
+        <RelatedGenerators
+          hrefs={["/elf", "/dwarf", "/dragonborn", "/human"]}
+          title="Popular generators to start with"
+        />
+
+        {/* FAQ */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
           <ul className="space-y-3">
@@ -248,7 +241,18 @@ export default function HowToNameADndCharacterPage() {
             ))}
           </ul>
         </section>
-      </section>
-    </>
+
+        <footer className="pt-2 text-sm text-zinc-600">
+          Related guides:{" "}
+          <Link className="underline" href="/guides/dnd-name-generator-guide">
+            D&amp;D Name Generator Guide
+          </Link>{" "}
+          ·{" "}
+          <Link className="underline" href="/guides/elf-naming-conventions">
+            Elf Naming Conventions
+          </Link>
+        </footer>
+      </article>
+    </main>
   );
 }

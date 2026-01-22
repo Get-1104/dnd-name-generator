@@ -2,10 +2,12 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { SearchLogEvent } from "@/lib/searchAnalytics";
+import { getTopQueries, readSearchLogs } from "@/lib/searchAnalytics";
+import { TOOLS } from "@/lib/tools";
 import {
-  getTopQueries,
-  readSearchLogs,
-} from "@/lib/searchAnalytics";
+  buildExistingPathSet,
+  buildOpportunities,
+} from "@/lib/searchOpportunities";
 
 function formatTime(ts: number) {
   try {
@@ -65,11 +67,75 @@ export default function SearchLogsAdminPage() {
 
   function clearLogs() {
     if (!confirm("Clear all search logs? This cannot be undone.")) return;
-    // 用 readSearchLogs 同一个 KEY，所以这里直接 removeItem 也行；
-    // 但你要是愿意，我也可以给你在 lib 里加 clearSearchLogs()。
     window.localStorage.removeItem("dndng_search_logs_v1");
     setLogs([]);
   }
+
+  /**
+   * =========
+   * Opportunities (Missing Queries)
+   * =========
+   * existingPaths:
+   * - generators: from TOOLS
+   * - guides: collected from logs (safe fallback)
+   *
+   * 如果你后续有全量 guide 列表（比如 GUIDES 或 SEARCH_INDEX），
+   * 把 guidePaths 换成那个数组即可（会更准确）。
+   */
+  const opportunities = useMemo(() => {
+    try {
+      // ✅ 先把 select 事件抽出来（类型缩窄，后面用 href/title/itemType 不会报错）
+      const selected = logs.filter(
+        (e): e is Extract<SearchLogEvent, { type: "search_select" }> =>
+          e.type === "search_select"
+      );
+
+      // 已有 generators（最准确）
+      const generatorPaths = (TOOLS ?? [])
+        .map((t: any) => t?.href)
+        .filter(Boolean);
+
+      // 已有 guides：从 select 日志里收集（安全 fallback）
+      const guidePaths = selected
+        .filter((e) => e.itemType === "guide")
+        .map((e) => e.href)
+        .filter(Boolean);
+
+      const existingPaths = buildExistingPathSet({
+        generatorPaths,
+        guidePaths,
+      });
+
+      // 把 SearchLogEvent 映射成 buildOpportunities 需要的结构
+      const events = logs.map((e) => {
+        if (e.type === "search_open") {
+          return {
+            type: "search_open" as const,
+            ts: e.ts,
+            query: e.query,
+          };
+        }
+
+        // e.type === "search_select"
+        return {
+          type: "search_select" as const,
+          ts: e.ts,
+          query: e.canonicalQuery || e.query, // ✅ 用 canonical 归并过的 query 更稳定
+          targetLabel: e.title,
+          targetHref: e.href,
+          position: e.position,
+          method: e.method,
+        };
+      });
+
+      return buildOpportunities({
+        events,
+        existingPaths,
+      }).slice(0, 50);
+    } catch {
+      return [];
+    }
+  }, [logs]);
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
@@ -79,9 +145,7 @@ export default function SearchLogsAdminPage() {
         </h1>
         <p className="text-zinc-700 leading-7">
           Reads from{" "}
-          <code className="rounded bg-zinc-100 px-1">
-            dndng_search_logs_v1
-          </code>{" "}
+          <code className="rounded bg-zinc-100 px-1">dndng_search_logs_v1</code>{" "}
           in this browser&apos;s localStorage. This page is not linked anywhere
           and should be treated as a private debug view.
         </p>
@@ -111,9 +175,9 @@ export default function SearchLogsAdminPage() {
 
         <div className="text-sm text-zinc-600 pt-2">
           Events:{" "}
-          <span className="font-medium text-zinc-900">{logs.length}</span> · Opens:{" "}
-          <span className="font-medium text-zinc-900">{opens}</span> · Selects:{" "}
-          <span className="font-medium text-zinc-900">{selects}</span>
+          <span className="font-medium text-zinc-900">{logs.length}</span> ·
+          Opens: <span className="font-medium text-zinc-900">{opens}</span> ·
+          Selects: <span className="font-medium text-zinc-900">{selects}</span>
         </div>
 
         {error && (
@@ -127,13 +191,17 @@ export default function SearchLogsAdminPage() {
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Top queries (by selects)</h2>
         {topQueries.length === 0 ? (
-          <p className="text-zinc-600">No data yet. Use the search on /en first.</p>
+          <p className="text-zinc-600">
+            No data yet. Use the search on /en first.
+          </p>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
             <table className="w-full text-sm">
               <thead className="bg-zinc-50 text-zinc-600">
                 <tr>
-                  <th className="px-4 py-3 text-left font-medium">Canonical query</th>
+                  <th className="px-4 py-3 text-left font-medium">
+                    Canonical query
+                  </th>
                   <th className="px-4 py-3 text-left font-medium">Selects</th>
                 </tr>
               </thead>
@@ -153,14 +221,73 @@ export default function SearchLogsAdminPage() {
         </p>
       </section>
 
+      {/* Opportunities */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">
+          Opportunities (Missing queries)
+        </h2>
+
+        {opportunities.length === 0 ? (
+          <p className="text-zinc-600">
+            No opportunities found yet. Try searching for something your site
+            doesn&apos;t have (e.g. “half elf”, “gnome clan names”), select a
+            result, then Reload.
+          </p>
+        ) : (
+          <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
+            <table className="w-full text-sm">
+              <thead className="bg-zinc-50 text-zinc-600">
+                <tr>
+                  <th className="px-4 py-3 text-left font-medium">Query</th>
+                  <th className="px-4 py-3 text-left font-medium">Selects</th>
+                  <th className="px-4 py-3 text-left font-medium">Type</th>
+                  <th className="px-4 py-3 text-left font-medium">
+                    Suggested path
+                  </th>
+                  <th className="px-4 py-3 text-left font-medium">Confidence</th>
+                  <th className="px-4 py-3 text-left font-medium">Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {opportunities.map((x) => (
+                  <tr
+                    key={`${x.query}:${x.suggestedPath}`}
+                    className="border-t border-zinc-100"
+                  >
+                    <td className="px-4 py-3">
+                      <span className="font-medium text-zinc-900">{x.query}</span>
+                    </td>
+                    <td className="px-4 py-3">{x.count}</td>
+                    <td className="px-4 py-3">{x.suggestedType}</td>
+                    <td className="px-4 py-3">
+                      <code className="rounded bg-zinc-100 px-2 py-1 text-xs">
+                        {x.suggestedPath}
+                      </code>
+                    </td>
+                    <td className="px-4 py-3">{x.confidence}</td>
+                    <td className="px-4 py-3 text-zinc-700">{x.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="border-t border-zinc-100 px-4 py-3 text-xs text-zinc-500">
+              Showing up to 50 opportunities. Generators are checked against{" "}
+              <code>TOOLS</code>. Guides are currently checked from
+              previously-selected guide hrefs (logs).
+            </div>
+          </div>
+        )}
+      </section>
+
       {/* Recent events */}
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Recent events</h2>
 
         {logs.length === 0 ? (
           <p className="text-zinc-600">
-            No logs found in this browser. Go to <code>/en</code>, use the SmartSearch,
-            then come back and hit Reload.
+            No logs found in this browser. Go to <code>/en</code>, use the
+            SmartSearch, then come back and hit Reload.
           </p>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">

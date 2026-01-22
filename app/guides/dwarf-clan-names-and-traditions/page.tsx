@@ -2,6 +2,7 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
 import type { Metadata } from "next";
+import RelatedGenerators from "@/components/RelatedGenerators";
 
 export const metadata: Metadata = {
   title: "Dwarf Clan Names in D&D | Traditions, Surname Rules + Examples",
@@ -377,6 +378,8 @@ export default function DwarfClanNamesAndTraditionsPage() {
             ))}
           </ul>
         </section>
+        <RelatedGenerators hrefs={["/dwarf", "/human", "/orc"]} />
+
       </article>
     </>
   );

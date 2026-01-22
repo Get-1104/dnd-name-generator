@@ -1,6 +1,9 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { getPageUrl } from "@/lib/site";
+import type { Metadata } from "next";
+
+import JsonLd from "@/components/JsonLd";
+import RelatedGenerators from "@/components/RelatedGenerators";
+import { buildGuidePageJsonLd } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "What Is a D&D Name Generator? Complete Guide + Examples",
@@ -9,10 +12,10 @@ export const metadata: Metadata = {
 };
 
 export default function DndNameGeneratorGuidePage() {
+  const path = "/guides/dnd-name-generator-guide";
   const title = "What Is a D&D Name Generator? (Complete Guide)";
   const description =
     "A practical guide to D&D name generators: how they work, how to use them, and examples for popular fantasy races.";
-  const path = "/guides/dnd-name-generator-guide";
 
   const faq = [
     {
@@ -37,76 +40,34 @@ export default function DndNameGeneratorGuidePage() {
     },
   ];
 
-  const jsonLd = [
-    {
-      "@context": "https://schema.org",
-      "@type": "WebPage",
-      name: title,
-      description,
-      url: getPageUrl(path),
-      inLanguage: "en",
-      isPartOf: {
-        "@type": "WebSite",
-        name: "D&D Name Generators",
-        url: getPageUrl("/en"),
-      },
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        {
-          "@type": "ListItem",
-          position: 1,
-          name: "D&D Name Generators",
-          item: getPageUrl("/en"),
-        },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "Guides",
-          item: getPageUrl("/guides/dnd-name-generator-guide"),
-        },
-      ],
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: faq.map((f) => ({
-        "@type": "Question",
-        name: f.q,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: f.a,
-        },
-      })),
-    },
-  ];
+  const jsonLd = buildGuidePageJsonLd({
+    path,
+    title,
+    description,
+    faq,
+    language: "en",
+  });
 
   return (
-    <>
-      {/* ✅ JSON-LD（保持和工具页一样：直接 script 注入） */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+      <JsonLd data={jsonLd} />
 
-      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back（统一回 /en） */}
-        <Link
-          href="/en"
-          className="inline-block text-sm text-blue-600 underline underline-offset-4"
-        >
-          ← Back to all D&amp;D name generators
-        </Link>
+      <Link
+        href="/en"
+        className="inline-block text-sm text-blue-600 underline underline-offset-4"
+      >
+        ← Back to all D&amp;D name generators
+      </Link>
 
-        <header className="space-y-3">
+      <article className="space-y-10">
+        <header className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
           <p className="text-zinc-700 leading-7">
-            A D&amp;D name generator helps you create fantasy names that fit your character,
-            NPC, or campaign setting—fast. It&apos;s especially useful for DMs who need names on
-            the fly and for players who want a name that matches a race, culture, or vibe.
+            A D&amp;D name generator helps you create fantasy names that fit your
+            character, NPC, or campaign setting—fast. It&apos;s especially useful
+            for DMs who need names on the fly and for players who want a name
+            that matches a race, culture, or vibe.
           </p>
 
           <p className="text-zinc-700 leading-7">
@@ -118,45 +79,23 @@ export default function DndNameGeneratorGuidePage() {
           </p>
         </header>
 
-        {/* ✅ Related generators（风格对齐工具页的卡片组件） */}
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-          <h2 className="text-lg font-semibold">Related generators</h2>
-          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
-            <li>
-              <Link href="/elf" className="underline underline-offset-4">
-                Elf Name Generator
-              </Link>{" "}
-              — elegant, melodic names for fantasy elves.
-            </li>
-            <li>
-              <Link href="/dwarf" className="underline underline-offset-4">
-                Dwarf Name Generator
-              </Link>{" "}
-              — sturdy, clan-based names for dwarves.
-            </li>
-            <li>
-              <Link href="/goblin" className="underline underline-offset-4">
-                Goblin Name Generator
-              </Link>{" "}
-              — short, punchy names for goblins and raiders.
-            </li>
-            <li>
-              <Link href="/dragonborn" className="underline underline-offset-4">
-                Dragonborn Name Generator
-              </Link>{" "}
-              — strong draconic names inspired by honor and lineage.
-            </li>
-          </ul>
-        </div>
+        {/* ✅ Guide → Generator internal links (template) */}
+        <RelatedGenerators
+          hrefs={["/elf", "/dwarf", "/goblin", "/dragonborn"]}
+          title="Start with these generators"
+          note="Tip: Generate 10–20 names, save favorites, then tweak spelling or add a surname/title to match your setting."
+        />
 
-        {/* ✅ 内容块 1：How it works */}
+        {/* 内容块 1：How it works */}
         <section className="space-y-3">
-          <h2 className="text-2xl font-semibold">How does a D&amp;D name generator work?</h2>
+          <h2 className="text-2xl font-semibold">
+            How does a D&amp;D name generator work?
+          </h2>
           <p className="text-zinc-700 leading-7">
-            Most generators combine fantasy syllable patterns and style rules to create names
-            that “sound right” for a race or culture. The best results come from generating a
-            list, then refining one option by adjusting spelling, adding a surname, or mixing
-            two names together.
+            Most generators combine fantasy syllable patterns and style rules to
+            create names that “sound right” for a race or culture. The best
+            results come from generating a list, then refining one option by
+            adjusting spelling, adding a surname, or mixing two names together.
           </p>
           <ul className="list-disc pl-5 space-y-2 text-zinc-700 leading-7">
             <li>Generate multiple variations instantly</li>
@@ -165,48 +104,63 @@ export default function DndNameGeneratorGuidePage() {
           </ul>
         </section>
 
-        {/* ✅ 内容块 2：Examples */}
+        {/* 内容块 2：Examples */}
         <section className="space-y-3">
           <h2 className="text-2xl font-semibold">Examples of generated names</h2>
           <p className="text-zinc-700 leading-7">
             Use these as inspiration and tweak syllables to match your setting.
           </p>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
             <ul className="space-y-2 text-zinc-700">
               <li>
-                <span className="font-medium text-zinc-900">Elf:</span> Aerin Moonwhisper, Elywen
-                Starbloom
+                <span className="font-medium text-zinc-900">Elf:</span> Aerin
+                Moonwhisper, Elywen Starbloom
               </li>
               <li>
-                <span className="font-medium text-zinc-900">Dwarf:</span> Durgrim Stonehammer,
-                Borin Ironbeard
+                <span className="font-medium text-zinc-900">Dwarf:</span> Durgrim
+                Stonehammer, Borin Ironbeard
               </li>
               <li>
-                <span className="font-medium text-zinc-900">Goblin:</span> Snik Mudsnout, Krag
-                Rustpicker
+                <span className="font-medium text-zinc-900">Goblin:</span> Snik
+                Mudsnout, Krag Rustpicker
               </li>
               <li>
-                <span className="font-medium text-zinc-900">Dragonborn:</span> Arjhan Flameheart,
-                Rhogar Skywatcher
+                <span className="font-medium text-zinc-900">Dragonborn:</span>{" "}
+                Arjhan Flameheart, Rhogar Skywatcher
               </li>
             </ul>
           </div>
         </section>
 
-        {/* ✅ 可见 FAQ（AI 很喜欢引用这种结构） */}
+        {/* FAQ */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
           <ul className="space-y-3">
             {faq.map((f) => (
               <li key={f.q}>
                 <h3 className="font-medium">{f.q}</h3>
-                <p className="text-zinc-700">{f.a}</p>
+                <p className="text-zinc-700 leading-7">{f.a}</p>
               </li>
             ))}
           </ul>
         </section>
-      </section>
-    </>
+
+        <footer className="pt-2 text-sm text-zinc-600">
+          Explore more:{" "}
+          <Link className="underline" href="/guides/how-to-name-a-dnd-character">
+            How to Name a D&amp;D Character
+          </Link>{" "}
+          ·{" "}
+          <Link className="underline" href="/guides/elf-naming-conventions">
+            Elf Naming Conventions
+          </Link>{" "}
+          ·{" "}
+          <Link className="underline" href="/guides/dwarf-clan-names-and-traditions">
+            Dwarf Clan Names &amp; Traditions
+          </Link>
+        </footer>
+      </article>
+    </main>
   );
 }

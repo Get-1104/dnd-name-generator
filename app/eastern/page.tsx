@@ -1,18 +1,21 @@
-import Link from "next/link";
-import NameGenerator from "@/components/NameGenerator";
-import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import type { Metadata } from "next";
+import Link from "next/link";
+import JsonLd from "@/components/JsonLd";
+import { buildGeneratorPageJsonLd } from "@/lib/seo";
+
+// ✅ 用相对路径导入，避免路径别名在某些环境下出问题
+import EasternGeneratorClient from "../../components/EasternGeneratorClient";
 
 export const metadata: Metadata = {
-  title: "东方国风名字生成器 | 仙侠武侠风格中文名字",
+  title: "东方国风名字生成器 | 仙侠/武侠/Xianxia/Wuxia Name Generator",
   description:
-    "生成仙侠、武侠、国风风格的中文名字灵感，适用于角色设定、小说创作与世界观构建。",
+    "生成仙侠/武侠/古风风格的中文名字灵感：支持2字/3字、门派辈分字、炫酷称号。也适配英文搜索：xianxia / wuxia name generator。",
 };
 
 export default function EasternPage() {
   const title = "东方国风名字生成器";
   const description =
-    "生成仙侠、武侠、古风风格的中文名字灵感，可用于 D&D 角色、NPC 或小说人物命名。";
+    "生成仙侠/武侠/古风风格的中文名字灵感（支持2字/3字、门派辈分字、炫酷称号）。";
   const path = "/eastern";
 
   const jsonLd = buildGeneratorPageJsonLd({
@@ -22,123 +25,142 @@ export default function EasternPage() {
     language: "zh-CN",
     faq: [
       {
-        q: "这个东方国风名字生成器是什么？",
-        a: "这是一个用于生成仙侠、武侠、古风风格名字的工具，可用于 D&D 角色、NPC、小说角色或游戏角色命名灵感。",
+        q: "这个东方国风名字生成器能生成什么风格？",
+        a: "可以生成仙侠、武侠、国风、古风等中文名字灵感，并支持2字/3字名字、门派辈分字与炫酷称号组合。",
       },
       {
-        q: "怎么使用这个名字生成器？",
-        a: "点击“生成”即可得到一组名字；点击“复制”可以把整组名字复制到剪贴板，方便粘贴到角色卡或笔记中。",
+        q: "2字/3字名字是什么意思？",
+        a: "指完整姓名的总字数（常见为2字或3字）。你可以切换生成规则，快速得到更贴合设定的名字。",
       },
       {
-        q: "名字会带空格吗？可以生成纯中文姓名吗？",
-        a: "本页面用于中文姓名风格，名字中不会包含空格，适合直接作为中文角色姓名使用。",
+        q: "什么是“门派辈分字”？",
+        a: "辈分字是宗门传承中用于区分辈分的一种命名方式。打开后会把辈分字融入名字，让角色更有门派/修真味道。",
       },
       {
-        q: "这些名字是固定的吗？能多生成几次吗？",
-        a: "名字是随机组合生成的，你可以无限次点击“生成”获取不同风格的名字，并自行微调字词以贴合世界观。",
+        q: "称号有什么用？",
+        a: "称号（封号/名号）可以增强角色气质与辨识度，例如“青冥剑主”“太虚真人”等，适合主角、长老、反派或江湖高手。",
+      },
+      {
+        q: "xianxia / wuxia name generator 是什么？",
+        a: "它们是英文语境中对“仙侠/武侠名字生成器”的常见搜索词。本页在内容中也包含这些关键词，方便英文用户找到。",
       },
     ],
   });
 
   return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+      <JsonLd data={jsonLd} />
 
-      {/* ✅ 可见 Intro + 内链（可收录） */}
-      <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        {/* ✅ Back：统一回 /en */}
-        <Link
-          href="/en"
-          className="inline-block text-sm text-blue-600 underline underline-offset-4"
-        >
-          ← Back to all D&amp;D name generators
-        </Link>
+      {/* Intro */}
+      <header className="space-y-4">
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <p className="text-zinc-700 leading-7 max-w-3xl">{description}</p>
 
-        <header className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <div className="flex flex-wrap gap-2 text-sm">
+          <Link
+            href="/"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            返回首页
+          </Link>
 
-          <p className="text-zinc-700 leading-7">
-            这个东方国风名字生成器用于生成仙侠、武侠、古风世界观下的中文姓名。名字通常由姓氏（含复姓）
-            与富有意境的名字组合而成，适合用于 D&amp;D 角色、NPC、门派人物，或小说与游戏角色命名灵感。
-          </p>
+          <Link
+            href="/en"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            If you prefer English, go to /en
+          </Link>
 
-          <p className="text-zinc-700 leading-7">
-            想要更多风格？你可以浏览完整的{" "}
-            <Link href="/en" className="underline underline-offset-4">
-              D&amp;D Name Generators（English）
-            </Link>{" "}
-            列表，或对比其他种族的命名风格，例如{" "}
-            <Link href="/elf" className="underline underline-offset-4">
-              Elf Name Generator
-            </Link>{" "}
-            与{" "}
-            <Link href="/dwarf" className="underline underline-offset-4">
-              Dwarf Name Generator
-            </Link>
-            。
-          </p>
-        </header>
+          <Link
+            href="/elf"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            Elf Name Generator
+          </Link>
 
-        <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
-          <h2 className="text-lg font-semibold">Related generators</h2>
-          <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
-            <li>
-              <Link href="/elf" className="underline underline-offset-4">
-                Elf Name Generator
-              </Link>{" "}
-              — 西方奇幻风格的优雅精灵英文名。
-            </li>
-            <li>
-              <Link href="/dwarf" className="underline underline-offset-4">
-                Dwarf Name Generator
-              </Link>{" "}
-              — 偏重氏族与传统感的矮人英文名。
-            </li>
-            <li>
-              <Link href="/tiefling" className="underline underline-offset-4">
-                Tiefling Name Generator
-              </Link>{" "}
-              — 更黑暗、异界感更强的西方奇幻命名风格。
-            </li>
-          </ul>
+          <Link
+            href="/dwarf"
+            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
+          >
+            Dwarf Name Generator
+          </Link>
+        </div>
+      </header>
+
+      {/* Generator */}
+      <section className="space-y-4">
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <EasternGeneratorClient />
+        </div>
+
+        <p className="text-xs text-zinc-500">
+          小提示：想更“门派味”就开辈分字；想更“主角感/大佬感”就开称号，并试试不同的称号格式。
+        </p>
+      </section>
+
+      {/* Tips */}
+      <section className="space-y-3 max-w-3xl">
+        <h2 className="text-xl font-semibold">命名小技巧（更像仙侠/武侠）</h2>
+        <ul className="list-disc pl-5 text-zinc-700 space-y-2 leading-7">
+          <li>偏“仙门正道”：多用清、玄、云、霄、澜、月等字；称号可选“真人/真君/剑尊”。</li>
+          <li>偏“魔道反派”：多用幽、冥、影、烬、煞等字；称号可选“魔君/尊上”。</li>
+          <li>想要更“宗门体系”：固定一个辈分字，给同门批量生成（会非常统一）。</li>
+        </ul>
+      </section>
+
+      {/* Keyword block (natural) */}
+      <section className="space-y-3 max-w-3xl">
+        <h2 className="text-xl font-semibold">Xianxia / Wuxia name generator (English keywords)</h2>
+        <p className="text-zinc-700 leading-7">
+          This tool also matches common English searches such as{" "}
+          <strong>xianxia name generator</strong>,{" "}
+          <strong>wuxia name generator</strong>, and{" "}
+          <strong>chinese fantasy name generator</strong>.
+          If you browse the site in English, you can still find this generator from{" "}
+          <Link className="underline" href="/en">
+            /en
+          </Link>
+          .
+        </p>
+      </section>
+
+      {/* Visible FAQ */}
+      <section className="space-y-3">
+        <h2 className="text-xl font-semibold">FAQ</h2>
+
+        <div className="space-y-3">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+            <div className="font-medium">什么是门派辈分字？为什么要用？</div>
+            <p className="text-zinc-700 leading-7 mt-1">
+              辈分字能让同门角色名字更统一、也更有“宗门传承感”。固定辈分字后批量生成，特别适合写宗门人物谱或跑团 NPC 名单。
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+            <div className="font-medium">称号应该放前面还是后面？</div>
+            <p className="text-zinc-700 leading-7 mt-1">
+              看你想要的“台词感”。“【青冥剑主】李玄尘”更像旁白；“青冥剑主·李玄尘”更像江湖名号；“李玄尘·青冥剑主”更像落款。
+            </p>
+          </div>
         </div>
       </section>
 
-      {/* ✅ 生成器部分：隐藏 header，避免重复 H1/Back */}
-      <NameGenerator
-        hideHeader
-        title={title}
-        description={description}
-        generateLabel="生成"
-        copyLabel="复制"
-        separator="" // ✅ 中文姓名不加空格
-        parts={{
-          first: [
-            "赵",
-            "钱",
-            "孙",
-            "李",
-            "周",
-            "吴",
-            "郑",
-            "王",
-            "欧阳",
-            "司徒",
-            "诸葛",
-            "上官",
-            "南宫",
-            "慕容",
-          ],
-          second: [""],
-          lastA: ["清", "寒", "星", "若", "云", "明", "青", "昭", "玄", "玉", "夜", "霜"],
-          lastB: ["风", "月", "尘", "霜", "雪", "岚", "衡", "远", "秋", "行", "川", "影"],
-        }}
-        initialCount={10}
-        examples={["李清云", "欧阳雪霜", "诸葛星尘", "南宫秋衡", "慕容青岚"]}
-      />
-    </>
+      <footer className="pt-2">
+        <div className="text-sm text-zinc-600">
+          Explore more:{" "}
+          <Link className="underline" href="/en">
+            /en
+          </Link>{" "}
+          ·{" "}
+          <Link className="underline" href="/elf">
+            Elf
+          </Link>{" "}
+          ·{" "}
+          <Link className="underline" href="/human">
+            Human
+          </Link>
+        </div>
+      </footer>
+    </main>
   );
 }

@@ -19,6 +19,13 @@ export const TOOLS: ToolLink[] = [
     tags: ["dnd", "elf", "fantasy"],
   },
   {
+    href: "/half-elf",
+    title: "Half-Elf Name Generator",
+    description:
+      "Generate memorable half-elf names for D&D characters and NPCs by blending elven elegance with human simplicity.",
+    tags: ["dnd", "half elf", "half-elf", "elf", "human", "fantasy"],
+  },
+  {
     href: "/tiefling",
     title: "Tiefling Name Generator",
     description: "Generate infernal tiefling names for D&D characters and NPCs.",
@@ -31,12 +38,19 @@ export const TOOLS: ToolLink[] = [
     tags: ["dnd", "dragonborn", "fantasy"],
   },
 
-  // ✅ New pages (fast expansion, still human-looking)
+  // ✅ New pages
   {
     href: "/orc",
     title: "Orc Name Generator",
     description: "Generate fierce orc names for D&D characters and NPCs.",
     tags: ["dnd", "orc", "fantasy"],
+  },
+  {
+    href: "/half-orc",
+    title: "Half-Orc Name Generator",
+    description:
+      "Generate tough half-orc names for D&D characters and NPCs. Mix human readability with orcish grit.",
+    tags: ["dnd", "half orc", "half-orc", "orc", "human", "fantasy"],
   },
   {
     href: "/goblin",
@@ -65,20 +79,43 @@ export const TOOLS: ToolLink[] = [
   {
     href: "/angel",
     title: "Angel Name Generator",
-    description: "Generate celestial angel names for D&D campaigns and fantasy worlds.",
+    description:
+      "Generate celestial angel names for D&D campaigns and fantasy worlds.",
     tags: ["dnd", "angel", "celestial", "fantasy"],
   },
   {
     href: "/demon",
     title: "Demon Name Generator",
-    description: "Generate sinister demon names for D&D villains and dark fantasy settings.",
+    description:
+      "Generate sinister demon names for D&D villains and dark fantasy settings.",
     tags: ["dnd", "demon", "fiend", "fantasy"],
   },
 
   {
     href: "/eastern",
     title: "东方国风名字生成器",
-    description: "生成仙侠/武侠/古风风格的中文名字灵感（拼音/可改汉字）。",
-    tags: ["东方", "国风", "仙侠", "武侠", "xianxia", "wuxia"],
+    // ✅ SEO 强化：描述里放英文关键词（OK）
+    description:
+      "生成仙侠/武侠/古风风格的中文名字灵感。Also supports xianxia / wuxia / chinese fantasy name generator searches.",
+    // ✅ tags 只放“主题关键词”，别放过泛的意图词（避免 /en 看起来故意指向它）
+    tags: [
+      "东方",
+      "国风",
+      "仙侠",
+      "武侠",
+      "xianxia",
+      "wuxia",
+      "eastern fantasy",
+      "chinese fantasy",
+    ],
+  },
+
+  // Guides hub（保留在 TOOLS 里没问题；后面 /en 我们会单独展示/标注）
+  {
+    href: "/guides",
+    title: "D&D Naming Guides",
+    description:
+      "Practical guides on naming conventions and character naming in D&D.",
+    tags: ["guides", "guide", "naming", "dnd", "fantasy"],
   },
 ];

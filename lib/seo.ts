@@ -17,28 +17,117 @@ export type FaqItem = {
   a: string;
 };
 
-export type GeneratorPageJsonLdInput = {
-  path: string; // e.g. "/elf"
+type BaseJsonLdInput = {
+  path: string; // e.g. "/elf" or "/guides/xxx"
   title: string;
   description: string;
   language?: string; // default SITE.language
   faq?: FaqItem[];
+
+  /**
+   * ✅ 可选：Breadcrumb 的“Home”指向哪里
+   * - 英文内容页建议传 "/en"
+   * - 默认 "/"
+   */
+  homePath?: string;
+
+  /**
+   * ✅ 可选：Guide hub 路径（breadcrumb 第二层）
+   * 默认 "/guides"
+   */
+  guideHubPath?: string;
+
+  /**
+   * ✅ 可选：Breadcrumb 的 Home 展示名
+   * 默认 "Home"
+   */
+  homeName?: string;
+
+  /**
+   * ✅ 可选：Guide hub 展示名
+   * 默认 "Guides"
+   */
+  guideHubName?: string;
 };
 
+export type GeneratorPageJsonLdInput = BaseJsonLdInput;
+
+export type GuidePageJsonLdInput = BaseJsonLdInput;
+
 /* ----------------------------------------
- * Builder
+ * Shared builders
  * ------------------------------------- */
 
-export function buildGeneratorPageJsonLd(
-  input: GeneratorPageJsonLdInput
-) {
-  const { path, title, description, faq = [] } = input;
+function buildBreadcrumb(args: {
+  path: string;
+  title: string;
+  homePath: string;
+  homeName: string;
+  // 可选：中间层（Guide Hub）
+  middle?: { name: string; path: string };
+}) {
+  const { path, title, homePath, homeName, middle } = args;
 
-  const inLanguage = input.language || SITE.language;
   const url = getPageUrl(path);
-  const base = getBaseUrl();
 
-  /* ---------- WebPage ---------- */
+  const items: any[] = [
+    {
+      "@type": "ListItem",
+      position: 1,
+      name: homeName,
+      item: getPageUrl(homePath),
+    },
+  ];
+
+  if (middle) {
+    items.push({
+      "@type": "ListItem",
+      position: 2,
+      name: middle.name,
+      item: getPageUrl(middle.path),
+    });
+
+    items.push({
+      "@type": "ListItem",
+      position: 3,
+      name: title,
+      item: url,
+    });
+  } else {
+    items.push({
+      "@type": "ListItem",
+      position: 2,
+      name: title,
+      item: url,
+    });
+  }
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "@id": getBreadcrumbId(path),
+    itemListElement: items,
+  };
+}
+
+/* ----------------------------------------
+ * Generator JSON-LD
+ * ------------------------------------- */
+
+export function buildGeneratorPageJsonLd(input: GeneratorPageJsonLdInput) {
+  const {
+    path,
+    title,
+    description,
+    faq = [],
+    language,
+    homePath = "/",
+    homeName = "Home",
+  } = input;
+
+  const inLanguage = language || SITE.language;
+  const url = getPageUrl(path);
+
   const webPage = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -47,39 +136,18 @@ export function buildGeneratorPageJsonLd(
     url,
     description,
     inLanguage,
-    isPartOf: {
-      "@id": getWebSiteId(),
-    },
-    breadcrumb: {
-      "@id": getBreadcrumbId(path),
-    },
-    mainEntity: {
-      "@id": `${url}#app`,
-    },
+    isPartOf: { "@id": getWebSiteId() },
+    breadcrumb: { "@id": getBreadcrumbId(path) },
+    mainEntity: { "@id": `${url}#app` },
   };
 
-  /* ---------- BreadcrumbList ---------- */
-  const breadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "@id": getBreadcrumbId(path),
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: base,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: title,
-        item: url,
-      },
-    ],
-  };
+  const breadcrumb = buildBreadcrumb({
+    path,
+    title,
+    homePath,
+    homeName,
+  });
 
-  /* ---------- WebApplication ---------- */
   const webApp = {
     "@context": "https://schema.org",
     "@type": "WebApplication",
@@ -98,7 +166,79 @@ export function buildGeneratorPageJsonLd(
 
   const jsonLd: any[] = [webPage, breadcrumb, webApp];
 
-  /* ---------- FAQPage (optional) ---------- */
+  if (faq.length > 0) {
+    jsonLd.push({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faq.map((item) => ({
+        "@type": "Question",
+        name: item.q,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.a,
+        },
+      })),
+    });
+  }
+
+  return jsonLd;
+}
+
+/* ----------------------------------------
+ * Guide JSON-LD
+ * ------------------------------------- */
+
+export function buildGuidePageJsonLd(input: GuidePageJsonLdInput) {
+  const {
+    path,
+    title,
+    description,
+    faq = [],
+    language,
+    homePath = "/",
+    homeName = "Home",
+    guideHubPath = "/guides",
+    guideHubName = "Guides",
+  } = input;
+
+  const inLanguage = language || SITE.language;
+  const url = getPageUrl(path);
+
+  const webPage = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "@id": getWebPageId(path),
+    name: title,
+    url,
+    description,
+    inLanguage,
+    isPartOf: { "@id": getWebSiteId() },
+    breadcrumb: { "@id": getBreadcrumbId(path) },
+    mainEntity: { "@id": `${url}#article` },
+  };
+
+  const breadcrumb = buildBreadcrumb({
+    path,
+    title,
+    homePath,
+    homeName,
+    middle: { name: guideHubName, path: guideHubPath },
+  });
+
+  const article = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "@id": `${url}#article`,
+    headline: title,
+    description,
+    url,
+    inLanguage,
+    isPartOf: { "@id": getWebSiteId() },
+    mainEntityOfPage: { "@id": getWebPageId(path) },
+  };
+
+  const jsonLd: any[] = [webPage, breadcrumb, article];
+
   if (faq.length > 0) {
     jsonLd.push({
       "@context": "https://schema.org",

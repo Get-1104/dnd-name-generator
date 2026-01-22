@@ -46,16 +46,25 @@ export function canonicalizeQuery(input: string): string {
   if (!q) return "";
 
   // 整句别名（用户可能直接搜这些）
-  const aliasWhole: Record<string, string> = {
-    "d&d": "dnd",
-    "d and d": "dnd",
-    "dungeons and dragons": "dnd",
-    "dungeons dragons": "dnd",
-    "xianxia": "eastern",
-    "wuxia": "eastern",
-    "chinese": "eastern",
-    "asian fantasy": "eastern",
-  };
+ const aliasWhole: Record<string, string> = {
+  "d&d": "dnd",
+  "d and d": "dnd",
+  "dungeons and dragons": "dnd",
+  "dungeons dragons": "dnd",
+
+  // 半种族合并
+  "half orc": "half-orc",
+  "half-orc": "half-orc",
+  "half elf": "half-elf",
+  "half-elf": "half-elf",
+
+  // 东方向
+  "xianxia": "eastern",
+  "wuxia": "eastern",
+  "chinese": "eastern",
+  "asian fantasy": "eastern",
+};
+
   if (aliasWhole[q]) q = aliasWhole[q];
 
   // token 级别别名

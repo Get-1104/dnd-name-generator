@@ -1,81 +1,72 @@
-# D&D Name Generator
+# 🐉 D&D Name Generators
 
-A fast, SEO-focused **Dungeons & Dragons name generator website** built with **Next.js (App Router)**.
+A SEO-focused **Dungeons & Dragons Name Generator website** built with **Next.js App Router**.  
+Generate fantasy names for D&D characters, NPCs, and campaigns — including elves, dwarves, dragonborn, and more.
 
-This project provides free fantasy name generators and AI-friendly guides for **D&D players**, **Dungeon Masters**, and **fantasy writers**.
-
-🌐 **Live site**  
-https://www.dnd-name-generator.net
+🌐 Live site: https://www.dnd-name-generator.net
 
 ---
 
 ## ✨ Features
 
-- 🎲 Multiple D&D name generators  
-  Elf, Dwarf, Goblin, Dragonborn, Angel, Demon, Tiefling, Human, and more
-
-- 📚 Long-form guides designed for AI & search engines  
-  Clear structure, FAQs, examples, and internal links
-
-- 🧠 AI-friendly SEO architecture  
-  - Metadata (title, description)
-  - Structured data (JSON-LD)
-  - Clean URLs
-  - Internal linking
-
-- ⚡ Fast indexing
-  - Dynamic sitemap.xml
-  - robots.txt
-  - Bing IndexNow
-  - Google Search Console compatible
-
-- 📊 Analytics
-  - Google Analytics 4 (GA4)
-
----
-
-## 📚 Guides (High-value content)
-
-- **What Is a D&D Name Generator? (Complete Guide)**  
-  https://www.dnd-name-generator.net/guides/dnd-name-generator-guide
-
-- **How to Name a D&D Character**  
-  https://www.dnd-name-generator.net/guides/how-to-name-a-dnd-character
-
-These pages are written to be:
-- Easy for humans to read
-- Easy for AI systems (ChatGPT / Bing / Copilot) to understand and cite
-
----
-
-## 🗺 SEO & Indexing
-
-- **Sitemap**  
-  https://www.dnd-name-generator.net/sitemap.xml
-
-- **Robots file**  
-  https://www.dnd-name-generator.net/robots.txt
-
-- **IndexNow**
-  - Key file hosted at site root
-  - Integrated with Bing Webmaster Tools
-  - Enables near real-time indexing
+- 🎲 **Multiple D&D Name Generators**
+  - Elf, Dwarf, Dragonborn, Tiefling, Orc, Goblin, Human, Halfling, Gnome, Angel, Demon…
+- 🧙 **Eastern Fantasy Generator**
+  - Xianxia / Wuxia / Chinese fantasy names
+  - 2-character / 3-character names
+  - Sect generation characters (门派辈分字)
+  - Epic titles / epithets (称号)
+- 🔍 **Smart Search**
+  - Keyword + tag matching
+  - Supports English & Chinese search (e.g. *elf*, *xianxia*, *wuxia*)
+- 📈 **SEO-first Architecture**
+  - One page = one keyword intent
+  - JSON-LD (WebSite / WebPage / WebApplication / FAQ / Article)
+  - Auto sitemap & robots.txt
+- 🧱 **Scalable Structure**
+  - Generators and guides are easy to add
+  - Single source of truth (SSOT) for tools & SEO
 
 ---
 
 ## 🛠 Tech Stack
 
-- Next.js 14 (App Router)
-- TypeScript
-- React
-- Tailwind CSS
-- Google Analytics 4
-- Bing Webmaster Tools / IndexNow
+- **Framework:** Next.js (App Router)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **SEO:** JSON-LD (Schema.org)
+- **Analytics:** Google Analytics 4
+- **Deployment:** Vercel (recommended)
 
 ---
 
-## 🚀 Local Development
+## 📂 Project Structure
 
-```bash
-npm install
-npm run dev
+```txt
+app/
+├─ page.tsx                 # Main homepage (search entry)
+├─ en/
+│  └─ page.tsx              # English SEO hub
+├─ elf/                     # /elf generator page
+├─ dwarf/                   # /dwarf generator page
+├─ eastern/                 # /eastern (xianxia / wuxia)
+├─ guides/                  # SEO content pages
+├─ sitemap.ts               # Auto-generated sitemap
+├─ robots.ts                # robots.txt
+│
+components/
+├─ NameGenerator.tsx        # Generic name generator component
+├─ EasternGeneratorClient.tsx
+├─ HomeSearch.tsx
+├─ SmartSearch.tsx
+├─ JsonLd.tsx
+│
+lib/
+├─ site.ts                  # Site-level SEO config (SSOT)
+├─ seo.ts                   # JSON-LD builders
+├─ tools.ts                 # Generator registry (SSOT)
+├─ searchIndex.ts           # Search index & analytics
+├─ searchOpportunities.ts   # Search gap analysis
+│
+public/
+└─ favicon.ico
