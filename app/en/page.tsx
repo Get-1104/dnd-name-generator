@@ -2,7 +2,7 @@ import Link from "next/link";
 import SmartSearch from "@/components/SmartSearch";
 import JsonLd from "@/components/JsonLd";
 import { TOOLS } from "@/lib/tools";
-import { getPageUrl } from "@/lib/site";
+import { getPageUrl, SITE } from "@/lib/site";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
@@ -40,11 +40,16 @@ export default function EnHomePage() {
   const jsonLd = [
     {
       "@context": "https://schema.org",
-      "@type": "WebSite",
+      "@type": "CollectionPage",
       name: "D&D Name Generators",
       url: enUrl,
       description: "Pick a generator, generate names, and copy your favorites.",
       inLanguage: "en",
+      isPartOf: {
+        "@type": "WebSite",
+        name: SITE.name,
+        url: SITE.url,
+      },
       potentialAction: {
         "@type": "SearchAction",
         target: `${enUrl}?q={search_term_string}`,
