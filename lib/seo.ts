@@ -1,12 +1,20 @@
 // lib/seo.ts
 import {
   SITE,
-  getBaseUrl,
   getPageUrl,
   getWebSiteId,
   getWebPageId,
   getBreadcrumbId,
 } from "@/lib/site";
+
+type JsonLdNode = Record<string, unknown>;
+
+type BreadcrumbListItem = {
+  "@type": "ListItem";
+  position: number;
+  name: string;
+  item: string;
+};
 
 /* ----------------------------------------
  * Types
@@ -70,7 +78,7 @@ function buildBreadcrumb(args: {
 
   const url = getPageUrl(path);
 
-  const items: any[] = [
+  const items: BreadcrumbListItem[] = [
     {
       "@type": "ListItem",
       position: 1,
@@ -164,7 +172,7 @@ export function buildGeneratorPageJsonLd(input: GeneratorPageJsonLdInput) {
     },
   };
 
-  const jsonLd: any[] = [webPage, breadcrumb, webApp];
+  const jsonLd: JsonLdNode[] = [webPage, breadcrumb, webApp];
 
   if (faq.length > 0) {
     jsonLd.push({
@@ -237,7 +245,7 @@ export function buildGuidePageJsonLd(input: GuidePageJsonLdInput) {
     mainEntityOfPage: { "@id": getWebPageId(path) },
   };
 
-  const jsonLd: any[] = [webPage, breadcrumb, article];
+  const jsonLd: JsonLdNode[] = [webPage, breadcrumb, article];
 
   if (faq.length > 0) {
     jsonLd.push({

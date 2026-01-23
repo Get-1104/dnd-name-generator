@@ -89,10 +89,8 @@ export default function SmartSearch() {
       .map((x) => x.item);
   }, [value]);
 
-  useEffect(() => {
-    if (!open) return;
-    setActive(0);
-  }, [open, value]);
+  // Reset active item when the box opens or the query changes.
+  // Do it in event handlers (instead of an effect) to satisfy strict hook lint rules.
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
@@ -172,9 +170,11 @@ export default function SmartSearch() {
           onChange={(e) => {
             setValue(e.target.value);
             setOpen(true);
+            setActive(0);
           }}
           onFocus={() => {
             setOpen(true);
+            setActive(0);
             logOpen(value);
           }}
           onKeyDown={onKeyDown}
@@ -190,6 +190,7 @@ export default function SmartSearch() {
             onClick={() => {
               setValue("");
               setOpen(true);
+              setActive(0);
               inputRef.current?.focus();
               logOpen("");
             }}

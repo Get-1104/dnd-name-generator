@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import type { SearchLogEvent } from "@/lib/searchAnalytics";
 import { getTopQueries, readSearchLogs } from "@/lib/searchAnalytics";
 import { TOOLS } from "@/lib/tools";
@@ -18,23 +18,46 @@ function formatTime(ts: number) {
 }
 
 export default function SearchLogsAdminPage() {
-  const [logs, setLogs] = useState<SearchLogEvent[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  // Read initial logs synchronously to avoid setting state inside an effect.
+  const initial = (() => {
+    try {
+      const parsed = readSearchLogs();
+      return {
+        logs: Array.isArray(parsed) ? (parsed as SearchLogEvent[]) : [],
+        error: null as string | null,
+      };
+    } catch (e: unknown) {
+      const msg =
+        e instanceof Error
+          ? e.message
+          : typeof e === "string"
+            ? e
+            : "Failed to read local logs";
+      return { logs: [] as SearchLogEvent[], error: msg };
+    }
+  })();
+
+  const [logs, setLogs] = useState<SearchLogEvent[]>(initial.logs);
+  const [error, setError] = useState<string | null>(initial.error);
 
   function reload() {
     setError(null);
     try {
       const parsed = readSearchLogs();
       setLogs(Array.isArray(parsed) ? parsed : []);
-    } catch (e: any) {
-      setError(e?.message ?? "Failed to read local logs");
+    } catch (e: unknown) {
+      const msg =
+        e instanceof Error
+          ? e.message
+          : typeof e === "string"
+            ? e
+            : "Failed to read local logs";
+      setError(msg);
       setLogs([]);
     }
   }
 
-  useEffect(() => {
-    reload();
-  }, []);
+  // No auto-reload effect; this page reads initial state once and provides a manual reload button.
 
   const topQueries = useMemo(() => {
     try {
@@ -42,7 +65,7 @@ export default function SearchLogsAdminPage() {
     } catch {
       return [];
     }
-  }, [logs]);
+  }, []);
 
   const selects = useMemo(
     () => logs.filter((x) => x.type === "search_select").length,
@@ -91,9 +114,7 @@ export default function SearchLogsAdminPage() {
       );
 
       // 已有 generators（最准确）
-      const generatorPaths = (TOOLS ?? [])
-        .map((t: any) => t?.href)
-        .filter(Boolean);
+      const generatorPaths = (TOOLS ?? []).map((t) => t.href);
 
       // 已有 guides：从 select 日志里收集（安全 fallback）
       const guidePaths = selected

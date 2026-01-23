@@ -175,9 +175,9 @@ export default function EnHomePage() {
                     )}
                   </div>
 
-                  {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
+                  {t.tags && t.tags.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-2">
-                      {(t as any).tags.slice(0, 6).map((tag: string) => (
+                      {t.tags.slice(0, 6).map((tag) => (
                         <span
                           key={tag}
                           className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"

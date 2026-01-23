@@ -228,42 +228,9 @@ function generateBatch(target: number) {
   remember(keysRemember);
   return list;
 }
-
-
-  const [items, setItems] = useState<GeneratedItem[]>(() => {
-  const target = 12;
-  const [toastMsg, setToastMsg] = useState<string>("");
+  const [toastMsg, setToastMsg] = useState<string>("Copied");
   const [toastOpen, setToastOpen] = useState(false);
-  const list: GeneratedItem[] = [];
-  const seen = new Set<string>();
-  const keysRemember: string[] = [];
-
-  const maxAttempts = target * 60;
-  let attempts = 0;
-
-  while (list.length < target && attempts < maxAttempts) {
-    attempts += 1;
-    const it = genOne(3, "random", "玄", "random", "青冥剑主", "brackets");
-    const key = it.titled ?? it.name;
-    if (seen.has(key)) continue;
-    if (recentSetRef.current.has(key)) continue;
-    seen.add(key);
-    list.push(it);
-    keysRemember.push(key);
-  }
-
-  while (list.length < target) {
-    const it = genOne(3, "random", "玄", "random", "青冥剑主", "brackets");
-    const key = it.titled ?? it.name;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    list.push(it);
-    keysRemember.push(key);
-  }
-
-  remember(keysRemember);
-  return list;
-});
+  const [items, setItems] = useState<GeneratedItem[]>(() => generateBatch(12));
 
   const plainCopy = useMemo(() => items.map((x) => x.name).join("\n"), [items]);
   const titledCopy = useMemo(
