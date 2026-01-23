@@ -167,6 +167,7 @@ export default function DwarfPage() {
         hrefs={["/elf", "/tiefling", "/dragonborn", "/eastern"]}
         title="Try related name generators"
         note="Tip: Pair a sturdy dwarf surname with a softer elf given name for mixed-heritage characters—or do the reverse for contrast."
+        extraLinks={[{ href: "/guides/dwarf-clan-names-and-traditions", title: "Dwarf clan names & traditions (guide)", description: "How dwarf surnames and clan names work in D&D." }]}
       />
 
       {/* Visible FAQ */}

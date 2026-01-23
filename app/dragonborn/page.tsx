@@ -172,6 +172,7 @@ export default function DragonbornPage() {
         hrefs={["/tiefling", "/elf", "/dwarf", "/human"]}
         title="Try related name generators"
         note="Tip: If your dragonborn has a mixed background, try pairing a draconic given name with a more human-style surname—or the reverse for contrast."
+        extraLinks={[{ href: "/guides/dragonborn-naming-conventions", title: "Dragonborn naming conventions (guide)", description: "Clan names, traditions, and roleplay-friendly naming tips." }]}
       />
 
       {/* Visible FAQ */}

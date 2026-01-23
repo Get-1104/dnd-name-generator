@@ -2,6 +2,7 @@ import Link from "next/link";
 import SmartSearch from "@/components/SmartSearch";
 import JsonLd from "@/components/JsonLd";
 import { TOOLS } from "@/lib/tools";
+import { GUIDES } from "@/lib/guides";
 import { getPageUrl, SITE } from "@/lib/site";
 import { createPageMetadata } from "@/lib/metadata";
 
@@ -67,6 +68,18 @@ export default function EnHomePage() {
         url: getPageUrl(t.href),
       })),
     },
+,
+    {
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      name: "D&D Naming Guides (English)",
+      itemListElement: GUIDES.map((g, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        name: g.title,
+        url: getPageUrl(g.href),
+      })),
+    },
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
@@ -120,44 +133,109 @@ export default function EnHomePage() {
             >
               Read naming guides
             </Link>
+            <span className="text-sm text-zinc-400">·</span>
+            <Link href="#guides" className="text-sm text-blue-600 underline underline-offset-4">
+              Jump to guides
+            </Link>
           </div>
         </header>
 
-        {/* Generator cards */}
-        <section className="mt-10">
-          <h2 className="sr-only">All generators</h2>
-
-          <div className="grid gap-6 md:grid-cols-3">
-            {TOOLS.map((t) => (
+        {/* Main hub content */}
+        <section className="mt-10 space-y-10">
+          {/* Generators */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-3 flex-wrap">
+              <h2 className="text-2xl font-semibold">Name generators</h2>
               <Link
-                key={t.href}
-                href={t.href}
-                className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                href="/"
+                className="text-sm text-blue-600 underline underline-offset-4"
               >
-                <div className="space-y-2">
-                  <div className="text-lg font-semibold text-zinc-900">
-                    {t.title}
-                  </div>
-                  {t.description && (
-                    <p className="text-zinc-700 leading-7">{t.description}</p>
-                  )}
-                </div>
-
-                {/* tags（可选） */}
-                {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
-                  <div className="mt-4 flex flex-wrap gap-2">
-                    {(t as any).tags.slice(0, 6).map((tag: string) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                See the main homepage
               </Link>
-            ))}
+            </div>
+            <p className="text-zinc-700 leading-7 max-w-3xl">
+              Choose a fantasy race (or style), generate a list of names, then copy the ones you like.
+              For deeper lore and naming rules, jump to the guides section below.
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {TOOLS.map((t) => (
+                <Link
+                  key={t.href}
+                  href={t.href}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                >
+                  <div className="space-y-2">
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {t.title}
+                    </div>
+                    {t.description && (
+                      <p className="text-zinc-700 leading-7">{t.description}</p>
+                    )}
+                  </div>
+
+                  {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {(t as any).tags.slice(0, 6).map((tag: string) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Guides */}
+          <div className="space-y-4" id="guides">
+            <div className="flex items-end justify-between gap-3 flex-wrap">
+              <h2 className="text-2xl font-semibold">Naming guides</h2>
+              <Link
+                href="/guides"
+                className="text-sm text-blue-600 underline underline-offset-4"
+              >
+                Browse all guides
+              </Link>
+            </div>
+            <p className="text-zinc-700 leading-7 max-w-3xl">
+              Learn race-specific conventions (elf, dwarf, dragonborn) plus a practical framework you can use
+              for any character concept.
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {GUIDES.map((g) => (
+                <Link
+                  key={g.href}
+                  href={g.href}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                >
+                  <div className="space-y-2">
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {g.title}
+                    </div>
+                    <p className="text-zinc-700 leading-7">{g.description}</p>
+                  </div>
+
+                  {g.tags?.length ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {g.tags.slice(0, 6).map((tag) => (
+                        <span
+                          key={`${g.href}:${tag}`}
+                          className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
 

@@ -144,6 +144,7 @@ export default function TieflingPage() {
         hrefs={["/dragonborn", "/elf", "/dwarf", "/demon"]}
         title="Try related name generators"
         note="Tip: If you want a softer vibe, pair a melodic elf given name with a darker tiefling surname—or flip it for contrast."
+        extraLinks={[{ href: "/guides/how-to-name-a-dnd-character", title: "How to name a D&D character (guide)", description: "A practical framework you can use for any ancestry or concept." }]}
       />
 
       {/* Visible FAQ */}

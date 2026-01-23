@@ -165,6 +165,7 @@ export default function OrcPage() {
         hrefs={["/goblin", "/dwarf", "/human", "/dragonborn"]}
         title="Try related name generators"
         note="Tip: For orc warlords, try combining an orc given name with a dwarven-style ‘forge/stone’ surname to create a distinctive clan identity."
+        extraLinks={[{ href: "/guides/how-to-name-a-dnd-character", title: "How to name a D&D character (guide)", description: "A practical framework you can use for any ancestry or concept." }]}
       />
 
       {/* Visible FAQ */}

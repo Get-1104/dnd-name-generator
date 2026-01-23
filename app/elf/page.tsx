@@ -181,6 +181,7 @@ export default function ElfPage() {
         hrefs={["/dwarf", "/tiefling", "/dragonborn", "/eastern"]}
         title="Try related name generators"
         note="Tip: If you like an elf first name, try pairing it with a sturdier dwarf-style surname—or the reverse—for mixed-heritage characters."
+        extraLinks={[{ href: "/guides/elf-naming-conventions", title: "Elf naming conventions (guide)", description: "Learn common elf naming patterns and sounds for believable elven names." }]}
       />
 
       {/* Visible FAQ (optional but good) */}
