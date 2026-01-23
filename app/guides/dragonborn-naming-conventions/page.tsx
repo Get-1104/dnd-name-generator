@@ -236,8 +236,8 @@ export default function DragonbornNamingConventionsPage() {
           <RelatedGenerators
             hrefs={["/dragonborn", "/dwarf", "/tiefling", "/orc"]}
             extraLinks={[
-              { href: "/en", label: "Browse all generators" },
-              { href: "/guides", label: "Read more naming guides" },
+              { href: "/en", title: "Browse all generators" },
+              { href: "/guides", title: "Read more naming guides" },
             ]}
           />
         </section>
