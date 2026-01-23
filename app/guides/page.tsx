@@ -39,7 +39,7 @@ export default function GuidesHubPage() {
   const jsonLd = buildGuidesHubJsonLd(GUIDES);
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+    <div className="space-y-10">
       <JsonLd data={jsonLd} />
 
       <header className="space-y-3">
@@ -50,12 +50,6 @@ export default function GuidesHubPage() {
         </p>
 
         <div className="flex flex-wrap gap-2 text-sm">
-          <Link
-            href="/en"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
-          >
-            Back to /en
-          </Link>
           <Link
             href="/elf"
             className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
@@ -106,6 +100,6 @@ export default function GuidesHubPage() {
         <code className="rounded bg-zinc-100 px-1">/admin/search-logs</code>{" "}
         for new opportunities.
       </footer>
-    </main>
+    </div>
   );
 }

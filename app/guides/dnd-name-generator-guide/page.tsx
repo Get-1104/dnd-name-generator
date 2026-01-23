@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import JsonLd from "@/components/JsonLd";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGuidePageJsonLd } from "@/lib/seo";
@@ -49,17 +48,9 @@ export default function DndNameGeneratorGuidePage() {
   });
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+    <div className="space-y-10">
       <JsonLd data={jsonLd} />
-
-      <Link
-        href="/en"
-        className="inline-block text-sm text-blue-600 underline underline-offset-4"
-      >
-        ← Back to all D&amp;D name generators
-      </Link>
-
-      <article className="space-y-10">
+<article className="space-y-10">
         <header className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
@@ -161,6 +152,6 @@ export default function DndNameGeneratorGuidePage() {
           </Link>
         </footer>
       </article>
-    </main>
+    </div>
   );
 }

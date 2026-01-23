@@ -76,25 +76,10 @@ export default function DwarfClanNamesAndTraditionsPage() {
     <>
       <JsonLd data={jsonLd} />
 
-      <article className="mx-auto max-w-3xl px-4 mt-10 space-y-10">
+      <article className="content page-y space-y-10">
         {/* Top nav */}
-        <nav className="space-y-3">
-          <Link
-            href="/en"
-            className="inline-block text-sm text-blue-600 underline underline-offset-4"
-          >
-            ← Back to all D&amp;D name generators
-          </Link>
 
-          <div className="text-sm text-zinc-600">
-            <Link href="/en" className="underline underline-offset-4">
-              Home
-            </Link>{" "}
-            / <span className="text-zinc-800 font-medium">Guides</span>
-          </div>
-        </nav>
-
-        {/* Header */}
+{/* Header */}
         <header className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight">
             Dwarf Clan Names in D&amp;D (Traditions + Examples)

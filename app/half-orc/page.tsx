@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import JsonLd from "@/components/JsonLd";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
@@ -46,14 +45,7 @@ export default function HalfOrcPage() {
       <JsonLd data={jsonLd} />
 
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
-        <Link
-          href="/en"
-          className="inline-block text-sm text-blue-600 underline underline-offset-4"
-        >
-          ← Back to all D&amp;D name generators
-        </Link>
-
-        <header className="space-y-3">
+<header className="space-y-3">
           <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="text-zinc-700 leading-7">{description}</p>
 

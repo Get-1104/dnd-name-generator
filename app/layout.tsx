@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import Link from "next/link";
 import "./globals.css";
 import { getBaseUrl } from "@/lib/site";
 
@@ -48,7 +49,16 @@ export default function RootLayout({
       </head>
 
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-50 text-zinc-900`}>
-        {children}
+        <header className="fixed left-4 top-4 z-50">
+          <Link href="/en" className="btn-ghost card inline-flex items-center gap-2 px-3 py-2">
+            <span aria-hidden>⌂</span>
+            <span>Home</span>
+          </Link>
+        </header>
+
+        <main className="page page-y pt-16">
+          {children}
+        </main>
       </body>
     </html>
   );

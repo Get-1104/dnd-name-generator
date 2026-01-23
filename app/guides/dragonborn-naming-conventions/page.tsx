@@ -90,28 +90,9 @@ export default function DragonbornNamingConventionsPage() {
     <>
       <JsonLd data={jsonLd} />
 
-      <article className="mx-auto max-w-3xl px-4 mt-10 space-y-10">
-        <nav className="space-y-3">
-          <Link
-            href="/en"
-            className="inline-block text-sm text-blue-600 underline underline-offset-4"
-          >
-            ← Back to all D&amp;D name generators
-          </Link>
+      <article className="content page-y space-y-10">
 
-          <div className="text-sm text-zinc-600">
-            <Link href="/en" className="underline underline-offset-4">
-              Home
-            </Link>{" "}
-            /{" "}
-            <Link href="/guides" className="underline underline-offset-4">
-              Guides
-            </Link>{" "}
-            / <span className="text-zinc-800 font-medium">Dragonborn naming</span>
-          </div>
-        </nav>
-
-        <header className="space-y-4">
+<header className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight">
             Dragonborn Naming Conventions in D&amp;D (Clan Names + Examples)
           </h1>

@@ -68,7 +68,6 @@ export default function EnHomePage() {
         url: getPageUrl(t.href),
       })),
     },
-,
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -98,9 +97,9 @@ export default function EnHomePage() {
     <>
       <JsonLd data={jsonLd} />
 
-      <main className="mx-auto max-w-5xl px-4">
+      <div className="space-y-12">
         {/* HERO */}
-        <header className="mt-10 max-w-3xl space-y-4">
+        <header className="max-w-3xl space-y-4">
           <h1 className="text-4xl font-semibold tracking-tight">
             D&amp;D Name Generators
           </h1>
@@ -343,7 +342,7 @@ export default function EnHomePage() {
             ))}
           </div>
         </section>
-      </main>
+      </div>
     </>
   );
 }

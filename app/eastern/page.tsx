@@ -58,44 +58,14 @@ export default function EasternPage() {
   });
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+    <div className="space-y-10">
       <JsonLd data={jsonLd} />
 
       {/* Intro */}
       <header className="space-y-4">
         <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
         <p className="text-zinc-700 leading-7 max-w-3xl">{description}</p>
-
-        <div className="flex flex-wrap gap-2 text-sm">
-          <Link
-            href="/"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
-          >
-            返回首页
-          </Link>
-
-          <Link
-            href="/en"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
-          >
-            If you prefer English, go to /en
-          </Link>
-
-          <Link
-            href="/elf"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
-          >
-            Elf Name Generator
-          </Link>
-
-          <Link
-            href="/dwarf"
-            className="rounded-xl border border-zinc-200 bg-white px-3 py-2 shadow-sm hover:shadow"
-          >
-            Dwarf Name Generator
-          </Link>
-        </div>
-      </header>
+</header>
 
       <ExampleNamesCard items={examples} />
 
@@ -174,6 +144,6 @@ export default function EasternPage() {
           </Link>
         </div>
       </footer>
-    </main>
+    </div>
   );
 }

@@ -1,5 +1,4 @@
 import Link from "next/link";
-
 import JsonLd from "@/components/JsonLd";
 import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
@@ -49,19 +48,12 @@ const faq = [
   });
 
   return (
-    <main className="mx-auto max-w-5xl px-4 py-10 space-y-10">
+    <div className="space-y-10">
       <JsonLd data={jsonLd} />
 
       {/* Top intro */}
       <header className="space-y-3">
-        <Link
-          href="/en"
-          className="inline-block text-sm text-blue-600 underline underline-offset-4"
-        >
-          ← Back to all D&amp;D name generators
-        </Link>
-
-        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+<h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
         <p className="text-zinc-700 leading-7">
           Use this demon name generator to create sinister names for D&amp;D villains,
@@ -177,6 +169,6 @@ const faq = [
           Orc
         </Link>
       </footer>
-    </main>
+    </div>
   );
 }
