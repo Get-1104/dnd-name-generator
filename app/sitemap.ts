@@ -2,17 +2,7 @@
 import type { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools";
 import { getPageUrl } from "@/lib/site";
-
-/**
- * 所有 Guide 页面路径（手动维护）
- * 新增 Guide 时，只需要往这里加一行
- */
-const GUIDE_PATHS = [
-  "/guides/dnd-name-generator-guide",
-  "/guides/how-to-name-a-dnd-character",
-  "/guides/elf-naming-conventions",
-  "/guides/dwarf-clan-names-and-traditions",
-];
+import { GUIDE_PATHS } from "@/lib/guides";
 
 function isoNow() {
   return new Date().toISOString();
@@ -36,6 +26,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "weekly",
       priority: 1.0,
+    },
+    {
+      url: getPageUrl("/guides"),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
   ];
 

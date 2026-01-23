@@ -2,6 +2,7 @@ import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
 import { createPageMetadata } from "@/lib/metadata";
+import { GUIDES, type GuideLink } from "@/lib/guides";
 
 export const metadata = createPageMetadata({
   title: "D&D Naming Guides | Conventions, Tips & Examples",
@@ -9,52 +10,6 @@ export const metadata = createPageMetadata({
     "Step-by-step D&D naming guides with race conventions, naming formulas, and examples for building memorable characters and NPCs.",
   path: "/guides",
 });
-
-
-type GuideLink = {
-  href: string;
-  title: string;
-  description: string;
-  tags?: string[];
-};
-
-const GUIDES: GuideLink[] = [
-  {
-    href: "/guides/dnd-name-generator-guide",
-    title: "D&D Name Generator Guide",
-    description:
-      "How to use name generators effectively for characters, NPCs, and campaign prep.",
-    tags: ["guide", "dnd", "basics"],
-  },
-  {
-    href: "/guides/how-to-name-a-dnd-character",
-    title: "How to Name a D&D Character",
-    description:
-      "A practical framework for naming characters: theme, culture, sound, and readability.",
-    tags: ["guide", "character", "naming"],
-  },
-  {
-    href: "/guides/elf-naming-conventions",
-    title: "Elf Naming Conventions in D&D",
-    description:
-      "Learn common elf naming patterns, sounds, and cultural conventions to create believable elven names.",
-    tags: ["elf", "conventions", "guide"],
-  },
-  {
-    href: "/guides/dwarf-clan-names-and-traditions",
-    title: "Dwarf Clan Names and Traditions",
-    description:
-      "How dwarf clan names work, common themes, and how to create strong dwarf surnames for D&D.",
-    tags: ["dwarf", "clan", "guide"],
-  },
-  {
-    href: "/guides/dragonborn-naming-conventions",
-    title: "Dragonborn Naming Conventions in D&D",
-    description:
-      "How dragonborn names work, including clan names, traditions, and roleplay-friendly tips.",
-    tags: ["dragonborn", "conventions", "guide"],
-  },
-];
 
 function buildGuidesHubJsonLd(guides: GuideLink[]) {
   const url = getPageUrl("/guides");
