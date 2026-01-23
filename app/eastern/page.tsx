@@ -4,6 +4,7 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
 // ✅ 用相对路径导入，避免路径别名在某些环境下出问题
 import EasternGeneratorClient from "../../components/EasternGeneratorClient";
+import ExampleNamesCard from "@/components/ExampleNamesCard";
 import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
@@ -17,6 +18,15 @@ export default function EasternPage() {
   const description =
     "生成仙侠/武侠/古风风格的中文名字灵感（支持2字/3字、门派辈分字、炫酷称号）。";
   const path = "/eastern";
+
+  const examples = [
+    "林清玄 · 霜影剑仙",
+    "沈若岚 · 天游散人",
+    "顾长歌 · 玄冥魔君",
+    "苏轻寒 · 青莲剑客",
+    "陆知行 · 天游剑尊",
+    "白景刀 · 九天之怒",
+  ];
 
   const jsonLd = buildGeneratorPageJsonLd({
     path,
@@ -87,22 +97,13 @@ export default function EasternPage() {
         </div>
       </header>
 
+      <ExampleNamesCard items={examples} />
+
+
       {/* Generator */}
       <section className="space-y-4">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          
-      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm space-y-2">
-        <h2 className="text-2xl font-semibold">Example Names</h2>
-        <ul className="list-disc pl-6 text-zinc-800">
-          <li>林清玄 · 霜影剑仙</li>
-          <li>沈若岚 · 天游散人</li>
-          <li>顾长歌 · 玄冥魔君</li>
-          <li>苏轻寒 · 青莲剑客</li>
-          <li>陆知行 · 天游剑尊</li>
-        </ul>
-      </section>
-
-      <EasternGeneratorClient />
+          <EasternGeneratorClient />
         </div>
 
         <p className="text-xs text-zinc-500">

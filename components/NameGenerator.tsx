@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import ExampleNamesCard from "@/components/ExampleNamesCard";
 
 type Parts = {
   first: string[];
@@ -263,7 +264,7 @@ function generateUniqueBatch(
   const copyText = useMemo(() => names.join("\n"), [names]);
 
   return (
-    <main className="space-y-8">
+    <section className="space-y-8">
       {!hideHeader && (
         <header className="space-y-2">
           <a className="text-sm text-blue-600 underline" href={backHref}>
@@ -394,15 +395,8 @@ function generateUniqueBatch(
       </div>
 
       {examples.length > 0 && (
-        <section className="space-y-3 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <h2 className="text-2xl font-semibold">Example Names</h2>
-          <ul className="list-disc pl-6 text-zinc-800">
-            {examples.map((e) => (
-              <li key={e}>{e}</li>
-            ))}
-          </ul>
-        </section>
+        <ExampleNamesCard items={examples} />
       )}
-    </main>
+    </section>
   );
 }

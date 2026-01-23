@@ -1,7 +1,6 @@
 import Link from "next/link";
 import SmartSearch from "@/components/SmartSearch";
 import JsonLd from "@/components/JsonLd";
-import SocialProof from "@/components/SocialProof";
 import { TOOLS } from "@/lib/tools";
 import { GUIDES } from "@/lib/guides";
 import { getPageUrl, SITE } from "@/lib/site";
@@ -9,8 +8,7 @@ import { createPageMetadata } from "@/lib/metadata";
 
 export const metadata = createPageMetadata({
   title: "D&D Name Generators | Fantasy Character Name Generator Tools",
-  description:
-    "Free D&D name generators for fantasy characters and NPCs. Generate elf, dwarf, orc, dragonborn, and more names for your campaign.",
+  description: "Free D&D name generators for fantasy characters and NPCs. Generate elf, dwarf, orc, dragonborn, and more names for your campaign.",
   path: "/en",
 });
 
@@ -46,8 +44,7 @@ export default function EnHomePage() {
       "@type": "CollectionPage",
       name: "D&D Name Generators",
       url: enUrl,
-      description:
-        "Browse D&D name generators by fantasy race and naming guides for lore-friendly character naming.",
+      description: "Pick a generator, generate names, and copy your favorites.",
       inLanguage: "en",
       isPartOf: {
         "@type": "WebSite",
@@ -71,6 +68,7 @@ export default function EnHomePage() {
         url: getPageUrl(t.href),
       })),
     },
+,
     {
       "@context": "https://schema.org",
       "@type": "ItemList",
@@ -85,148 +83,267 @@ export default function EnHomePage() {
     {
       "@context": "https://schema.org",
       "@type": "FAQPage",
-      mainEntity: faq.map((item) => ({
+      mainEntity: faq.map((f) => ({
         "@type": "Question",
-        name: item.q,
+        name: f.q,
         acceptedAnswer: {
           "@type": "Answer",
-          text: item.a,
+          text: f.a,
         },
       })),
     },
   ];
 
-  const quotes = [
-    { text: "Helped me name 20 NPCs in one session without breaking immersion.", author: "DM (homebrew campaign)" },
-    { text: "The race-specific generators save time and the names feel consistent.", author: "Player (weekly group)" },
-    { text: "I generate a list, mix syllables, and get something that fits my setting fast.", author: "DM (one-shot prep)" },
-  ];
-
   return (
-    <main className="mx-auto max-w-5xl space-y-10 px-4 py-10">
+    <>
       <JsonLd data={jsonLd} />
 
-      <header className="space-y-4">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-bold tracking-tight">D&D Name Generators</h1>
-          <p className="text-lg text-zinc-700">
-            A collection of free name generators designed around <span className="font-medium">race, culture, and lore-friendly tone</span>—built for DMs and players who need good names fast.
+      <main className="mx-auto max-w-5xl px-4">
+        {/* HERO */}
+        <header className="mt-10 max-w-3xl space-y-4">
+          <h1 className="text-4xl font-semibold tracking-tight">
+            D&amp;D Name Generators
+          </h1>
+          <p className="text-zinc-700 leading-7">
+            Pick a generator, generate names, and copy your favorites.
           </p>
-        </div>
 
-        <div className="grid gap-3 rounded-2xl border bg-white p-5 shadow-sm md:grid-cols-3">
-          <div>
-            <p className="text-sm font-semibold">Great for</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-700">
-              <li>Naming PCs &amp; NPCs</li>
-              <li>Clans, families, and factions</li>
-              <li>Quick one-shot prep</li>
-            </ul>
+          <div className="relative">
+            <SmartSearch />
           </div>
-          <div>
-            <p className="text-sm font-semibold">How it works</p>
-            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-700">
-              <li>Pick a generator</li>
-              <li>Click Generate</li>
-              <li>Copy your favorites</li>
-            </ul>
+
+          <p className="text-sm text-zinc-500">
+            Try: <span className="font-medium text-zinc-700">elf</span>,{" "}
+            <span className="font-medium text-zinc-700">dwarf clan</span>,{" "}
+            <span className="font-medium text-zinc-700">tiefling</span>,{" "}
+            <span className="font-medium text-zinc-700">dragonborn</span>
+          </p>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            <Link
+              href="/"
+              className="text-sm text-blue-600 underline underline-offset-4"
+            >
+              Prefer the main homepage?
+            </Link>
+            <span className="text-sm text-zinc-400">·</span>
+            <Link
+              href="/guides"
+              className="text-sm text-blue-600 underline underline-offset-4"
+            >
+              Read naming guides
+            </Link>
+            <span className="text-sm text-zinc-400">·</span>
+            <Link href="#guides" className="text-sm text-blue-600 underline underline-offset-4">
+              Jump to guides
+            </Link>
           </div>
-          <div>
-            <p className="text-sm font-semibold">Tip</p>
-            <p className="mt-2 text-sm text-zinc-700">
-              Generate a few batches, then tweak spelling or add a title to match your setting.
+        </header>
+
+        {/* Main hub content */}
+        <section className="mt-10 space-y-10">
+          {/* Generators */}
+          <div className="space-y-4">
+            <div className="flex items-end justify-between gap-3 flex-wrap">
+              <h2 className="text-2xl font-semibold">Name generators</h2>
+              <Link
+                href="/"
+                className="text-sm text-blue-600 underline underline-offset-4"
+              >
+                See the main homepage
+              </Link>
+            </div>
+            <p className="text-zinc-700 leading-7 max-w-3xl">
+              Choose a fantasy race (or style), generate a list of names, then copy the ones you like.
+              For deeper lore and naming rules, jump to the guides section below.
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {TOOLS.map((t) => (
+                <Link
+                  key={t.href}
+                  href={t.href}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                >
+                  <div className="space-y-2">
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {t.title}
+                    </div>
+                    {t.description && (
+                      <p className="text-zinc-700 leading-7">{t.description}</p>
+                    )}
+                  </div>
+
+                  {Array.isArray((t as any).tags) && (t as any).tags.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {(t as any).tags.slice(0, 6).map((tag: string) => (
+                        <span
+                          key={tag}
+                          className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Guides */}
+          <div className="space-y-4" id="guides">
+            <div className="flex items-end justify-between gap-3 flex-wrap">
+              <h2 className="text-2xl font-semibold">Naming guides</h2>
+              <Link
+                href="/guides"
+                className="text-sm text-blue-600 underline underline-offset-4"
+              >
+                Browse all guides
+              </Link>
+            </div>
+            <p className="text-zinc-700 leading-7 max-w-3xl">
+              Learn race-specific conventions (elf, dwarf, dragonborn) plus a practical framework you can use
+              for any character concept.
+            </p>
+
+            <div className="grid gap-6 md:grid-cols-3">
+              {GUIDES.map((g) => (
+                <Link
+                  key={g.href}
+                  href={g.href}
+                  className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition hover:shadow-md"
+                >
+                  <div className="space-y-2">
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {g.title}
+                    </div>
+                    <p className="text-zinc-700 leading-7">{g.description}</p>
+                  </div>
+
+                  {g.tags?.length ? (
+                    <div className="mt-4 flex flex-wrap gap-2">
+                      {g.tags.slice(0, 6).map((tag) => (
+                        <span
+                          key={`${g.href}:${tag}`}
+                          className="rounded-full bg-zinc-100 px-3 py-1 text-xs text-zinc-700"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  ) : null}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* SEO body */}
+        <section className="mt-14 space-y-10 max-w-3xl">
+          <div className="space-y-3">
+            <h2 className="text-2xl font-semibold">
+              What is a D&amp;D Name Generator?
+            </h2>
+            <p className="text-zinc-700 leading-7">
+              A D&amp;D name generator helps you create fantasy names that fit your character,
+              NPC, or campaign setting—fast. Whether you’re rolling up a new hero,
+              improvising an NPC, or building world lore, the goal is the same: names that
+              sound right and stay consistent at the table.
+            </p>
+            <p className="text-zinc-700 leading-7">
+              Start with popular options like{" "}
+              <Link href="/elf" className="underline underline-offset-4">
+                elf names
+              </Link>
+              ,{" "}
+              <Link href="/dwarf" className="underline underline-offset-4">
+                dwarf names
+              </Link>
+              ,{" "}
+              <Link href="/tiefling" className="underline underline-offset-4">
+                tiefling names
+              </Link>
+              , and{" "}
+              <Link href="/dragonborn" className="underline underline-offset-4">
+                dragonborn names
+              </Link>
+              —then tweak spelling or syllables to make the result uniquely yours.
             </p>
           </div>
-        </div>
 
-        <SmartSearch />
+          <div className="space-y-3">
+            <h2 className="text-2xl font-semibold">How to use these generators</h2>
+            <ol className="list-decimal pl-5 space-y-2 text-zinc-700 leading-7">
+              <li>
+                Pick a generator that matches your character concept (ancestry, culture, or vibe).
+              </li>
+              <li>Click Generate until you find a name you like.</li>
+              <li>
+                Copy your favorites and save them for future characters, NPCs, towns, or factions.
+              </li>
+            </ol>
+            <p className="text-zinc-700 leading-7">
+              DM tip: keep a short list ready for merchants, guards, tavern owners, and travelers—your
+              world will feel more alive with zero extra prep.
+            </p>
+          </div>
 
-        <p className="text-sm text-zinc-600">
-          Prefer a quick start? Try{" "}
-          <Link className="text-blue-600 underline" href="/elf">
-            Elf
-          </Link>
-          ,{" "}
-          <Link className="text-blue-600 underline" href="/dwarf">
-            Dwarf
-          </Link>
-          ,{" "}
-          <Link className="text-blue-600 underline" href="/tiefling">
-            Tiefling
-          </Link>{" "}
-          or{" "}
-          <Link className="text-blue-600 underline" href="/eastern">
-            Xianxia / Wuxia
-          </Link>
-          .
-        </p>
-      </header>
+          <div className="space-y-3">
+            <h2 className="text-2xl font-semibold">Popular generators</h2>
+            <ul className="space-y-3 text-zinc-700 leading-7">
+              <li>
+                <Link href="/elf" className="underline underline-offset-4 font-medium">
+                  Elf Name Generator
+                </Link>{" "}
+                — elegant, melodic names for ancient fantasy races.
+              </li>
+              <li>
+                <Link href="/dwarf" className="underline underline-offset-4 font-medium">
+                  Dwarf Name Generator
+                </Link>{" "}
+                — sturdy, clan-based names for warriors and smiths.
+              </li>
+              <li>
+                <Link href="/tiefling" className="underline underline-offset-4 font-medium">
+                  Tiefling Name Generator
+                </Link>{" "}
+                — infernal-flavored names with a mysterious edge.
+              </li>
+              <li>
+                <Link href="/dragonborn" className="underline underline-offset-4 font-medium">
+                  Dragonborn Name Generator
+                </Link>{" "}
+                — powerful draconic names inspired by honor and lineage.
+              </li>
+            </ul>
 
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold">Name generators</h2>
-        <p className="text-sm text-zinc-700">
-          Race-focused generators for consistent naming style.
-        </p>
+            <p className="text-sm text-zinc-500">
+              Want more? Browse the full list above, or head to{" "}
+              <Link href="/guides" className="underline underline-offset-4">
+                naming guides
+              </Link>{" "}
+              for conventions and tips.
+            </p>
+          </div>
+        </section>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {TOOLS.map((t) => (
-            <Link
-              key={t.href}
-              href={t.href}
-              className="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow"
-            >
-              <div className="space-y-1">
-                <p className="text-lg font-semibold">{t.title}</p>
-                <p className="text-sm text-zinc-700">{t.description}</p>
+        {/* Visible FAQ */}
+        <section className="mt-16 space-y-6 max-w-3xl pb-16">
+          <h2 className="text-2xl font-semibold">
+            Frequently Asked Questions about D&amp;D Name Generators
+          </h2>
+
+          <div className="space-y-5">
+            {faq.map((f) => (
+              <div key={f.q}>
+                <h3 className="font-medium text-lg">{f.q}</h3>
+                <p className="text-zinc-700 leading-7">{f.a}</p>
               </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="space-y-4">
-        <h2 className="text-2xl font-semibold">Naming guides</h2>
-        <p className="text-sm text-zinc-700">
-          Lore and naming conventions to help you pick names that fit your world.
-        </p>
-
-        <div className="grid gap-4 md:grid-cols-2">
-          {GUIDES.map((g) => (
-            <Link
-              key={g.href}
-              href={g.href}
-              className="rounded-2xl border bg-white p-5 shadow-sm transition hover:shadow"
-            >
-              <div className="space-y-1">
-                <p className="text-lg font-semibold">{g.title}</p>
-                <p className="text-sm text-zinc-700">{g.description}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-
-        <p className="text-sm text-zinc-600">
-          Want everything in one place? Visit the{" "}
-          <Link className="text-blue-600 underline" href="/guides">
-            Guides hub
-          </Link>
-          .
-        </p>
-      </section>
-
-      <SocialProof quotes={quotes} />
-
-      <section className="space-y-3 rounded-2xl border bg-white p-5 shadow-sm">
-        <h2 className="text-xl font-semibold">FAQ</h2>
-        <div className="space-y-3">
-          {faq.map((item) => (
-            <details key={item.q} className="rounded-xl border bg-zinc-50 p-4">
-              <summary className="cursor-pointer font-medium">{item.q}</summary>
-              <p className="mt-2 text-sm text-zinc-700">{item.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-    </main>
+            ))}
+          </div>
+        </section>
+      </main>
+    </>
   );
 }
