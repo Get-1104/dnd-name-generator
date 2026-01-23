@@ -1,14 +1,14 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
-import type { Metadata } from "next";
 import RelatedGenerators from "@/components/RelatedGenerators";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Dwarf Clan Names in D&D | Traditions, Surname Rules + Examples",
-  description:
-    "Learn D&D dwarf clan naming traditions: common structures, strong sounds, honor-titles, and 70+ surname examples. Includes tips and a dwarf name generator link.",
-};
+  description: "Learn D&D dwarf clan naming traditions: common structures, strong sounds, honor-titles, and 70+ surname examples. Includes tips and a dwarf name generator link.",
+  path: "/guides/dwarf-clan-names-and-traditions",
+});
 
 export default function DwarfClanNamesAndTraditionsPage() {
   const path = "/guides/dwarf-clan-names-and-traditions";

@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 
 import JsonLd from "@/components/JsonLd";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGuidePageJsonLd } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "What Is a D&D Name Generator? Complete Guide + Examples",
-  description:
-    "Learn what a D&D name generator is, how it works, and how to create names for elves, dwarves, goblins, and more. Includes examples and FAQs.",
-};
+  description: "Learn what a D&D name generator is, how it works, and how to create names for elves, dwarves, goblins, and more. Includes examples and FAQs.",
+  path: "/guides/dnd-name-generator-guide",
+});
 
 export default function DndNameGeneratorGuidePage() {
   const path = "/guides/dnd-name-generator-guide";

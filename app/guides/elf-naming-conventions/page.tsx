@@ -1,14 +1,14 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
-import type { Metadata } from "next";
 import RelatedGenerators from "@/components/RelatedGenerators";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Elf Naming Conventions in D&D | Rules, Syllables + Examples",
-  description:
-    "Learn elf naming conventions for D&D: common sounds, name structures, family names, titles, and 60+ examples. Includes tips and an elf name generator link.",
-};
+  description: "Learn elf naming conventions for D&D: common sounds, name structures, family names, titles, and 60+ examples. Includes tips and an elf name generator link.",
+  path: "/guides/elf-naming-conventions",
+});
 
 export default function ElfNamingConventionsPage() {
   const path = "/guides/elf-naming-conventions";

@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 
 import JsonLd from "@/components/JsonLd";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGuidePageJsonLd } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "How to Name a D&D Character | 7 Proven Methods + Examples",
-  description:
-    "Learn how to name a D&D character with 7 practical methods, race-inspired tips, and ready-to-use name formulas. Includes examples and FAQs.",
-};
+  description: "Learn how to name a D&D character with 7 practical methods, race-inspired tips, and ready-to-use name formulas. Includes examples and FAQs.",
+  path: "/guides/how-to-name-a-dnd-character",
+});
 
 export default function HowToNameADndCharacterPage() {
   const path = "/guides/how-to-name-a-dnd-character";

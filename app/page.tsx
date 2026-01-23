@@ -1,8 +1,16 @@
 // app/page.tsx
 import HomeSearch from "@/components/HomeSearch";
 import JsonLd from "@/components/JsonLd";
+import { createPageMetadata } from "@/lib/metadata";
 import { SITE, getPageUrl } from "@/lib/site";
 import { TOOLS } from "@/lib/tools";
+
+export const metadata = createPageMetadata({
+  title: "D&D Name Generator | Fantasy Character Names",
+  description:
+    "Free D&D name generators for fantasy characters and NPCs. Generate elf, dwarf, orc, dragonborn, and more names for your campaign.",
+  path: "/",
+});
 
 export default function HomePage() {
   const jsonLd = [

@@ -1,16 +1,16 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 
 import JsonLd from "@/components/JsonLd";
 import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Elf Name Generator for D&D | Fantasy Character Names",
-  description:
-    "Generate elegant elf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
-};
+  description: "Generate elegant elf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
+  path: "/elf",
+});
 
 export default function ElfPage() {
   const title = "Elf Name Generator";

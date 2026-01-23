@@ -3,13 +3,13 @@ import SmartSearch from "@/components/SmartSearch";
 import JsonLd from "@/components/JsonLd";
 import { TOOLS } from "@/lib/tools";
 import { getPageUrl } from "@/lib/site";
-import type { Metadata } from "next";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "D&D Name Generators | Fantasy Character Name Generator Tools",
-  description:
-    "Free D&D name generators for fantasy characters and NPCs. Generate elf, dwarf, orc, dragonborn, and more names for your campaign.",
-};
+  description: "Free D&D name generators for fantasy characters and NPCs. Generate elf, dwarf, orc, dragonborn, and more names for your campaign.",
+  path: "/en",
+});
 
 export default function EnHomePage() {
   const enUrl = getPageUrl("/en");

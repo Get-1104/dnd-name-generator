@@ -1,6 +1,15 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { getPageUrl } from "@/lib/site";
+import { createPageMetadata } from "@/lib/metadata";
+
+export const metadata = createPageMetadata({
+  title: "D&D Naming Guides | Conventions, Tips & Examples",
+  description:
+    "Step-by-step D&D naming guides with race conventions, naming formulas, and examples for building memorable characters and NPCs.",
+  path: "/guides",
+});
+
 
 type GuideLink = {
   href: string;

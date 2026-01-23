@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { Metadata } from "next";
 
 import JsonLd from "@/components/JsonLd";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "Half-Orc Name Generator for D&D | Fantasy Character Names",
-  description:
-    "Generate tough half-orc names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
-};
+  description: "Generate tough half-orc names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
+  path: "/half-orc",
+});
 
 export default function HalfOrcPage() {
   const title = "Half-Orc Name Generator";

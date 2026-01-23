@@ -1,16 +1,16 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 
 // ✅ 用相对路径导入，避免路径别名在某些环境下出问题
 import EasternGeneratorClient from "../../components/EasternGeneratorClient";
+import { createPageMetadata } from "@/lib/metadata";
 
-export const metadata: Metadata = {
+export const metadata = createPageMetadata({
   title: "东方国风名字生成器 | 仙侠/武侠/Xianxia/Wuxia Name Generator",
-  description:
-    "生成仙侠/武侠/古风风格的中文名字灵感：支持2字/3字、门派辈分字、炫酷称号。也适配英文搜索：xianxia / wuxia name generator。",
-};
+  description: "生成仙侠/武侠/古风风格的中文名字灵感：支持2字/3字、门派辈分字、炫酷称号。也适配英文搜索：xianxia / wuxia name generator。",
+  path: "/eastern",
+});
 
 export default function EasternPage() {
   const title = "东方国风名字生成器";
