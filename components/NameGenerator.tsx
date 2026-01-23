@@ -274,7 +274,7 @@ function generateUniqueBatch(
         </header>
       )}
 
-      <div className="rounded-2xl border border-zinc-200 p-5 shadow-sm space-y-4">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm space-y-4">
         {/* ✅ CJK toggles */}
         {hasCjk && cjkMode === "toggle_2_3" && (
           <div className="flex flex-wrap gap-2">
@@ -394,7 +394,7 @@ function generateUniqueBatch(
       </div>
 
       {examples.length > 0 && (
-        <section className="space-y-2">
+        <section className="space-y-3 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
           <h2 className="text-2xl font-semibold">Example Names</h2>
           <ul className="list-disc pl-6 text-zinc-800">
             {examples.map((e) => (

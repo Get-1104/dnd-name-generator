@@ -90,7 +90,19 @@ export default function EasternPage() {
       {/* Generator */}
       <section className="space-y-4">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-          <EasternGeneratorClient />
+          
+      <section className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm space-y-2">
+        <h2 className="text-2xl font-semibold">Example Names</h2>
+        <ul className="list-disc pl-6 text-zinc-800">
+          <li>林清玄 · 霜影剑仙</li>
+          <li>沈若岚 · 天游散人</li>
+          <li>顾长歌 · 玄冥魔君</li>
+          <li>苏轻寒 · 青莲剑客</li>
+          <li>陆知行 · 天游剑尊</li>
+        </ul>
+      </section>
+
+      <EasternGeneratorClient />
         </div>
 
         <p className="text-xs text-zinc-500">
