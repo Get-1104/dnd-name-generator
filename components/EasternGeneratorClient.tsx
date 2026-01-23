@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 
 type NameLen = 2 | 3;
 
@@ -174,18 +174,93 @@ export default function EasternGeneratorClient() {
 
   const [count, setCount] = useState(12);
 
-  const [items, setItems] = useState<GeneratedItem[]>(() => {
-    const list: GeneratedItem[] = [];
-    const seen = new Set<string>();
-    while (list.length < 12) {
-      const it = genOne(3, "random", "玄", "random", "青冥剑主", "brackets");
-      const key = it.titled ?? it.name;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      list.push(it);
+
+// -----------------------------
+// ✅ Name quality: short-term de-duplication
+// -----------------------------
+// Avoid repeating names/titled names across consecutive generations (per page session).
+const RECENT_MAX = 300;
+const recentListRef = useRef<string[]>([]);
+const recentSetRef = useRef<Set<string>>(new Set());
+
+function remember(keys: string[]) {
+  for (const k of keys) {
+    if (recentSetRef.current.has(k)) continue;
+    recentSetRef.current.add(k);
+    recentListRef.current.push(k);
+    while (recentListRef.current.length > RECENT_MAX) {
+      const old = recentListRef.current.shift();
+      if (old) recentSetRef.current.delete(old);
     }
-    return list;
-  });
+  }
+}
+
+function generateBatch(target: number) {
+  const list: GeneratedItem[] = [];
+  const seen = new Set<string>();
+  const keysRemember: string[] = [];
+
+  const maxAttempts = target * 60;
+  let attempts = 0;
+
+  while (list.length < target && attempts < maxAttempts) {
+    attempts += 1;
+    const it = genOne(len, genMode, fixedGen, titleMode, fixedTitle, titleFmt);
+    const key = it.titled ?? it.name;
+    if (seen.has(key)) continue;
+    if (recentSetRef.current.has(key)) continue;
+    seen.add(key);
+    list.push(it);
+    keysRemember.push(key);
+  }
+
+  // Fallback: allow repeats across sessions if pool is too small, but still unique within batch
+  while (list.length < target) {
+    const it = genOne(len, genMode, fixedGen, titleMode, fixedTitle, titleFmt);
+    const key = it.titled ?? it.name;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    list.push(it);
+    keysRemember.push(key);
+  }
+
+  remember(keysRemember);
+  return list;
+}
+
+
+  const [items, setItems] = useState<GeneratedItem[]>(() => {
+  const target = 12;
+  const list: GeneratedItem[] = [];
+  const seen = new Set<string>();
+  const keysRemember: string[] = [];
+
+  const maxAttempts = target * 60;
+  let attempts = 0;
+
+  while (list.length < target && attempts < maxAttempts) {
+    attempts += 1;
+    const it = genOne(3, "random", "玄", "random", "青冥剑主", "brackets");
+    const key = it.titled ?? it.name;
+    if (seen.has(key)) continue;
+    if (recentSetRef.current.has(key)) continue;
+    seen.add(key);
+    list.push(it);
+    keysRemember.push(key);
+  }
+
+  while (list.length < target) {
+    const it = genOne(3, "random", "玄", "random", "青冥剑主", "brackets");
+    const key = it.titled ?? it.name;
+    if (seen.has(key)) continue;
+    seen.add(key);
+    list.push(it);
+    keysRemember.push(key);
+  }
+
+  remember(keysRemember);
+  return list;
+});
 
   const plainCopy = useMemo(() => items.map((x) => x.name).join("\n"), [items]);
   const titledCopy = useMemo(
@@ -194,18 +269,8 @@ export default function EasternGeneratorClient() {
   );
 
   function generate() {
-    const list: GeneratedItem[] = [];
     const target = Math.max(5, Math.min(30, count));
-
-    const seen = new Set<string>();
-    while (list.length < target) {
-      const it = genOne(len, genMode, fixedGen, titleMode, fixedTitle, titleFmt);
-      const key = it.titled ?? it.name;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      list.push(it);
-    }
-    setItems(list);
+    setItems(generateBatch(target));
   }
 
   function copy(text: string) {

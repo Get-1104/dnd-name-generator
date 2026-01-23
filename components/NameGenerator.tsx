@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type Parts = {
   first: string[];
@@ -177,6 +177,59 @@ export default function NameGenerator({
     return null;
   }, [cjkMode, cjkInternalMode]);
 
+
+// -----------------------------
+// ✅ Name quality: de-duplication
+// -----------------------------
+// Avoid repeating names within a single generation batch, and also avoid
+// short-term repeats across consecutive generations (per page session).
+const RECENT_MAX = 200;
+const recentListRef = useRef<string[]>([]);
+const recentSetRef = useRef<Set<string>>(new Set());
+
+function remember(namesToRemember: string[]) {
+  for (const n of namesToRemember) {
+    if (recentSetRef.current.has(n)) continue;
+    recentSetRef.current.add(n);
+    recentListRef.current.push(n);
+    // prune oldest
+    while (recentListRef.current.length > RECENT_MAX) {
+      const old = recentListRef.current.shift();
+      if (old) recentSetRef.current.delete(old);
+    }
+  }
+}
+
+function generateUniqueBatch(
+  count: number,
+  makeOne: () => string,
+  maxAttempts = count * 30
+) {
+  const batch: string[] = [];
+  const seen = new Set<string>();
+
+  let attempts = 0;
+  while (batch.length < count && attempts < maxAttempts) {
+    attempts += 1;
+    const n = makeOne();
+    if (seen.has(n)) continue;
+    if (recentSetRef.current.has(n)) continue;
+    seen.add(n);
+    batch.push(n);
+  }
+
+  // Fallback: if the pool is too small, allow repeats (but still unique within batch)
+  while (batch.length < count) {
+    const n = makeOne();
+    if (seen.has(n)) continue;
+    seen.add(n);
+    batch.push(n);
+  }
+
+  remember(batch);
+  return batch;
+}
+
   function generateOne(mode: "two" | "three" | null) {
     if (mode) {
       return makeNameCjk(
@@ -193,11 +246,11 @@ export default function NameGenerator({
 
   function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
-    setNames(Array.from({ length: initialCount }, () => generateOne(mode)));
+    setNames(generateUniqueBatch(initialCount, () => generateOne(mode)));
   }
 
   const [names, setNames] = useState<string[]>(() =>
-    Array.from({ length: initialCount }, () => generateOne(effectiveCjkMode))
+    generateUniqueBatch(initialCount, () => generateOne(effectiveCjkMode))
   );
 
   // ✅ 当关键控制项变化时，自动刷新一次（用户体验更一致）
