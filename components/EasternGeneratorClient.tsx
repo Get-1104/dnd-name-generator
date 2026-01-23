@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import Toast from "@/components/Toast";
 
 type NameLen = 2 | 3;
 
@@ -231,6 +232,8 @@ function generateBatch(target: number) {
 
   const [items, setItems] = useState<GeneratedItem[]>(() => {
   const target = 12;
+  const [toastMsg, setToastMsg] = useState<string>("");
+  const [toastOpen, setToastOpen] = useState(false);
   const list: GeneratedItem[] = [];
   const seen = new Set<string>();
   const keysRemember: string[] = [];
@@ -275,6 +278,8 @@ function generateBatch(target: number) {
 
   function copy(text: string) {
     navigator.clipboard.writeText(text);
+    setToastMsg("Copied");
+    setToastOpen(true);
   }
 
   const showGenFixed = genMode === "fixed";
@@ -457,6 +462,7 @@ function generateBatch(target: number) {
       <div className="text-xs text-zinc-500">
         English keywords: xianxia name generator / wuxia name generator / chinese fantasy name generator
       </div>
-    </div>
+          <Toast message={toastMsg} open={toastOpen} onClose={() => setToastOpen(false)} />
+</div>
   );
 }

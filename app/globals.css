@@ -19,12 +19,14 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   /* Visual styling is controlled by Tailwind classes in app/layout.tsx. */
   font-family: Arial, Helvetica, sans-serif;
 }
-
-html { scroll-behavior: smooth; }
 
 /*
   Design tokens + shared UI primitives
@@ -39,8 +41,9 @@ html { scroll-behavior: smooth; }
 }
 
 @layer components {
+  /* Layout shells */
   .page {
-    @apply mx-auto w-full max-w-5xl px-4;
+    @apply mx-auto w-full max-w-6xl px-4;
   }
 
   .page-y {
@@ -48,14 +51,32 @@ html { scroll-behavior: smooth; }
   }
 
   .content {
-    @apply mx-auto w-full max-w-3xl px-4;
+    @apply mx-auto w-full max-w-3xl px-4 py-10;
   }
 
+  /* Card surface */
   .card {
-    @apply bg-white border border-zinc-200 rounded-2xl shadow-sm;
+    @apply rounded-2xl border border-zinc-200 bg-white shadow-sm;
+  }
+
+  /* Buttons (不要 @apply 自己的 .btn) */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border px-3 py-2 text-sm font-medium transition;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-900 bg-zinc-900 px-3 py-2 text-sm font-medium text-white transition hover:bg-zinc-800;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm font-medium text-zinc-900 transition hover:bg-zinc-50;
   }
 
   .btn-ghost {
-    @apply inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-sm font-medium text-zinc-700 shadow-sm hover:text-zinc-900 hover:border-zinc-300;
+    @apply inline-flex items-center justify-center gap-2 rounded-full border border-zinc-200 bg-white/70 px-3 py-1.5 text-sm font-medium text-zinc-900 shadow-sm transition hover:bg-white hover:border-zinc-300;
+  }
+
+  .kbd {
+    @apply rounded-md border border-zinc-200 bg-white px-1.5 py-0.5 text-[11px] text-zinc-600;
   }
 }

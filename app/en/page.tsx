@@ -99,8 +99,8 @@ export default function EnHomePage() {
 
       <div className="space-y-12">
         {/* HERO */}
-        <header className="max-w-3xl space-y-4">
-          <h1 className="text-4xl font-semibold tracking-tight">
+        <header className="card p-8 space-y-5">
+          <h1 className="text-5xl font-semibold tracking-tight">
             D&amp;D Name Generators
           </h1>
           <p className="text-zinc-700 leading-7">
@@ -108,7 +108,9 @@ export default function EnHomePage() {
           </p>
 
           <div className="relative">
+            <div className="card p-4">
             <SmartSearch />
+          </div>
           </div>
 
           <p className="text-sm text-zinc-500">

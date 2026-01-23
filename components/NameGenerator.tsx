@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import ExampleNamesCard from "@/components/ExampleNamesCard";
+import Toast from "@/components/Toast";
 
 type Parts = {
   first: string[];
@@ -99,7 +100,7 @@ function makeNameCjk(
   // 姓（仅三字名需要）
   const surname = pick(parts.lastA);
 
-  // 辈分字：如果用户选了，就用；否则随机挑一个（但也允许“随机但不固定”的体验）
+  // 辈分字：如果用户选了，就用；否则随机挑一个
   const gen =
     generationChar && generationChar.trim()
       ? generationChar.trim()
@@ -119,7 +120,10 @@ function makeNameCjk(
   // 称号：前缀/后缀
   if (title && title.trim()) {
     const t = title.trim();
-    base = titlePosition === "prefix" ? `${t}${titleJoiner}${base}` : `${base}${titleJoiner}${t}`;
+    base =
+      titlePosition === "prefix"
+        ? `${t}${titleJoiner}${base}`
+        : `${base}${titleJoiner}${t}`;
   }
 
   return base;
@@ -128,7 +132,7 @@ function makeNameCjk(
 export default function NameGenerator({
   title,
   description,
-  backHref = "/",
+  backHref = "/", // 目前 UI 不显示 back，这里保留兼容
   parts,
   initialCount = 10,
   examples = [],
@@ -154,7 +158,8 @@ export default function NameGenerator({
   cjkTitleSuffixLabel = "Name·Title",
 }: Props) {
   const hasCjk = cjkMode !== "off";
-  const hasGeneration = Array.isArray(cjkGenerationChars) && cjkGenerationChars.length > 0;
+  const hasGeneration =
+    Array.isArray(cjkGenerationChars) && cjkGenerationChars.length > 0;
   const hasTitles = Array.isArray(cjkTitles) && cjkTitles.length > 0;
 
   // 内部 2/3 模式（仅 toggle_2_3 需要）
@@ -171,6 +176,13 @@ export default function NameGenerator({
   // 称号位置：prefix/suffix
   const [titlePos, setTitlePos] = useState<"suffix" | "prefix">(cjkTitlePosition);
 
+  // ✅ Generate loading state（修复：isGenerating 未定义）
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  // ✅ Toast state（避免 toastMsg/toastOpen 未定义）
+  const [toastOpen, setToastOpen] = useState(false);
+  const [toastMsg, setToastMsg] = useState("");
+
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
     if (cjkMode === "three") return "three";
@@ -178,58 +190,57 @@ export default function NameGenerator({
     return null;
   }, [cjkMode, cjkInternalMode]);
 
+  // -----------------------------
+  // ✅ Name quality: de-duplication
+  // -----------------------------
+  // Avoid repeating names within a single generation batch, and also avoid
+  // short-term repeats across consecutive generations (per page session).
+  const RECENT_MAX = 200;
+  const recentListRef = useRef<string[]>([]);
+  const recentSetRef = useRef<Set<string>>(new Set());
 
-// -----------------------------
-// ✅ Name quality: de-duplication
-// -----------------------------
-// Avoid repeating names within a single generation batch, and also avoid
-// short-term repeats across consecutive generations (per page session).
-const RECENT_MAX = 200;
-const recentListRef = useRef<string[]>([]);
-const recentSetRef = useRef<Set<string>>(new Set());
-
-function remember(namesToRemember: string[]) {
-  for (const n of namesToRemember) {
-    if (recentSetRef.current.has(n)) continue;
-    recentSetRef.current.add(n);
-    recentListRef.current.push(n);
-    // prune oldest
-    while (recentListRef.current.length > RECENT_MAX) {
-      const old = recentListRef.current.shift();
-      if (old) recentSetRef.current.delete(old);
+  function remember(namesToRemember: string[]) {
+    for (const n of namesToRemember) {
+      if (recentSetRef.current.has(n)) continue;
+      recentSetRef.current.add(n);
+      recentListRef.current.push(n);
+      // prune oldest
+      while (recentListRef.current.length > RECENT_MAX) {
+        const old = recentListRef.current.shift();
+        if (old) recentSetRef.current.delete(old);
+      }
     }
   }
-}
 
-function generateUniqueBatch(
-  count: number,
-  makeOne: () => string,
-  maxAttempts = count * 30
-) {
-  const batch: string[] = [];
-  const seen = new Set<string>();
+  function generateUniqueBatch(
+    count: number,
+    makeOne: () => string,
+    maxAttempts = count * 30
+  ) {
+    const batch: string[] = [];
+    const seen = new Set<string>();
 
-  let attempts = 0;
-  while (batch.length < count && attempts < maxAttempts) {
-    attempts += 1;
-    const n = makeOne();
-    if (seen.has(n)) continue;
-    if (recentSetRef.current.has(n)) continue;
-    seen.add(n);
-    batch.push(n);
+    let attempts = 0;
+    while (batch.length < count && attempts < maxAttempts) {
+      attempts += 1;
+      const n = makeOne();
+      if (seen.has(n)) continue;
+      if (recentSetRef.current.has(n)) continue;
+      seen.add(n);
+      batch.push(n);
+    }
+
+    // Fallback: if the pool is too small, allow repeats (but still unique within batch)
+    while (batch.length < count) {
+      const n = makeOne();
+      if (seen.has(n)) continue;
+      seen.add(n);
+      batch.push(n);
+    }
+
+    remember(batch);
+    return batch;
   }
-
-  // Fallback: if the pool is too small, allow repeats (but still unique within batch)
-  while (batch.length < count) {
-    const n = makeOne();
-    if (seen.has(n)) continue;
-    seen.add(n);
-    batch.push(n);
-  }
-
-  remember(batch);
-  return batch;
-}
 
   function generateOne(mode: "two" | "three" | null) {
     if (mode) {
@@ -263,13 +274,24 @@ function generateUniqueBatch(
 
   const copyText = useMemo(() => names.join("\n"), [names]);
 
+  function onGenerate() {
+    setIsGenerating(true);
+    window.setTimeout(() => {
+      regenerate();
+      setIsGenerating(false);
+    }, 220);
+  }
+
+  async function onCopy() {
+    await navigator.clipboard.writeText(copyText);
+    setToastMsg("Copied to clipboard");
+    setToastOpen(true);
+  }
+
   return (
     <section className="space-y-8">
       {!hideHeader && (
         <header className="space-y-2">
-          <a className="text-sm text-blue-600 underline" href={backHref}>
-            ← Back
-          </a>
           <h1 className="text-4xl font-bold">{title}</h1>
           <p className="text-zinc-700 max-w-3xl">{description}</p>
         </header>
@@ -355,7 +377,9 @@ function generateUniqueBatch(
                 <select
                   className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
                   value={titlePos}
-                  onChange={(e) => setTitlePos(e.target.value as "suffix" | "prefix")}
+                  onChange={(e) =>
+                    setTitlePos(e.target.value as "suffix" | "prefix")
+                  }
                 >
                   <option value="suffix">{cjkTitleSuffixLabel}</option>
                   <option value="prefix">{cjkTitlePrefixLabel}</option>
@@ -369,15 +393,11 @@ function generateUniqueBatch(
           <button
             type="button"
             className="rounded-xl bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
-            onClick={() => regenerate()}
+            onClick={onGenerate}
           >
-            {generateLabel}
+            {isGenerating ? "Generating…" : generateLabel}
           </button>
-          <button
-            type="button"
-            className="rounded-xl border border-zinc-200 px-4 py-2 hover:bg-zinc-50"
-            onClick={() => navigator.clipboard.writeText(copyText)}
-          >
+          <button type="button" className="btn-secondary px-4 py-2" onClick={onCopy}>
             {copyLabel}
           </button>
         </div>
@@ -394,9 +414,13 @@ function generateUniqueBatch(
         </div>
       </div>
 
-      {examples.length > 0 && (
-        <ExampleNamesCard items={examples} />
-      )}
+      {examples.length > 0 && <ExampleNamesCard items={examples} />}
+
+      <Toast
+        message={toastMsg}
+        open={toastOpen}
+        onClose={() => setToastOpen(false)}
+      />
     </section>
   );
 }
