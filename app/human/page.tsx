@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Human Name Generator for D&D | Fantasy Character Names",
@@ -17,7 +18,10 @@ export default function HumanPage() {
   const description = "Generate flexible human names for D&D characters and NPCs.";
   const path = "/human";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a human name generator?",
       a: "A human name generator creates human-style names you can use for D&D characters, NPCs, townsfolk, and fantasy stories.",
@@ -167,7 +171,7 @@ export default function HumanPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/half-elf", "/elf", "/dwarf", "/halfling"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: For half-elf characters, try a human given name with an elven family name (or the reverse) to show mixed heritage."
       />

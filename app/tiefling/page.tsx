@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Tiefling Name Generator for D&D | Fantasy Character Names",
@@ -18,7 +19,10 @@ export default function TieflingPage() {
     "Generate infernal tiefling names for D&D characters and NPCs.";
   const path = "/tiefling";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a tiefling name generator?",
       a: "A tiefling name generator creates infernal-flavored fantasy names you can use for D&D characters, NPCs, and stories.",
@@ -141,7 +145,7 @@ export default function TieflingPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/dragonborn", "/elf", "/dwarf", "/demon"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: If you want a softer vibe, pair a melodic elf given name with a darker tiefling surname—or flip it for contrast."
         extraLinks={[{ href: "/guides/how-to-name-a-dnd-character", title: "How to name a D&D character (guide)", description: "A practical framework you can use for any ancestry or concept." }]}

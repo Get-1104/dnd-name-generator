@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Orc Name Generator for D&D | Fantasy Character Names",
@@ -17,7 +18,10 @@ export default function OrcPage() {
   const description = "Generate fierce orc names for D&D characters and NPCs.";
   const path = "/orc";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is an orc name generator?",
       a: "An orc name generator creates strong, aggressive fantasy names you can use for orc characters and NPCs in D&D.",
@@ -162,7 +166,7 @@ export default function OrcPage() {
 
       {/* ✅ Related generators */}
       <RelatedGenerators
-        hrefs={["/goblin", "/dwarf", "/human", "/dragonborn"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: For orc warlords, try combining an orc given name with a dwarven-style ‘forge/stone’ surname to create a distinctive clan identity."
         extraLinks={[{ href: "/guides/how-to-name-a-dnd-character", title: "How to name a D&D character (guide)", description: "A practical framework you can use for any ancestry or concept." }]}

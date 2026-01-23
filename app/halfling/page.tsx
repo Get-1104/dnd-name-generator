@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Halfling Name Generator for D&D | Fantasy Character Names",
@@ -18,7 +19,10 @@ export default function HalflingPage() {
     "Generate charming halfling names for D&D characters and NPCs.";
   const path = "/halfling";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a halfling name generator?",
       a: "A halfling name generator creates halfling-style fantasy names you can use for D&D characters, NPCs, and stories.",
@@ -140,7 +144,7 @@ export default function HalflingPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/gnome", "/human", "/elf", "/goblin"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: If your halfling grew up in a different culture, try pairing a halfling given name with a human-style surname for a subtle twist."
       />

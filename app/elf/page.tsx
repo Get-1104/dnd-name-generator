@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Elf Name Generator for D&D | Fantasy Character Names",
@@ -17,7 +18,10 @@ export default function ElfPage() {
   const description = "Generate elegant elven names for D&D characters and NPCs.";
   const path = "/elf";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is an elf name generator?",
       a: "An elf name generator creates fantasy elven-style names you can use for D&D characters, NPCs, and stories.",
@@ -178,7 +182,7 @@ export default function ElfPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/dwarf", "/tiefling", "/dragonborn", "/eastern"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: If you like an elf first name, try pairing it with a sturdier dwarf-style surname—or the reverse—for mixed-heritage characters."
         extraLinks={[{ href: "/guides/elf-naming-conventions", title: "Elf naming conventions (guide)", description: "Learn common elf naming patterns and sounds for believable elven names." }]}

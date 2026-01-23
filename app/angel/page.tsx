@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Angel Name Generator for D&D | Celestial Fantasy Names",
@@ -18,7 +19,10 @@ export default function AngelPage() {
     "Generate celestial angel names for D&D campaigns and fantasy worlds.";
   const path = "/angel";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is an angel name generator?",
       a: "An angel name generator creates celestial-style names you can use for angels, devas, heralds, and holy NPCs in D&D and fantasy settings.",
@@ -137,7 +141,7 @@ export default function AngelPage() {
 
       {/* ✅ Related generators */}
       <RelatedGenerators
-        hrefs={["/demon", "/tiefling", "/elf", "/dragonborn"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: Give angels longer, ceremonial titles, but keep a short nickname for table play if they appear frequently."
       />

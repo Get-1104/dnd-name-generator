@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Demon Name Generator for D&D | Dark Fantasy Names",
@@ -18,7 +19,10 @@ export default function DemonPage() {
     "Generate sinister demon names for D&D villains and dark fantasy settings.";
   const path = "/demon";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a demon name generator?",
       a: "A demon name generator creates dark, infernal-style names you can use for demon villains, fiends, cult leaders, and terrifying NPCs in D&D.",
@@ -137,7 +141,7 @@ export default function DemonPage() {
 
       {/* ✅ Related generators */}
       <RelatedGenerators
-        hrefs={["/tiefling", "/angel", "/dragonborn", "/orc"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: For cultists and lieutenants, use shorter names; reserve longer, title-heavy names for major demons and bosses."
       />

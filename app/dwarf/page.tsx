@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Dwarf Name Generator for D&D | Fantasy Character Names",
@@ -17,7 +18,10 @@ export default function DwarfPage() {
   const description = "Generate sturdy dwarf names for D&D characters and NPCs.";
   const path = "/dwarf";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a dwarf name generator?",
       a: "A dwarf name generator creates fantasy dwarf-style names you can use for D&D characters, NPCs, and stories.",
@@ -164,7 +168,7 @@ export default function DwarfPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/elf", "/tiefling", "/dragonborn", "/eastern"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: Pair a sturdy dwarf surname with a softer elf given name for mixed-heritage characters—or do the reverse for contrast."
         extraLinks={[{ href: "/guides/dwarf-clan-names-and-traditions", title: "Dwarf clan names & traditions (guide)", description: "How dwarf surnames and clan names work in D&D." }]}

@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Goblin Name Generator for D&D | Fantasy Character Names",
@@ -18,7 +19,10 @@ export default function GoblinPage() {
     "Generate mischievous goblin names for D&D characters and NPCs.";
   const path = "/goblin";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a goblin name generator?",
       a: "A goblin name generator creates short, punchy fantasy names you can use for goblin characters, NPCs, and creatures in D&D.",
@@ -162,7 +166,7 @@ export default function GoblinPage() {
 
       {/* ✅ Related generators */}
       <RelatedGenerators
-        hrefs={["/orc", "/gnome", "/halfling", "/dwarf"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: For goblin leaders or bosses, try adding a longer title or clan name to make them stand out."
       />

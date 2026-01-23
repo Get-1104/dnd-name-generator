@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Dragonborn Name Generator for D&D | Fantasy Character Names",
@@ -18,7 +19,10 @@ export default function DragonbornPage() {
     "Generate powerful dragonborn names for D&D characters and NPCs.";
   const path = "/dragonborn";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a dragonborn name generator?",
       a: "A dragonborn name generator creates draconic-style names you can use for D&D characters, NPCs, and fantasy stories.",
@@ -169,7 +173,7 @@ export default function DragonbornPage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/tiefling", "/elf", "/dwarf", "/human"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: If your dragonborn has a mixed background, try pairing a draconic given name with a more human-style surname—or the reverse for contrast."
         extraLinks={[{ href: "/guides/dragonborn-naming-conventions", title: "Dragonborn naming conventions (guide)", description: "Clan names, traditions, and roleplay-friendly naming tips." }]}

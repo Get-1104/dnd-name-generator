@@ -5,6 +5,7 @@ import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
+import { getRelatedGeneratorHrefs } from "@/lib/related";
 
 export const metadata = createPageMetadata({
   title: "Gnome Name Generator for D&D | Fantasy Character Names",
@@ -17,7 +18,10 @@ export default function GnomePage() {
   const description = "Generate clever gnome names for D&D characters and NPCs.";
   const path = "/gnome";
 
-  const faq = [
+  
+
+  const relatedHrefs = getRelatedGeneratorHrefs(path, { max: 4 });
+const faq = [
     {
       q: "What is a gnome name generator?",
       a: "A gnome name generator creates gnome-style fantasy names you can use for D&D characters, NPCs, and stories.",
@@ -140,7 +144,7 @@ export default function GnomePage() {
 
       {/* ✅ Related generators (统一组件) */}
       <RelatedGenerators
-        hrefs={["/halfling", "/human", "/goblin", "/elf"]}
+        hrefs={relatedHrefs}
         title="Try related name generators"
         note="Tip: If you want a gnome name to sound more serious, keep the given name short and pair it with a grounded human-style surname."
       />
