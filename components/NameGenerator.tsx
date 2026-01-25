@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { usePathname, useSearchParams } from "next/navigation";
 import ExampleNamesCard from "@/components/ExampleNamesCard";
 import Toast from "@/components/Toast";
 
@@ -129,6 +130,11 @@ function makeNameCjk(
   return base;
 }
 
+function getRaceFromPathname(pathname: string) {
+  const seg = pathname.split("?")[0].split("/").filter(Boolean)[0] || "";
+  return seg;
+}
+
 export default function NameGenerator({
   title,
   description,
@@ -162,6 +168,13 @@ export default function NameGenerator({
     Array.isArray(cjkGenerationChars) && cjkGenerationChars.length > 0;
   const hasTitles = Array.isArray(cjkTitles) && cjkTitles.length > 0;
 
+  // URL-driven state (race from pathname, class/gender from query)
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const raceFromUrl = useMemo(() => getRaceFromPathname(pathname), [pathname]);
+  const clazz = searchParams.get("class") ?? "";
+  const gender = searchParams.get("gender") ?? "";
+
   // 内部 2/3 模式（仅 toggle_2_3 需要）
   const [cjkInternalMode, setCjkInternalMode] = useState<"two" | "three">(
     cjkMode === "three" ? "three" : "two"
@@ -182,6 +195,11 @@ export default function NameGenerator({
   // ✅ Toast state（避免 toastMsg/toastOpen 未定义）
   const [toastOpen, setToastOpen] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
+
+  // ✅ Toolbar controls (layout-first)
+  const [batchCount, setBatchCount] = useState<number>(initialCount);
+  const [noDuplicates, setNoDuplicates] = useState<boolean>(true);
+  const [advancedOpen, setAdvancedOpen] = useState<boolean>(false);
 
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
@@ -215,7 +233,8 @@ export default function NameGenerator({
   function generateUniqueBatch(
     count: number,
     makeOne: () => string,
-    maxAttempts = count * 30
+    maxAttempts = count * 30,
+    dedupe = true
   ) {
     const batch: string[] = [];
     const seen = new Set<string>();
@@ -224,21 +243,27 @@ export default function NameGenerator({
     while (batch.length < count && attempts < maxAttempts) {
       attempts += 1;
       const n = makeOne();
-      if (seen.has(n)) continue;
-      if (recentSetRef.current.has(n)) continue;
+      if (dedupe) {
+        if (seen.has(n)) continue;
+        if (recentSetRef.current.has(n)) continue;
+      }
       seen.add(n);
       batch.push(n);
     }
 
-    // Fallback: if the pool is too small, allow repeats (but still unique within batch)
+    // Fallback: if the pool is too small, allow repeats (when dedupe is off, allow freely)
     while (batch.length < count) {
       const n = makeOne();
-      if (seen.has(n)) continue;
-      seen.add(n);
-      batch.push(n);
+      if (dedupe) {
+        if (seen.has(n)) continue;
+        seen.add(n);
+        batch.push(n);
+      } else {
+        batch.push(n);
+      }
     }
 
-    remember(batch);
+    if (dedupe) remember(batch);
     return batch;
   }
 
@@ -258,11 +283,23 @@ export default function NameGenerator({
 
   function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
-    setNames(generateUniqueBatch(initialCount, () => generateOne(mode)));
+    setNames(
+      generateUniqueBatch(
+        batchCount,
+        () => generateOne(mode),
+        undefined,
+        noDuplicates
+      )
+    );
   }
 
   const [names, setNames] = useState<string[]>(() =>
-    generateUniqueBatch(initialCount, () => generateOne(effectiveCjkMode))
+    generateUniqueBatch(
+      batchCount,
+      () => generateOne(effectiveCjkMode),
+      undefined,
+      noDuplicates
+    )
   );
 
   // ✅ 当关键控制项变化时，自动刷新一次（用户体验更一致）
@@ -271,6 +308,21 @@ export default function NameGenerator({
     regenerate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [effectiveCjkMode, generationChar, titlePick, titlePos]);
+
+  // ✅ URL-driven: when race/class/gender changes, refresh names without reload.
+  useEffect(() => {
+    // Reset short-term de-dup memory so switching filters feels responsive.
+    recentListRef.current = [];
+    recentSetRef.current = new Set();
+    regenerate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clazz, gender, raceFromUrl]);
+
+  // Auto regenerate when toolbar controls change
+  useEffect(() => {
+    regenerate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [batchCount, noDuplicates]);
 
   const copyText = useMemo(() => names.join("\n"), [names]);
 
@@ -389,18 +441,71 @@ export default function NameGenerator({
           </div>
         )}
 
-        <div className="flex gap-2">
-          <button
-            type="button"
-            className="rounded-xl bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
-            onClick={onGenerate}
-          >
-            {isGenerating ? "Generating…" : generateLabel}
-          </button>
-          <button type="button" className="btn-secondary px-4 py-2" onClick={onCopy}>
-            {copyLabel}
-          </button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          {/* Left: actions */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              className="rounded-xl bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
+              onClick={onGenerate}
+            >
+              {isGenerating ? "Generating…" : generateLabel}
+            </button>
+
+            <button
+              type="button"
+              className="btn-secondary px-4 py-2"
+              onClick={onCopy}
+            >
+              {copyLabel}
+            </button>
+          </div>
+
+          {/* Right: controls */}
+          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+            {/* Batch */}
+            <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm">
+              <span className="text-zinc-700">Batch</span>
+              <select
+                className="bg-transparent outline-none"
+                value={batchCount}
+                onChange={(e) => setBatchCount(parseInt(e.target.value, 10))}
+              >
+                {[5, 10, 20, 50].map((n) => (
+                  <option key={n} value={n}>
+                    {n}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            {/* No duplicates */}
+            <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm">
+              <input
+                type="checkbox"
+                className="h-4 w-4"
+                checked={noDuplicates}
+                onChange={(e) => setNoDuplicates(e.target.checked)}
+              />
+              <span className="text-zinc-700">No duplicates</span>
+            </label>
+
+            {/* Advanced */}
+            <button
+              type="button"
+              className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm shadow-sm hover:shadow"
+              onClick={() => setAdvancedOpen((v) => !v)}
+            >
+              Advanced {advancedOpen ? "▴" : "▾"}
+            </button>
+          </div>
         </div>
+
+        {advancedOpen && (
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
+            More controls coming soon.
+          </div>
+        )}
 
         <div className="grid gap-2">
           {names.map((n, idx) => (

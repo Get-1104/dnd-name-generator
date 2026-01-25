@@ -1,17 +1,19 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { Suspense } from "react";
 import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
-import RaceSwitcher from "@/components/RaceSwitcher";
 
 export const metadata = createPageMetadata({
-	title: "Elf Name Generator for D&D | Fantasy Character Names",
-	description: "Generate elegant elf names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
-	path: "/elf",
+  	title: "Elf Name Generator (D&D 5e) ",
+  	description:
+    	"Generate elegant male and female elf names for D&D 5e characters, NPCs, and campaigns. Perfect for players, DMs, and fantasy worlds.",
+  	path: "/elf",
 });
+
 
 export default function ElfPage() {
 	const title = "Elf Name Generator";
@@ -51,27 +53,15 @@ export default function ElfPage() {
 				<div className="mx-auto max-w-3xl space-y-10">
 					<JsonLd data={jsonLd} />
 
-					{/* Top hero: RaceSwitcher above title (polished spacing/typography) */}
-					<header className="pt-6">
+					{/* Top hero: title/description */}
+					<header className="pt-2 sm:pt-4">
 						<div className="mx-auto max-w-3xl text-center">
 							<div className="mx-auto h-px w-12 bg-zinc-200/60 -mt-2" aria-hidden />
-
-							{/* RaceSwitcher (now borderless and soft) */}
-							<div className="mx-auto max-w-5xl px-2">
-								<RaceSwitcher current="elf" />
-							</div>
-
-							{/* spacing: RaceSwitcher → H1 = mt-4 (more compact, editorial) */}
-							<h1 className="text-4xl sm:text-5xl tracking-tight leading-tight font-semibold max-w-2xl mx-auto mt-4">
+							<h1 className="text-4xl sm:text-5xl tracking-tight leading-tight font-semibold max-w-2xl mx-auto mt-6">
 								{title}
 							</h1>
-
-							{/* spacing: H1 → description = mt-4 */}
-							<p className="max-w-2xl mx-auto mt-4 text-base sm:text-lg leading-relaxed text-zinc-600">
-								Use this elf name generator to quickly create elegant, melodic names for
-								elves in D&amp;D. Whether you&apos;re naming a new player character,
-								improvising an NPC, or drafting ancient family lineages, generate a
-								shortlist and tweak spelling or syllables to match your setting’s tone.
+							<p className="max-w-2xl mx-auto mt-3 text-base sm:text-lg leading-relaxed text-zinc-600">
+								Use this elf name generator to quickly create elegant, melodic names for elves in D&amp;D.
 							</p>
 						</div>
 					</header>
@@ -80,6 +70,7 @@ export default function ElfPage() {
 					<div className="mt-6 flex justify-center">
 						<div className="w-full max-w-3xl mx-auto">
 							{/* NameGenerator remains unchanged; the container centers the work area */}
+							<Suspense fallback={<div className="h-40" />}>
 							<NameGenerator
 								hideHeader
 								title={title}
@@ -125,6 +116,7 @@ export default function ElfPage() {
 								}}
 								initialCount={10}
 							/>
+							</Suspense>
 						</div>
 					</div>
 
@@ -176,6 +168,42 @@ export default function ElfPage() {
 								</div>
 							</details>
 						</div>
+					</section>
+
+					<section className="space-y-6 mt-8">
+					  <h2 className="text-2xl font-semibold">
+					    Generate Authentic Elf Names for D&D 5e
+					  </h2>
+					  <p className="text-zinc-700 leading-7">
+					    This elf name generator is designed for Dungeons & Dragons 5e players and Dungeon Masters
+					    who need believable elf names for player characters, NPCs, and fantasy campaigns.
+					    All names are inspired by classic elven naming styles commonly used in D&D settings.
+					  </p>
+
+					  <h2 className="text-2xl font-semibold">
+					    Elf Names by Gender and Character Type
+					  </h2>
+					  <p className="text-zinc-700 leading-7">
+					    You can generate male, female, or gender-neutral elf names suitable for a wide range of
+					    character types, including fighters, wizards, rogues, clerics, and background NPCs.
+					  </p>
+
+					  <h2 className="text-2xl font-semibold">
+					    How to Use This Elf Name Generator
+					  </h2>
+					  <p className="text-zinc-700 leading-7">
+					    Select your preferred options, click Generate, and instantly receive a list of elf names.
+					    You can regenerate, copy, or tweak names to better match your campaign’s tone and setting.
+					  </p>
+
+					  <h2 className="text-2xl font-semibold">
+					    Elf Naming Tips for DMs and Players
+					  </h2>
+					  <p className="text-zinc-700 leading-7">
+					    For the best results, keep elf names consistent with your world’s culture and history.
+					    Longer melodic names often suit high elves, while shorter names may fit wood elves
+					    or more grounded fantasy settings.
+					  </p>
 					</section>
 
 					<section aria-labelledby="faq" className="mt-10 max-w-3xl mx-auto w-full">

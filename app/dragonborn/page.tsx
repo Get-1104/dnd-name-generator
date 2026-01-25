@@ -1,11 +1,13 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { Suspense } from "react";
 import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
 
+import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Dragonborn Name Generator for D&D | Fantasy Character Names",
   description: "Generate powerful dragonborn names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
@@ -53,7 +55,11 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-<h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <Suspense fallback={<div className="h-12" />}>
+          <ClassGenderControls />
+        </Suspense>
+
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
         <p className="text-zinc-700 leading-7">
           Use this dragonborn name generator to create strong, draconic names for
@@ -65,7 +71,7 @@ const faq = [
 
         <p className="text-zinc-700 leading-7">
           Want more naming styles? Browse the full{" "}
-          <Link href="/en" className="underline underline-offset-4">
+          <Link href="/" className="underline underline-offset-4">
             D&amp;D name generators
           </Link>{" "}
           collection, or compare with{" "}
@@ -83,6 +89,7 @@ const faq = [
       {/* Generator */}
       <section className="space-y-4">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <Suspense fallback={<div className="h-40" />}>
           <NameGenerator
             hideHeader
             title={title}
@@ -124,6 +131,7 @@ const faq = [
               "Tharvash Ashbinder",
             ]}
           />
+          </Suspense>
         </div>
 
         <p className="text-xs text-zinc-500">

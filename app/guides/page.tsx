@@ -93,8 +93,8 @@ export default function GuidesHubPage() {
 
       <footer className="pt-2 text-sm text-zinc-600">
         Tip: If you can’t find what you need, use the search on{" "}
-        <Link className="underline" href="/en">
-          /en
+        <Link className="underline" href="/">
+          home
         </Link>{" "}
         and check{" "}
         <code className="rounded bg-zinc-100 px-1">/admin/search-logs</code>{" "}

@@ -1,11 +1,14 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { Suspense } from "react";
 import NameGenerator from "@/components/NameGenerator";
 import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
 
+import RaceSwitcher from "@/components/RaceSwitcher";
+import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Demon Name Generator for D&D | Dark Fantasy Names",
   description: "Generate sinister demon names for D&D villains, fiends, and dark fantasy settings. Fast, free, and easy to use.",
@@ -53,7 +56,12 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-<h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+        <Suspense fallback={null}>
+          <RaceSwitcher current="demon" />
+          <ClassGenderControls />
+        </Suspense>
+
+        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
 
         <p className="text-zinc-700 leading-7">
           Use this demon name generator to create sinister names for D&amp;D villains,
@@ -79,6 +87,7 @@ const faq = [
       {/* Generator */}
       <section className="space-y-4">
         <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <Suspense fallback={null}>
           <NameGenerator
             hideHeader
             title={title}
@@ -98,6 +107,7 @@ const faq = [
               "Zarvex Flamecaller",
             ]}
           />
+          </Suspense>
         </div>
 
         <p className="text-xs text-zinc-500">

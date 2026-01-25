@@ -1,9 +1,12 @@
 import Link from "next/link";
 import JsonLd from "@/components/JsonLd";
+import { Suspense } from "react";
 import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 
+import RaceSwitcher from "@/components/RaceSwitcher";
+import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Half-Orc Name Generator for D&D | Fantasy Character Names",
   description: "Generate tough half-orc names for Dungeons & Dragons characters, NPCs, and fantasy campaigns. Fast, free, and easy to use.",
@@ -46,7 +49,12 @@ export default function HalfOrcPage() {
 
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
 <header className="space-y-3">
-          <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
+                    <Suspense fallback={<div className="h-12" />}>
+                      <RaceSwitcher current="half-orc" />
+                      <ClassGenderControls />
+                    </Suspense>
+
+<h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
           <p className="text-zinc-700 leading-7">{description}</p>
 
           <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">
@@ -70,6 +78,7 @@ export default function HalfOrcPage() {
       </section>
 
       <section className="mx-auto max-w-3xl px-4 mt-8 space-y-4">
+        <Suspense fallback={<div className="h-40" />}>
         <NameGenerator
           hideHeader
           title={title}
@@ -89,6 +98,7 @@ export default function HalfOrcPage() {
             "Vornarak Ashblade",
           ]}
         />
+        </Suspense>
 
         <p className="text-xs text-zinc-500">
           Tip: Half-orc names often work best when you keep the given name short
