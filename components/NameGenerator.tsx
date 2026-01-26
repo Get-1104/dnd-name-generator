@@ -4,6 +4,19 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import ExampleNamesCard from "@/components/ExampleNamesCard";
 import Toast from "@/components/Toast";
+import {
+  ElfOptions,
+  defaultElfOptions,
+  elfStyleOptions,
+  elfLengthOptions,
+  elfCulturalContextOptions,
+  elfNameFormOptions,
+  elfPronunciationOptions,
+  elfMeaningFlavorOptions,
+  elfCulturalOriginOptions,
+} from "@/lib/elfOptions";
+
+type ElfOption = { value: string; label: string };
 
 type Parts = {
   first: string[];
@@ -30,6 +43,10 @@ type Props = {
 
   /** 是否隐藏顶部标题区（Back + H1 + description） */
   hideHeader?: boolean;
+
+  /** Advanced mode state */
+  isAdvanced?: boolean;
+  onAdvancedToggle?: () => void;
 
   /**
    * CJK（中文）名字模式
@@ -79,6 +96,44 @@ function makeNameDefault(parts: Parts, separator: string) {
     `${separator}` +
     `${pick(parts.lastA)}${pick(parts.lastB)}`
   );
+}
+
+function makeElfName(parts: Parts, separator: string, options: ElfOptions) {
+  let given = "";
+  let surname = "";
+
+  // Length affects given name length
+  if (options.length === "short") {
+    given = pick(parts.first);
+  } else if (options.length === "medium") {
+    given = `${pick(parts.first)}${pick(parts.second)}`;
+  } else { // long
+    given = `${pick(parts.first)}${pick(parts.second)}${pick(parts.lastA)}`;
+  }
+
+  // Surname
+  if (options.surname) {
+    surname = `${pick(parts.lastA)}${pick(parts.lastB)}`;
+  }
+
+  // For nameForm: short -> shorter given, external -> simpler (less lastA/lastB)
+  if (options.nameForm === "short") {
+    given = pick(parts.first); // override to short
+  } else if (options.nameForm === "external") {
+    // Simpler: avoid complex combinations
+    given = pick(parts.first) + pick(parts.second);
+  }
+
+  // Pronunciation: simplified -> perhaps shorter or common letters, but for now, no change
+
+  // Meaning flavor: could affect pool, but for now, no change
+
+  // Cultural context: no change for now
+
+  // Style: no change for now
+
+  const fullName = surname ? `${given}${separator}${surname}` : given;
+  return fullName;
 }
 
 /**
@@ -162,7 +217,12 @@ export default function NameGenerator({
   cjkTitlePositionLabel = "Title position",
   cjkTitlePrefixLabel = "Title·Name",
   cjkTitleSuffixLabel = "Name·Title",
+
+  isAdvanced = false,
+  onAdvancedToggle,
 }: Props) {
+  const advancedAnchorRef = useRef<HTMLDivElement>(null);
+
   const hasCjk = cjkMode !== "off";
   const hasGeneration =
     Array.isArray(cjkGenerationChars) && cjkGenerationChars.length > 0;
@@ -199,7 +259,9 @@ export default function NameGenerator({
   // ✅ Toolbar controls (layout-first)
   const [batchCount, setBatchCount] = useState<number>(initialCount);
   const [noDuplicates, setNoDuplicates] = useState<boolean>(true);
-  const [advancedOpen, setAdvancedOpen] = useState<boolean>(false);
+
+  // Elf options
+  const [elfOptions, setElfOptions] = useState<ElfOptions>(defaultElfOptions);
 
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
@@ -278,6 +340,9 @@ export default function NameGenerator({
         titlePos
       );
     }
+    if (raceFromUrl === "elf") {
+      return makeElfName(parts, separator, elfOptions);
+    }
     return makeNameDefault(parts, separator);
   }
 
@@ -323,6 +388,14 @@ export default function NameGenerator({
     regenerate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [batchCount, noDuplicates]);
+
+  // Auto regenerate when elf options change
+  useEffect(() => {
+    if (raceFromUrl === "elf") {
+      regenerate();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [elfOptions]);
 
   const copyText = useMemo(() => names.join("\n"), [names]);
 
@@ -441,6 +514,166 @@ export default function NameGenerator({
           </div>
         )}
 
+        {/* Elf controls */}
+        {raceFromUrl === "elf" && (
+          <>
+            {/* Normal controls */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div>
+                <div className="mb-2 text-xs font-medium text-zinc-600">Style</div>
+                <div className="flex flex-wrap gap-2">
+                  {elfStyleOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                        elfOptions.style === opt.value
+                          ? "border-zinc-900 bg-zinc-900 text-white"
+                          : "border-zinc-200 bg-white text-zinc-900"
+                      }`}
+                      onClick={() =>
+                        setElfOptions((prev) => ({ ...prev, style: opt.value }))
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="mb-2 text-xs font-medium text-zinc-600">Length</div>
+                <div className="flex flex-wrap gap-2">
+                  {elfLengthOptions.map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                        elfOptions.length === opt.value
+                          ? "border-zinc-900 bg-zinc-900 text-white"
+                          : "border-zinc-200 bg-white text-zinc-900"
+                      }`}
+                      onClick={() =>
+                        setElfOptions((prev) => ({ ...prev, length: opt.value }))
+                      }
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm h-9">
+                <input
+                  type="checkbox"
+                  className="h-4 w-4"
+                  checked={elfOptions.surname}
+                  onChange={(e) =>
+                    setElfOptions((prev) => ({ ...prev, surname: e.target.checked }))
+                  }
+                />
+                <span className="text-zinc-700">Include surname</span>
+              </label>
+
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm h-9"
+                onClick={() => onAdvancedToggle?.()}
+              >
+                Advanced {isAdvanced ? "▴" : "▾"}
+              </button>
+            </div>
+
+            {/* Advanced controls */}
+            <div
+              style={{
+                maxHeight: isAdvanced ? '1000px' : '0',
+                overflow: 'hidden',
+                transition: 'max-height 0.3s ease-in-out',
+              }}
+            >
+              <div className="mt-3 border-t pt-3">
+                <details className="mb-3">
+                  <summary className="cursor-pointer text-sm font-medium text-zinc-900 mb-2">What affects elven names?</summary>
+                  <div className="text-sm text-zinc-700 space-y-1">
+                    <p>Elven names may change across regions and cultures</p>
+                    <p>The same elf can be known by different names in formal records and daily speech</p>
+                    <p>Honorifics and name length often reflect social standing or historical context</p>
+                    <p>This generator focuses on lore-consistent variations rather than fixed identities</p>
+                  </div>
+                </details>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3">
+                  <label className="text-sm text-zinc-700">
+                    <div className="mb-2 text-xs font-medium text-zinc-600">Cultural context</div>
+                    <div className="flex flex-wrap gap-2">
+                      {elfCulturalContextOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.culturalContext === opt.value
+                              ? "border-zinc-900 bg-zinc-900 text-white"
+                              : "border-zinc-200 bg-white text-zinc-900"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, culturalContext: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </label>
+
+                  <label className="text-sm text-zinc-700">
+                    <div className="mb-2 text-xs font-medium text-zinc-600">Name form</div>
+                    <div className="flex flex-wrap gap-2">
+                      {elfNameFormOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.nameForm === opt.value
+                              ? "border-zinc-900 bg-zinc-900 text-white"
+                              : "border-zinc-200 bg-white text-zinc-900"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, nameForm: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </label>
+
+                  <label className="text-sm text-zinc-700">
+                    <div className="mb-2 text-xs font-medium text-zinc-600">Cultural origin</div>
+                    <div className="flex flex-wrap gap-2">
+                      {elfCulturalOriginOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.culturalOrigin === opt.value
+                              ? "border-zinc-900 bg-zinc-900 text-white"
+                              : "border-zinc-200 bg-white text-zinc-900"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, culturalOrigin: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           {/* Left: actions */}
           <div className="flex items-center gap-2">
@@ -462,7 +695,7 @@ export default function NameGenerator({
           </div>
 
           {/* Right: controls */}
-          <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+          <div ref={advancedAnchorRef} className="flex flex-wrap items-center gap-2 sm:justify-end">
             {/* Batch */}
             <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm">
               <span className="text-zinc-700">Batch</span>
@@ -489,29 +722,20 @@ export default function NameGenerator({
               />
               <span className="text-zinc-700">No duplicates</span>
             </label>
-
-            {/* Advanced */}
-            <button
-              type="button"
-              className="rounded-xl border border-zinc-200 bg-white px-4 py-2 text-sm shadow-sm hover:shadow"
-              onClick={() => setAdvancedOpen((v) => !v)}
-            >
-              Advanced {advancedOpen ? "▴" : "▾"}
-            </button>
           </div>
         </div>
 
-        {advancedOpen && (
+        {isAdvanced && raceFromUrl !== "elf" && (
           <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
             More controls coming soon.
           </div>
         )}
 
-        <div className="grid gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
           {names.map((n, idx) => (
             <div
               key={`${n}-${idx}`}
-              className="rounded-xl bg-zinc-50 px-3 py-2 font-medium"
+              className="w-full rounded-xl bg-zinc-50 px-3 py-2 font-medium"
             >
               {n}
             </div>

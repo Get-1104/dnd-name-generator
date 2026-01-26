@@ -5,7 +5,6 @@ import NameGenerator from "@/components/NameGenerator";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 
-import RaceSwitcher from "@/components/RaceSwitcher";
 import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Half-Elf Name Generator for D&D | Fantasy Character Names",
@@ -49,8 +48,7 @@ export default function HalfElfPage() {
 
       <section className="mx-auto max-w-3xl px-4 mt-10 space-y-6">
 <header className="space-y-3">
-                    <Suspense fallback={<div className="h-12" />}>
-                      <RaceSwitcher current="half-elf" />
+                    <Suspense fallback={<div className="h-4" />}>
                       <ClassGenderControls />
                     </Suspense>
 

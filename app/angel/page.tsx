@@ -7,7 +7,6 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
 
-import RaceSwitcher from "@/components/RaceSwitcher";
 import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Angel Name Generator for D&D | Celestial Fantasy Names",
@@ -56,8 +55,7 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-        <Suspense fallback={<div className="h-12" />}>
-          <RaceSwitcher current="angel" />
+        <Suspense fallback={<div className="h-4" />}>
           <ClassGenderControls />
         </Suspense>
 

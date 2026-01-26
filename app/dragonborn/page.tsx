@@ -55,7 +55,7 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-        <Suspense fallback={<div className="h-12" />}>
+        <Suspense fallback={<div className="h-4" />}>
           <ClassGenderControls />
         </Suspense>
 

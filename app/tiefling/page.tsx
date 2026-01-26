@@ -7,7 +7,6 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
 
-import RaceSwitcher from "@/components/RaceSwitcher";
 import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Tiefling Name Generator for D&D | Fantasy Character Names",
@@ -56,8 +55,7 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-        <Suspense fallback={<div className="h-12" />}>
-          <RaceSwitcher current="tiefling" />
+        <Suspense fallback={<div className="h-4" />}>
           <ClassGenderControls />
         </Suspense>
 
@@ -73,7 +71,7 @@ const faq = [
 
         <p className="text-zinc-700 leading-7">
           Want more naming styles? Browse the full{" "}
-          <Link href="/en" className="underline underline-offset-4">
+          <Link href="/" className="underline underline-offset-4">
             D&amp;D name generators
           </Link>{" "}
           collection, or compare with{" "}

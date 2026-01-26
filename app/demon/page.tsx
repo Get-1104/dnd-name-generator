@@ -7,7 +7,6 @@ import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
 
-import RaceSwitcher from "@/components/RaceSwitcher";
 import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
   title: "Demon Name Generator for D&D | Dark Fantasy Names",
@@ -57,7 +56,6 @@ const faq = [
       {/* Top intro */}
       <header className="space-y-3">
         <Suspense fallback={null}>
-          <RaceSwitcher current="demon" />
           <ClassGenderControls />
         </Suspense>
 

@@ -6,6 +6,7 @@ import RelatedGenerators from "@/components/RelatedGenerators";
 import { buildGeneratorPageJsonLd } from "@/lib/seo";
 import { createPageMetadata } from "@/lib/metadata";
 import { getRelatedGeneratorHrefs } from "@/lib/related";
+import NamingRules from "@/components/NamingRules";
 
 import ClassGenderControls from "@/components/ClassGenderControls";
 export const metadata = createPageMetadata({
@@ -54,7 +55,7 @@ const faq = [
 
       {/* Top intro */}
       <header className="space-y-3">
-        <Suspense fallback={<div className="h-12" />}>
+        <Suspense fallback={<div className="h-4" />}>
           <ClassGenderControls />
         </Suspense>
 
@@ -80,6 +81,9 @@ const faq = [
           .
         </p>
       </header>
+
+      {/* Naming rules */}
+      <NamingRules race="dwarf" />
 
       {/* Generator */}
       <section className="space-y-4">
