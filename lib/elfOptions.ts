@@ -9,11 +9,11 @@ export interface ElfOptions {
   style: ElfStyle;
   length: ElfLength;
   surname: boolean;
-  culturalContext: ElfCulturalContext;
-  nameForm: ElfNameForm;
+  culturalContext?: ElfCulturalContext;
+  nameForm?: ElfNameForm;
   pronunciation: ElfPronunciation;
   meaningFlavor: ElfMeaningFlavor;
-  culturalOrigin: ElfCulturalOrigin;
+  culturalOrigin?: ElfCulturalOrigin;
 }
 
 export const defaultElfOptions: ElfOptions = {
@@ -66,9 +66,9 @@ export const elfMeaningFlavorOptions: { value: ElfMeaningFlavor; label: string }
 
 export const elfCulturalOriginOptions = [
   { value: "high-elf", label: "High Elf / Sun Elf" },
+  { value: "ancient-highborn", label: "Ancient / Highborn Tradition" },
   { value: "wood-elf", label: "Wood Elf" },
   { value: "drow", label: "Dark Elf / Drow" },
-  { value: "ancient-highborn", label: "Ancient / Highborn Tradition" },
 ] as const;
 
 export type ElfCulturalOrigin =

@@ -15,8 +15,10 @@ import {
   elfMeaningFlavorOptions,
   elfCulturalOriginOptions,
 } from "@/lib/elfOptions";
+import { generateWeightedElfName, NATION_OPTIONS } from "@/lib/weightedNameGenerator";
 
 type ElfOption = { value: string; label: string };
+
 
 type Parts = {
   first: string[];
@@ -136,6 +138,7 @@ function makeElfName(parts: Parts, separator: string, options: ElfOptions) {
   return fullName;
 }
 
+
 /**
  * CJK 生成规则（更贴近国风命名习惯）
  * - two:   [辈分字可选] + [名]
@@ -195,7 +198,7 @@ export default function NameGenerator({
   description,
   backHref = "/", // 目前 UI 不显示 back，这里保留兼容
   parts,
-  initialCount = 10,
+  initialCount = 20,
   examples = [],
   generateLabel = "Generate",
   copyLabel = "Copy",
@@ -233,7 +236,9 @@ export default function NameGenerator({
   const searchParams = useSearchParams();
   const raceFromUrl = useMemo(() => getRaceFromPathname(pathname), [pathname]);
   const clazz = searchParams.get("class") ?? "";
-  const gender = searchParams.get("gender") ?? "";
+  const queryGender = searchParams.get("gender") ?? "";
+  const seed = searchParams.get("seed") ?? undefined;
+  const traceEnabled = searchParams.get("trace") === "1";
 
   // 内部 2/3 模式（仅 toggle_2_3 需要）
   const [cjkInternalMode, setCjkInternalMode] = useState<"two" | "three">(
@@ -258,10 +263,21 @@ export default function NameGenerator({
 
   // ✅ Toolbar controls (layout-first)
   const [batchCount, setBatchCount] = useState<number>(initialCount);
-  const [noDuplicates, setNoDuplicates] = useState<boolean>(true);
 
   // Elf options
   const [elfOptions, setElfOptions] = useState<ElfOptions>(defaultElfOptions);
+
+  const [useStyle, setUseStyle] = useState(true);
+  const [useLength, setUseLength] = useState(true);
+  const [useCulturalContext, setUseCulturalContext] = useState(true);
+  const [useNameForm, setUseNameForm] = useState(true);
+  const [useCulturalOrigin, setUseCulturalOrigin] = useState(true);
+  const [useNation, setUseNation] = useState(false);
+  const [nation, setNation] = useState<string | null>(null);
+  const [useGender, setUseGender] = useState(true);
+  const [gender, setGender] = useState<"masculine" | "feminine" | "neutral" | null>(null);
+  const [useEra, setUseEra] = useState(true);
+  const [era, setEra] = useState<"ancient" | "contemporary" | "revival" | null>(null);
 
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
@@ -296,32 +312,58 @@ export default function NameGenerator({
     count: number,
     makeOne: () => string,
     maxAttempts = count * 30,
-    dedupe = true
+    dedupe = true,
+    prefixGuard?: { prefixLen: number; maxShare: number }
   ) {
     const batch: string[] = [];
     const seen = new Set<string>();
+    const prefixCounts = new Map<string, number>();
 
     let attempts = 0;
     while (batch.length < count && attempts < maxAttempts) {
       attempts += 1;
       const n = makeOne();
+      if (prefixGuard) {
+        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+        const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
+        const nextShare = nextCount / (batch.length + 1);
+        if (nextShare > prefixGuard.maxShare) {
+          continue;
+        }
+      }
       if (dedupe) {
         if (seen.has(n)) continue;
         if (recentSetRef.current.has(n)) continue;
       }
       seen.add(n);
+      if (prefixGuard) {
+        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+        prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+      }
       batch.push(n);
     }
 
     // Fallback: if the pool is too small, allow repeats (when dedupe is off, allow freely)
     while (batch.length < count) {
       const n = makeOne();
+      if (prefixGuard) {
+        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+        const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
+        const nextShare = nextCount / (batch.length + 1);
+        if (nextShare > prefixGuard.maxShare) {
+          continue;
+        }
+      }
       if (dedupe) {
         if (seen.has(n)) continue;
         seen.add(n);
         batch.push(n);
       } else {
         batch.push(n);
+      }
+      if (prefixGuard) {
+        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+        prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
       }
     }
 
@@ -341,31 +383,159 @@ export default function NameGenerator({
       );
     }
     if (raceFromUrl === "elf") {
-      return makeElfName(parts, separator, elfOptions);
+      const weightSelections = {
+        nation: useNation ? nation : null,
+        culturalOrigin:
+          useCulturalOrigin &&
+          elfOptions.culturalOrigin &&
+          elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
+            ? elfOptions.culturalOrigin
+            : null,
+        era: useEra ? era : null,
+        gender: useGender ? gender : null,
+        culturalContext:
+          useCulturalContext &&
+          elfOptions.culturalContext &&
+          elfOptions.culturalContext !== defaultElfOptions.culturalContext
+            ? elfOptions.culturalContext
+            : null,
+        nameForm:
+          useNameForm &&
+          elfOptions.nameForm &&
+          elfOptions.nameForm !== defaultElfOptions.nameForm
+            ? elfOptions.nameForm
+            : null,
+        style:
+          useStyle && elfOptions.style !== defaultElfOptions.style
+            ? elfOptions.style
+            : null,
+        length:
+          useLength && elfOptions.length !== defaultElfOptions.length
+            ? elfOptions.length
+            : null,
+      };
+      const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
+      if (!hasWeightedSelection) {
+        return makeElfName(parts, separator, elfOptions);
+      }
+      const result = generateWeightedElfName({
+        parts,
+        options: elfOptions,
+        separator,
+        seed,
+        trace: traceEnabled,
+        forceWeighting: true,
+        weights: {
+          race: "elf",
+          nation: weightSelections.nation,
+          culturalOrigin: weightSelections.culturalOrigin,
+          era: weightSelections.era,
+          gender: weightSelections.gender,
+          culturalContext: weightSelections.culturalContext,
+          nameForm: weightSelections.nameForm,
+          style: weightSelections.style,
+          length: weightSelections.length,
+        },
+      });
+      if (traceEnabled && result.trace) {
+        // eslint-disable-next-line no-console
+        console.log(result.trace);
+      }
+      return result.name;
     }
     return makeNameDefault(parts, separator);
   }
 
   function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
+    const weightSelections = {
+      nation: useNation ? nation : null,
+      culturalOrigin:
+        useCulturalOrigin &&
+        elfOptions.culturalOrigin &&
+        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
+          ? elfOptions.culturalOrigin
+          : null,
+      era: useEra ? era : null,
+      gender: useGender ? gender : null,
+      culturalContext:
+        useCulturalContext &&
+        elfOptions.culturalContext &&
+        elfOptions.culturalContext !== defaultElfOptions.culturalContext
+          ? elfOptions.culturalContext
+          : null,
+      nameForm:
+        useNameForm &&
+        elfOptions.nameForm &&
+        elfOptions.nameForm !== defaultElfOptions.nameForm
+          ? elfOptions.nameForm
+          : null,
+      style:
+        useStyle && elfOptions.style !== defaultElfOptions.style
+          ? elfOptions.style
+          : null,
+      length:
+        useLength && elfOptions.length !== defaultElfOptions.length
+          ? elfOptions.length
+          : null,
+    };
+    const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
     setNames(
       generateUniqueBatch(
         batchCount,
         () => generateOne(mode),
         undefined,
-        noDuplicates
+        true,
+        raceFromUrl === "elf" && hasWeightedSelection
+          ? { prefixLen: 2, maxShare: 0.4 }
+          : undefined
       )
     );
   }
 
-  const [names, setNames] = useState<string[]>(() =>
-    generateUniqueBatch(
+  const [names, setNames] = useState<string[]>(() => {
+    const weightSelections = {
+      nation: useNation ? nation : null,
+      culturalOrigin:
+        useCulturalOrigin &&
+        elfOptions.culturalOrigin &&
+        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
+          ? elfOptions.culturalOrigin
+          : null,
+      era: useEra ? era : null,
+      gender: useGender ? gender : null,
+      culturalContext:
+        useCulturalContext &&
+        elfOptions.culturalContext &&
+        elfOptions.culturalContext !== defaultElfOptions.culturalContext
+          ? elfOptions.culturalContext
+          : null,
+      nameForm:
+        useNameForm &&
+        elfOptions.nameForm &&
+        elfOptions.nameForm !== defaultElfOptions.nameForm
+          ? elfOptions.nameForm
+          : null,
+      style:
+        useStyle && elfOptions.style !== defaultElfOptions.style
+          ? elfOptions.style
+          : null,
+      length:
+        useLength && elfOptions.length !== defaultElfOptions.length
+          ? elfOptions.length
+          : null,
+    };
+    const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
+    return generateUniqueBatch(
       batchCount,
       () => generateOne(effectiveCjkMode),
       undefined,
-      noDuplicates
-    )
-  );
+      true,
+      raceFromUrl === "elf" && hasWeightedSelection
+        ? { prefixLen: 2, maxShare: 0.4 }
+        : undefined
+    );
+  });
 
   // ✅ 当关键控制项变化时，自动刷新一次（用户体验更一致）
   useEffect(() => {
@@ -381,13 +551,13 @@ export default function NameGenerator({
     recentSetRef.current = new Set();
     regenerate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clazz, gender, raceFromUrl]);
+  }, [clazz, queryGender, raceFromUrl]);
 
   // Auto regenerate when toolbar controls change
   useEffect(() => {
     regenerate();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [batchCount, noDuplicates]);
+  }, [batchCount]);
 
   // Auto regenerate when elf options change
   useEffect(() => {
@@ -518,71 +688,29 @@ export default function NameGenerator({
         {raceFromUrl === "elf" && (
           <>
             {/* Normal controls */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-              <div>
-                <div className="mb-2 text-xs font-medium text-zinc-600">Style</div>
-                <div className="flex flex-wrap gap-2">
-                  {elfStyleOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                        elfOptions.style === opt.value
-                          ? "border-zinc-900 bg-zinc-900 text-white"
-                          : "border-zinc-200 bg-white text-zinc-900"
-                      }`}
-                      onClick={() =>
-                        setElfOptions((prev) => ({ ...prev, style: opt.value }))
-                      }
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
+            {!isAdvanced && (
+              <>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="button"
+                    className="rounded-xl bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
+                    onClick={onGenerate}
+                  >
+                    {isGenerating ? "Generating…" : generateLabel}
+                  </button>
+
+                  <button
+                    type="button"
+                    className="text-base font-medium text-zinc-600 hover:text-zinc-800"
+                    onClick={() => onAdvancedToggle?.()}
+                  >
+                    Advanced options ›
+                  </button>
                 </div>
-              </div>
 
-              <div>
-                <div className="mb-2 text-xs font-medium text-zinc-600">Length</div>
-                <div className="flex flex-wrap gap-2">
-                  {elfLengthOptions.map((opt) => (
-                    <button
-                      key={opt.value}
-                      type="button"
-                      className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                        elfOptions.length === opt.value
-                          ? "border-zinc-900 bg-zinc-900 text-white"
-                          : "border-zinc-200 bg-white text-zinc-900"
-                      }`}
-                      onClick={() =>
-                        setElfOptions((prev) => ({ ...prev, length: opt.value }))
-                      }
-                    >
-                      {opt.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm h-9">
-                <input
-                  type="checkbox"
-                  className="h-4 w-4"
-                  checked={elfOptions.surname}
-                  onChange={(e) =>
-                    setElfOptions((prev) => ({ ...prev, surname: e.target.checked }))
-                  }
-                />
-                <span className="text-zinc-700">Include surname</span>
-              </label>
-
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm h-9"
-                onClick={() => onAdvancedToggle?.()}
-              >
-                Advanced {isAdvanced ? "▴" : "▾"}
-              </button>
-            </div>
+                <p className="mt-2 text-sm text-zinc-600">Using default settings optimized for typical elf names. For more customization, open Advanced.</p>
+              </>
+            )}
 
             {/* Advanced controls */}
             <div
@@ -592,72 +720,75 @@ export default function NameGenerator({
                 transition: 'max-height 0.3s ease-in-out',
               }}
             >
-              <div className="mt-3 border-t pt-3">
-                <details className="mb-3">
-                  <summary className="cursor-pointer text-sm font-medium text-zinc-900 mb-2">What affects elven names?</summary>
-                  <div className="text-sm text-zinc-700 space-y-1">
-                    <p>Elven names may change across regions and cultures</p>
-                    <p>The same elf can be known by different names in formal records and daily speech</p>
-                    <p>Honorifics and name length often reflect social standing or historical context</p>
-                    <p>This generator focuses on lore-consistent variations rather than fixed identities</p>
+              <div className="mt-3">
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    className="text-base font-medium text-zinc-600 hover:text-zinc-900"
+                    onClick={() => onAdvancedToggle?.()}
+                  >
+                    ← Basic options
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useNation}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseNation(checked);
+                          if (!checked) {
+                            setNation(null);
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Nation / Realm</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useNation ? "" : "opacity-40 pointer-events-none"}`}>
+                      {NATION_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            nation === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() => setNation(opt.value)}
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
                   </div>
-                </details>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3">
-                  <label className="text-sm text-zinc-700">
-                    <div className="mb-2 text-xs font-medium text-zinc-600">Cultural context</div>
-                    <div className="flex flex-wrap gap-2">
-                      {elfCulturalContextOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.culturalContext === opt.value
-                              ? "border-zinc-900 bg-zinc-900 text-white"
-                              : "border-zinc-200 bg-white text-zinc-900"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, culturalContext: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </label>
 
-                  <label className="text-sm text-zinc-700">
-                    <div className="mb-2 text-xs font-medium text-zinc-600">Name form</div>
-                    <div className="flex flex-wrap gap-2">
-                      {elfNameFormOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.nameForm === opt.value
-                              ? "border-zinc-900 bg-zinc-900 text-white"
-                              : "border-zinc-200 bg-white text-zinc-900"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, nameForm: opt.value }))
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useCulturalOrigin}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseCulturalOrigin(checked);
+                          if (!checked) {
+                            setElfOptions((prev) => ({ ...prev, culturalOrigin: defaultElfOptions.culturalOrigin }));
                           }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </label>
-
-                  <label className="text-sm text-zinc-700">
-                    <div className="mb-2 text-xs font-medium text-zinc-600">Cultural origin</div>
-                    <div className="flex flex-wrap gap-2">
+                        }}
+                      />
+                      <span className="text-sm font-medium">Cultural origin</span>
+                    </label>
+                    <div className="flex flex-wrap items-start justify-start gap-2">
                       {elfCulturalOriginOptions.map((opt) => (
                         <button
                           key={opt.value}
                           type="button"
-                          className={`h-9 rounded-xl border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.culturalOrigin === opt.value
-                              ? "border-zinc-900 bg-zinc-900 text-white"
-                              : "border-zinc-200 bg-white text-zinc-900"
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
                           }`}
                           onClick={() =>
                             setElfOptions((prev) => ({ ...prev, culturalOrigin: opt.value }))
@@ -667,16 +798,265 @@ export default function NameGenerator({
                         </button>
                       ))}
                     </div>
-                  </label>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useEra}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseEra(checked);
+                          if (!checked) {
+                            setEra(null);
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Era</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useEra ? "" : "opacity-40 pointer-events-none"}`}>
+                      {(
+                        [
+                          { value: "ancient", label: "Ancient" },
+                          { value: "contemporary", label: "Contemporary" },
+                          { value: "revival", label: "Revival" },
+                        ] as const
+                      ).map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            era === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setEra((prev) => (prev === opt.value ? null : opt.value))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useGender}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseGender(checked);
+                          if (!checked) {
+                            setGender(null);
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Gender</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useGender ? "" : "opacity-40 pointer-events-none"}`}>
+                      {(
+                        [
+                          { value: "masculine", label: "Masculine" },
+                          { value: "feminine", label: "Feminine" },
+                          { value: "neutral", label: "Neutral" },
+                        ] as const
+                      ).map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            gender === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setGender((prev) => (prev === opt.value ? null : opt.value))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useCulturalContext}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseCulturalContext(checked);
+                          if (!checked) {
+                            setElfOptions((prev) => ({ ...prev, culturalContext: defaultElfOptions.culturalContext }));
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Cultural context</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useCulturalContext ? '' : 'opacity-40 pointer-events-none'}`}>
+                      {elfCulturalContextOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.culturalContext === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, culturalContext: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useNameForm}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseNameForm(checked);
+                          if (!checked) {
+                            setElfOptions((prev) => ({ ...prev, nameForm: defaultElfOptions.nameForm }));
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Name form</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useNameForm ? '' : 'opacity-40 pointer-events-none'}`}>
+                      {elfNameFormOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.nameForm === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, nameForm: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useStyle}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseStyle(checked);
+                          if (!checked) {
+                            setElfOptions((prev) => ({ ...prev, style: defaultElfOptions.style }));
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Style</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useStyle ? '' : 'opacity-40 pointer-events-none'}`}>
+                      {elfStyleOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.style === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, style: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3">
+                    <label className="flex items-start gap-2 w-44 pt-1">
+                      <input
+                        type="checkbox"
+                        checked={useLength}
+                        onChange={(e) => {
+                          const checked = e.target.checked;
+                          setUseLength(checked);
+                          if (!checked) {
+                            setElfOptions((prev) => ({ ...prev, length: defaultElfOptions.length }));
+                          }
+                        }}
+                      />
+                      <span className="text-sm font-medium">Length</span>
+                    </label>
+                    <div className={`flex flex-wrap gap-2 ${useLength ? '' : 'opacity-40 pointer-events-none'}`}>
+                      {elfLengthOptions.map((opt) => (
+                        <button
+                          key={opt.value}
+                          type="button"
+                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                            elfOptions.length === opt.value
+                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
+                              : "border-zinc-200 bg-white text-zinc-800"
+                          }`}
+                          onClick={() =>
+                            setElfOptions((prev) => ({ ...prev, length: opt.value }))
+                          }
+                        >
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </>
-        )}
 
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          {/* Left: actions */}
-          <div className="flex items-center gap-2">
+            {isAdvanced && raceFromUrl === "elf" && (
+              <div className="mt-3 space-y-4">
+                <div className="flex items-center gap-2">
+                  <label className="flex items-center gap-2 w-44">
+                    <span className="text-sm font-medium">Include surname</span>
+                  </label>
+                  <input
+                    type="checkbox"
+                    className="h-4 w-4"
+                    checked={elfOptions.surname}
+                    onChange={(e) =>
+                      setElfOptions((prev) => ({ ...prev, surname: e.target.checked }))
+                    }
+                  />
+                  <span className="text-sm font-medium ml-6">Results</span>
+                  <select
+                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
+                    value={batchCount}
+                    onChange={(e) => setBatchCount(parseInt(e.target.value, 10))}
+                  >
+                    {[20, 50, 100].map((n) => (
+                      <option key={n} value={n}>
+                        {n}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
+
+        {(raceFromUrl !== "elf" || isAdvanced) && (
+          <div className="mt-3 flex items-center gap-2">
             <button
               type="button"
               className="rounded-xl bg-zinc-900 px-4 py-2 text-white hover:bg-zinc-800"
@@ -693,37 +1073,9 @@ export default function NameGenerator({
               {copyLabel}
             </button>
           </div>
-
-          {/* Right: controls */}
-          <div ref={advancedAnchorRef} className="flex flex-wrap items-center gap-2 sm:justify-end">
-            {/* Batch */}
-            <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm">
-              <span className="text-zinc-700">Batch</span>
-              <select
-                className="bg-transparent outline-none"
-                value={batchCount}
-                onChange={(e) => setBatchCount(parseInt(e.target.value, 10))}
-              >
-                {[5, 10, 20, 50].map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </label>
-
-            {/* No duplicates */}
-            <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm">
-              <input
-                type="checkbox"
-                className="h-4 w-4"
-                checked={noDuplicates}
-                onChange={(e) => setNoDuplicates(e.target.checked)}
-              />
-              <span className="text-zinc-700">No duplicates</span>
-            </label>
-          </div>
-        </div>
+        )}
+          </>
+        )}
 
         {isAdvanced && raceFromUrl !== "elf" && (
           <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
