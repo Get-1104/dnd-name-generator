@@ -1,4 +1,5 @@
 import type { PoolsByLayer } from "./types";
+import type { ElfCulturalContext, ElfCulturalOrigin, ElfLength } from "../elfOptions";
 import { ELF_LEXICON } from "../elfLexicon";
 
 /**
@@ -173,6 +174,93 @@ export const ELF_REALISM_POOLS = {
   surnamePlaces,
   surnameMaterials,
 } as const;
+
+export type StemProfile = {
+  stem: string;
+  weight: number;
+  canonical: string;
+  rareVariants: string[];
+  gender: "masculine" | "feminine" | "neutral";
+  origin: ElfCulturalOrigin;
+  era: "ancient" | "contemporary" | "revival";
+  context?: ElfCulturalContext;
+  length?: ElfLength;
+};
+
+export const ELF_CANONICAL_PROFILES_BY_GENDER: Record<
+  "masculine" | "feminine" | "neutral",
+  StemProfile[]
+> = {
+  masculine: [
+    { stem: "el", weight: 12, canonical: "Elen", rareVariants: ["Elan", "Elor"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "aer", weight: 11, canonical: "Aeron", rareVariants: ["Aeris"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "thal", weight: 10, canonical: "Thalen", rareVariants: ["Thalion"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "lor", weight: 9, canonical: "Loren", rareVariants: ["Lorion"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "val", weight: 9, canonical: "Valen", rareVariants: ["Valor"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "cal", weight: 8, canonical: "Calen", rareVariants: ["Calor"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "dar", weight: 6, canonical: "Daren", rareVariants: ["Darion"], gender: "masculine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "mal", weight: 6, canonical: "Malen", rareVariants: ["Malor"], gender: "masculine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "gal", weight: 5, canonical: "Galen", rareVariants: ["Galor"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "kael", weight: 5, canonical: "Kaelen", rareVariants: ["Kaelor"], gender: "masculine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "jor", weight: 4, canonical: "Joren", rareVariants: ["Jorion"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "tor", weight: 4, canonical: "Toren", rareVariants: ["Torion"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "ral", weight: 3, canonical: "Ralen", rareVariants: ["Ralor"], gender: "masculine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "far", weight: 3, canonical: "Faren", rareVariants: ["Farion"], gender: "masculine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "bel", weight: 2, canonical: "Belen", rareVariants: ["Belor"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "hal", weight: 2, canonical: "Halen", rareVariants: ["Halor"], gender: "masculine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "nar", weight: 2, canonical: "Naren", rareVariants: ["Narion"], gender: "masculine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "var", weight: 2, canonical: "Varen", rareVariants: ["Varion"], gender: "masculine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "phae", weight: 1, canonical: "Phaen", rareVariants: ["Phaelor"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "ritual", length: "medium" },
+    { stem: "quil", weight: 1, canonical: "Quilen", rareVariants: ["Quilor"], gender: "masculine", origin: "ancient-highborn", era: "ancient", context: "ritual", length: "medium" },
+    { stem: "or", weight: 1, canonical: "Oren", rareVariants: ["Orion"], gender: "masculine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "zar", weight: 2, canonical: "Zaren", rareVariants: ["Zarion"], gender: "masculine", origin: "drow", era: "ancient", context: "ritual", length: "medium" },
+    { stem: "vyr", weight: 1, canonical: "Vyren", rareVariants: ["Vyrion"], gender: "masculine", origin: "drow", era: "ancient", context: "ritual", length: "medium" },
+  ],
+  feminine: [
+    { stem: "elin", weight: 12, canonical: "Elin", rareVariants: ["Elina", "Elinar"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "lir", weight: 11, canonical: "Lirien", rareVariants: ["Liria"], gender: "feminine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "ael", weight: 10, canonical: "Aela", rareVariants: ["Aelina"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "rae", weight: 9, canonical: "Raena", rareVariants: ["Raelin"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "fae", weight: 9, canonical: "Faela", rareVariants: ["Faelin"], gender: "feminine", origin: "wood-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "ser", weight: 8, canonical: "Sera", rareVariants: ["Seren"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "syl", weight: 7, canonical: "Sylia", rareVariants: ["Sylien"], gender: "feminine", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "ila", weight: 6, canonical: "Ilana", rareVariants: ["Ilia"], gender: "feminine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "ira", weight: 5, canonical: "Irana", rareVariants: ["Iria"], gender: "feminine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "mer", weight: 5, canonical: "Meria", rareVariants: ["Merin"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "nys", weight: 4, canonical: "Nysa", rareVariants: ["Nysia"], gender: "feminine", origin: "drow", era: "ancient", context: "ritual", length: "short" },
+    { stem: "vel", weight: 4, canonical: "Velia", rareVariants: ["Velen"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "sae", weight: 3, canonical: "Saena", rareVariants: ["Saelin"], gender: "feminine", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "sel", weight: 3, canonical: "Selia", rareVariants: ["Selin"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "thal", weight: 2, canonical: "Thalia", rareVariants: ["Thalina"], gender: "feminine", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "val", weight: 2, canonical: "Valia", rareVariants: ["Valin"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "wen", weight: 2, canonical: "Wena", rareVariants: ["Wenia"], gender: "feminine", origin: "wood-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "ari", weight: 1, canonical: "Aria", rareVariants: ["Arian"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "ela", weight: 1, canonical: "Ela", rareVariants: ["Elia"], gender: "feminine", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "lyr", weight: 1, canonical: "Lyra", rareVariants: ["Lyrin"], gender: "feminine", origin: "high-elf", era: "revival", context: "records", length: "short" },
+    { stem: "zir", weight: 2, canonical: "Zira", rareVariants: ["Ziriel"], gender: "feminine", origin: "drow", era: "ancient", context: "ritual", length: "short" },
+    { stem: "vyr", weight: 1, canonical: "Vyria", rareVariants: ["Vyrien"], gender: "feminine", origin: "drow", era: "ancient", context: "ritual", length: "medium" },
+  ],
+  neutral: [
+    { stem: "el", weight: 10, canonical: "Elis", rareVariants: ["Elen"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "aer", weight: 9, canonical: "Aeris", rareVariants: ["Aeron"], gender: "neutral", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "lir", weight: 8, canonical: "Liren", rareVariants: ["Liris"], gender: "neutral", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "syl", weight: 7, canonical: "Sylen", rareVariants: ["Sylis"], gender: "neutral", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "val", weight: 7, canonical: "Valis", rareVariants: ["Valen"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "lor", weight: 6, canonical: "Loren", rareVariants: ["Loris"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "rin", weight: 5, canonical: "Rin", rareVariants: ["Rinen"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "sel", weight: 5, canonical: "Selis", rareVariants: ["Selen"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "thal", weight: 4, canonical: "Thalen", rareVariants: ["Thalis"], gender: "neutral", origin: "ancient-highborn", era: "ancient", context: "noble", length: "medium" },
+    { stem: "ver", weight: 3, canonical: "Veris", rareVariants: ["Veren"], gender: "neutral", origin: "high-elf", era: "revival", context: "records", length: "medium" },
+    { stem: "tal", weight: 2, canonical: "Talen", rareVariants: ["Talis"], gender: "neutral", origin: "wood-elf", era: "contemporary", context: "common", length: "medium" },
+    { stem: "fae", weight: 2, canonical: "Faen", rareVariants: ["Faeis"], gender: "neutral", origin: "wood-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "na", weight: 1, canonical: "Naen", rareVariants: ["Nais"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "rae", weight: 1, canonical: "Raen", rareVariants: ["Raelis"], gender: "neutral", origin: "high-elf", era: "contemporary", context: "common", length: "short" },
+    { stem: "il", weight: 1, canonical: "Ilen", rareVariants: ["Ilis"], gender: "neutral", origin: "high-elf", era: "revival", context: "records", length: "short" },
+    { stem: "ae", weight: 1, canonical: "Aen", rareVariants: ["Aenis"], gender: "neutral", origin: "high-elf", era: "revival", context: "records", length: "short" },
+    { stem: "zar", weight: 2, canonical: "Zaris", rareVariants: ["Zaren"], gender: "neutral", origin: "drow", era: "ancient", context: "ritual", length: "medium" },
+    { stem: "vyr", weight: 1, canonical: "Vyris", rareVariants: ["Vyren"], gender: "neutral", origin: "drow", era: "ancient", context: "ritual", length: "medium" },
+  ],
+};
 
 export const ELF_FAMILIES: ElfFamily[] = [
   {
@@ -567,7 +655,7 @@ export const ELF_SURNAME_FAMILIES: SurnameFamily[] = [
       "stone",
       "glen",
     ],
-    suffixes: ["brook", "wood", "field", "vale", "crest", "watcher", "runner", "weaver", "warden", "keeper", "song", "bloom"],
+    suffixes: ["brook", "wood", "field", "vale", "crest", "song", "bloom"],
     compounds: ["hill", "ford", "meadow"],
   },
   {
@@ -575,7 +663,7 @@ export const ELF_SURNAME_FAMILIES: SurnameFamily[] = [
     weight: 1.0,
     prefixes: ["tel", "gal", "lae", "ael", "sil", "mor", "thal", "el", "fae"],
     roots: ["wood", "glen", "veil", "shade", "lune", "briar", "night", "silver", "mist", "leaf", "thorn"],
-    suffixes: ["weaver", "watcher", "born", "song", "bloom", "brook", "glade", "wyn", "lith", "riel"],
+    suffixes: ["born", "song", "bloom", "brook", "glade", "wyn", "lith", "riel"],
     compounds: ["crest", "dell"],
   },
 ];

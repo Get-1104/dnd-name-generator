@@ -1,23 +1,25 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import type { ForwardedRef, MouseEvent } from "react";
+import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import ExampleNamesCard from "@/components/ExampleNamesCard";
 import Toast from "@/components/Toast";
 import {
   ElfOptions,
+  type ElfCulturalContext,
+  type ElfCulturalOrigin,
+  type ElfLength,
+  type ElfNameForm,
+  type ElfStyle,
   defaultElfOptions,
   elfStyleOptions,
   elfLengthOptions,
   elfCulturalContextOptions,
   elfNameFormOptions,
-  elfPronunciationOptions,
-  elfMeaningFlavorOptions,
   elfCulturalOriginOptions,
 } from "@/lib/elfOptions";
 import { generateWeightedElfName, NATION_OPTIONS } from "@/lib/weightedNameGenerator";
-
-type ElfOption = { value: string; label: string };
 
 type WeightSelections = {
   nation: string | null;
@@ -114,6 +116,123 @@ type Props = {
   cjkTitleSuffixLabel?: string;
 };
 
+type TagOption = { value: string; label: string };
+
+const TagButton = memo(function TagButton({
+  label,
+  value,
+  isSelected,
+  onClick,
+}: {
+  label: string;
+  value: string;
+  isSelected: boolean;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+}) {
+  const renderCount = useRef(0);
+  renderCount.current += 1;
+  if (process.env.NODE_ENV !== "production") {
+    // eslint-disable-next-line no-console
+    console.debug("[TagButton]", label, "render", renderCount.current);
+  }
+
+  return (
+    <button
+      type="button"
+      data-value={value}
+      onClick={onClick}
+      className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+        isSelected ? "border-zinc-400 bg-zinc-100 text-zinc-900" : "border-zinc-200 bg-white text-zinc-800"
+      }`}
+    >
+      {label}
+    </button>
+  );
+});
+
+type TagGroupProps = {
+  label: string;
+  options: TagOption[];
+  selectedValue: string | null;
+  onSelect: (value: string | null) => void;
+};
+
+function TagGroupBase({
+  label,
+  options,
+  selectedValue,
+  onSelect,
+}: TagGroupProps) {
+  const handleClick = useCallback(
+    (event: MouseEvent<HTMLButtonElement>) => {
+      const value = event.currentTarget.dataset.value ?? "";
+      onSelect(value || null);
+    },
+    [onSelect]
+  );
+
+  return (
+    <div className="flex items-start gap-3">
+      <div className="flex items-start w-44 pt-1">
+        <span className="text-sm font-medium">{label}</span>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {options.map((opt) => (
+          <TagButton
+            key={opt.value}
+            label={opt.label}
+            value={opt.value}
+            isSelected={selectedValue === opt.value}
+            onClick={handleClick}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const TagGroup = memo(TagGroupBase);
+
+type NameResultsHandle = {
+  notifyCopied: () => void;
+};
+
+const NameResults = memo(
+  forwardRef(function NameResults(
+    { names }: { names: string[] },
+    ref: ForwardedRef<NameResultsHandle>
+  ) {
+    const [toastOpen, setToastOpen] = useState(false);
+    const [toastMsg, setToastMsg] = useState("");
+
+    const notifyCopied = useCallback(() => {
+      setToastMsg("Copied to clipboard");
+      setToastOpen(true);
+    }, []);
+
+    const onToastClose = useCallback(() => setToastOpen(false), []);
+
+    useImperativeHandle(ref, () => ({ notifyCopied }), [notifyCopied]);
+
+    return (
+      <>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
+          {names.map((n, idx) => (
+            <div
+              key={`${n}-${idx}`}
+              className="w-full rounded-xl bg-zinc-50 px-3 py-2 font-medium"
+            >
+              {n}
+            </div>
+          ))}
+        </div>
+
+        <Toast message={toastMsg} open={toastOpen} onClose={onToastClose} />
+      </>
+    );
+  })
+);
+
 function pick<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -122,44 +241,6 @@ function makeNameDefault(parts: Parts, separator: string, includeSurname: boolea
   const given = `${pick(parts.first)}${pick(parts.second)}`;
   if (!includeSurname) return given;
   return `${given}${separator}${pick(parts.lastA)}${pick(parts.lastB)}`;
-}
-
-function makeElfName(parts: Parts, separator: string, options: ElfOptions) {
-  let given = "";
-  let surname = "";
-
-  // Length affects given name length
-  if (options.length === "short") {
-    given = pick(parts.first);
-  } else if (options.length === "medium") {
-    given = `${pick(parts.first)}${pick(parts.second)}`;
-  } else { // long
-    given = `${pick(parts.first)}${pick(parts.second)}${pick(parts.lastA)}`;
-  }
-
-  // Surname
-  if (options.surname) {
-    surname = `${pick(parts.lastA)}${pick(parts.lastB)}`;
-  }
-
-  // For nameForm: short -> shorter given, external -> simpler (less lastA/lastB)
-  if (options.nameForm === "short") {
-    given = pick(parts.first); // override to short
-  } else if (options.nameForm === "external") {
-    // Simpler: avoid complex combinations
-    given = pick(parts.first) + pick(parts.second);
-  }
-
-  // Pronunciation: simplified -> perhaps shorter or common letters, but for now, no change
-
-  // Meaning flavor: could affect pool, but for now, no change
-
-  // Cultural context: no change for now
-
-  // Style: no change for now
-
-  const fullName = surname ? `${given}${separator}${surname}` : given;
-  return fullName;
 }
 
 
@@ -248,8 +329,6 @@ export default function NameGenerator({
   isAdvanced = false,
   onAdvancedToggle,
 }: Props) {
-  const advancedAnchorRef = useRef<HTMLDivElement>(null);
-
   const hasCjk = cjkMode !== "off";
   const hasGeneration =
     Array.isArray(cjkGenerationChars) && cjkGenerationChars.length > 0;
@@ -259,8 +338,6 @@ export default function NameGenerator({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const raceFromUrl = useMemo(() => getRaceFromPathname(pathname), [pathname]);
-  const clazz = searchParams.get("class") ?? "";
-  const queryGender = searchParams.get("gender") ?? "";
   const seed = searchParams.get("seed") ?? undefined;
   const traceEnabled = searchParams.get("trace") === "1";
 
@@ -281,30 +358,87 @@ export default function NameGenerator({
   // ✅ Generate loading state（修复：isGenerating 未定义）
   const [isGenerating, setIsGenerating] = useState(false);
 
-  // ✅ Toast state（避免 toastMsg/toastOpen 未定义）
-  const [toastOpen, setToastOpen] = useState(false);
-  const [toastMsg, setToastMsg] = useState("");
+  const nameResultsRef = useRef<NameResultsHandle>(null);
 
   // ✅ Toolbar controls (layout-first)
   const [batchCount, setBatchCount] = useState<number>(initialCount);
 
   // Elf options
-  const [elfOptions, setElfOptions] = useState<ElfOptions>(defaultElfOptions);
+  const [elfOptions] = useState<ElfOptions>(defaultElfOptions);
 
-  const [useStyle, setUseStyle] = useState(true);
-  const [useLength, setUseLength] = useState(true);
-  const [useCulturalContext, setUseCulturalContext] = useState(true);
-  const [useNameForm, setUseNameForm] = useState(true);
-  const [useCulturalOrigin, setUseCulturalOrigin] = useState(true);
-  const [useNation, setUseNation] = useState(false);
   const [nation, setNation] = useState<string | null>(null);
-  const [useGender, setUseGender] = useState(true);
   const [gender, setGender] = useState<"masculine" | "feminine" | "neutral" | null>(null);
-  const [useEra, setUseEra] = useState(true);
   const [era, setEra] = useState<"ancient" | "contemporary" | "revival" | null>(null);
+  const [selectedOrigin, setSelectedOrigin] = useState<ElfCulturalOrigin | null>(null);
+  const [selectedContext, setSelectedContext] = useState<ElfCulturalContext | null>(null);
+  const [selectedForm, setSelectedForm] = useState<ElfNameForm | null>(null);
+  const [selectedStyle, setSelectedStyle] = useState<ElfStyle | null>(null);
+  const [selectedLength, setSelectedLength] = useState<ElfLength | null>(null);
   const [includeSurname, setIncludeSurname] = useState<boolean>(defaultElfOptions.surname);
 
-  const advancedInitializedRef = useRef(false);
+  const nationOptions = useMemo(() => NATION_OPTIONS, []);
+  const originOptions = useMemo(() => [...elfCulturalOriginOptions], []);
+  const eraOptions = useMemo(
+    () => [
+      { value: "ancient", label: "Ancient" },
+      { value: "contemporary", label: "Contemporary" },
+      { value: "revival", label: "Revival" },
+    ],
+    []
+  );
+  const genderOptions = useMemo(
+    () => [
+      { value: "masculine", label: "Masculine" },
+      { value: "feminine", label: "Feminine" },
+      { value: "neutral", label: "Neutral" },
+    ],
+    []
+  );
+  const contextOptions = useMemo(() => [...elfCulturalContextOptions], []);
+  const formOptions = useMemo(() => [...elfNameFormOptions], []);
+  const styleOptions = useMemo(() => [...elfStyleOptions], []);
+  const lengthOptions = useMemo(() => [...elfLengthOptions], []);
+
+  const onSelectNation = useCallback(
+    (value: string | null) => setNation((prev) => (prev === value ? null : value)),
+    []
+  );
+  const onSelectOrigin = useCallback(
+    (value: string | null) =>
+      setSelectedOrigin((prev) => (prev === value ? null : (value as ElfCulturalOrigin | null))),
+    []
+  );
+  const onSelectEra = useCallback(
+    (value: string | null) =>
+      setEra((prev) => (prev === value ? null : (value as "ancient" | "contemporary" | "revival" | null))),
+    []
+  );
+  const onSelectGender = useCallback(
+    (value: string | null) =>
+      setGender((prev) => (prev === value ? null : (value as "masculine" | "feminine" | "neutral" | null))),
+    []
+  );
+  const onSelectContext = useCallback(
+    (value: string | null) =>
+      setSelectedContext((prev) => (prev === value ? null : (value as ElfCulturalContext | null))),
+    []
+  );
+  const onSelectForm = useCallback(
+    (value: string | null) =>
+      setSelectedForm((prev) => (prev === value ? null : (value as ElfNameForm | null))),
+    []
+  );
+  const onSelectStyle = useCallback(
+    (value: string | null) =>
+      setSelectedStyle((prev) => (prev === value ? null : (value as ElfStyle | null))),
+    []
+  );
+  const onSelectLength = useCallback(
+    (value: string | null) =>
+      setSelectedLength((prev) => (prev === value ? null : (value as ElfLength | null))),
+    []
+  );
+
 
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
@@ -461,59 +595,21 @@ export default function NameGenerator({
     return { batch, totalAttempts, fallbackLevel };
   }
 
-  function buildWeightSelections(level = 0): WeightSelections {
+  function buildWeightSelections(): WeightSelections {
     const base: WeightSelections = {
-      nation: useNation ? nation : null,
-      culturalOrigin:
-        useCulturalOrigin &&
-        elfOptions.culturalOrigin &&
-        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
-          ? elfOptions.culturalOrigin
-          : null,
-      era: useEra ? era : null,
-      gender: useGender ? gender : null,
-      culturalContext:
-        useCulturalContext &&
-        elfOptions.culturalContext &&
-        elfOptions.culturalContext !== defaultElfOptions.culturalContext
-          ? elfOptions.culturalContext
-          : null,
-      nameForm:
-        useNameForm &&
-        elfOptions.nameForm &&
-        elfOptions.nameForm !== defaultElfOptions.nameForm
-          ? elfOptions.nameForm
-          : null,
-      style:
-        useStyle && elfOptions.style !== defaultElfOptions.style
-          ? elfOptions.style
-          : null,
-      length:
-        useLength && elfOptions.length !== defaultElfOptions.length
-          ? elfOptions.length
-          : null,
+      nation: nation ?? null,
+      culturalOrigin: selectedOrigin,
+      era: era ?? null,
+      gender: gender ?? null,
+      culturalContext: selectedContext,
+      nameForm: selectedForm,
+      style: selectedStyle,
+      length: selectedLength,
     };
-
-    if (level >= 1) {
-      base.style = null;
-      base.culturalContext = null;
-      base.nameForm = null;
-    }
-
-    if (level >= 2) {
-      base.gender = null;
-      base.era = null;
-    }
-
-    if (level >= 3) {
-      base.nation = null;
-      base.culturalOrigin = null;
-    }
-
     return base;
   }
 
-  function generateOne(mode: "two" | "three" | null, fallbackLevel = 0) {
+  function generateOne(mode: "two" | "three" | null) {
     if (mode) {
       return makeNameCjk(
         parts,
@@ -526,28 +622,15 @@ export default function NameGenerator({
     }
     if (raceFromUrl === "elf") {
       const optionsForGeneration = { ...elfOptions, surname: includeSurname };
-      const weightSelections = buildWeightSelections(fallbackLevel);
-      const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
-      if (!hasWeightedSelection) {
-        return makeElfName(parts, separator, optionsForGeneration);
-      }
+      const weightSelections = buildWeightSelections();
+      // Always use the structured Elf generator (even with no explicit selections),
+      // so output stays name-like instead of reverting to legacy chunk splicing.
       const result = generateWeightedElfName({
         parts,
         options: optionsForGeneration,
         separator,
         seed,
         trace: traceEnabled,
-        forceWeighting: true,
-        enabled: {
-          nation: useNation,
-          origin: useCulturalOrigin,
-          era: useEra,
-          gender: useGender,
-          context: useCulturalContext,
-          form: useNameForm,
-          style: useStyle,
-          length: useLength,
-        },
         weights: {
           race: "elf",
           nation: weightSelections.nation,
@@ -571,32 +654,19 @@ export default function NameGenerator({
 
   function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
-    const weightSelections = buildWeightSelections(0);
-    const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
-    const optionsForGeneration = { ...elfOptions, surname: includeSurname };
-    const fallbackMakers =
-      raceFromUrl === "elf" && hasWeightedSelection
-        ? [
-            () => generateOne(mode, 1),
-            () => generateOne(mode, 2),
-            () => generateOne(mode, 3),
-            () => makeElfName(parts, separator, optionsForGeneration),
-            () => makeNameDefault(parts, separator, includeSurname),
-          ]
-        : [];
-    const result = generateUniqueBatch(batchCount, () => generateOne(mode, 0), {
+    const result = generateUniqueBatch(batchCount, () => generateOne(mode), {
       maxAttemptsPerName: 60,
       maxTotalAttempts: batchCount * 80,
       dedupe: true,
       prefixGuard:
-        raceFromUrl === "elf" && hasWeightedSelection
+        raceFromUrl === "elf"
           ? { prefixLen: 2, maxShare: 0.4 }
           : undefined,
       givenGuard:
-        raceFromUrl === "elf" && hasWeightedSelection
+        raceFromUrl === "elf"
           ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
           : undefined,
-      fallbackMakers,
+      fallbackMakers: [],
     });
     setNames(result.batch);
     if (process.env.NODE_ENV !== "production") {
@@ -611,76 +681,23 @@ export default function NameGenerator({
   }
 
   const [names, setNames] = useState<string[]>(() => {
-    const weightSelections = buildWeightSelections(0);
-    const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
-    const optionsForGeneration = { ...elfOptions, surname: includeSurname };
-    const fallbackMakers =
-      raceFromUrl === "elf" && hasWeightedSelection
-        ? [
-            () => generateOne(effectiveCjkMode, 1),
-            () => generateOne(effectiveCjkMode, 2),
-            () => generateOne(effectiveCjkMode, 3),
-            () => makeElfName(parts, separator, optionsForGeneration),
-            () => makeNameDefault(parts, separator, includeSurname),
-          ]
-        : [];
-    const result = generateUniqueBatch(batchCount, () => generateOne(effectiveCjkMode, 0), {
+    const result = generateUniqueBatch(batchCount, () => generateOne(effectiveCjkMode), {
       maxAttemptsPerName: 60,
       maxTotalAttempts: batchCount * 80,
       dedupe: true,
       prefixGuard:
-        raceFromUrl === "elf" && hasWeightedSelection
+        raceFromUrl === "elf"
           ? { prefixLen: 2, maxShare: 0.4 }
           : undefined,
       givenGuard:
-        raceFromUrl === "elf" && hasWeightedSelection
+        raceFromUrl === "elf"
           ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
           : undefined,
-      fallbackMakers,
+      fallbackMakers: [],
     });
     return result.batch;
   });
 
-  // ✅ 当关键控制项变化时，自动刷新一次（用户体验更一致）
-  useEffect(() => {
-    if (!hasCjk) return;
-    regenerate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [effectiveCjkMode, generationChar, titlePick, titlePos]);
-
-  // ✅ URL-driven: when race/class/gender changes, refresh names without reload.
-  useEffect(() => {
-    // Reset short-term de-dup memory so switching filters feels responsive.
-    recentListRef.current = [];
-    recentSetRef.current = new Set();
-    regenerate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [clazz, queryGender, raceFromUrl]);
-
-  // Auto regenerate when toolbar controls change
-  useEffect(() => {
-    regenerate();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [batchCount]);
-
-  // Auto regenerate when elf options change
-  useEffect(() => {
-    if (raceFromUrl === "elf") {
-      regenerate();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elfOptions]);
-
-  // Initialize defaults once when entering Advanced mode
-  useEffect(() => {
-    if (!isAdvanced || advancedInitializedRef.current) return;
-
-    setUseNation((prev) => (prev ? prev : true));
-    setUseEra((prev) => (prev ? prev : true));
-    setUseGender((prev) => (prev ? prev : true));
-
-    advancedInitializedRef.current = true;
-  }, [isAdvanced]);
 
   const copyText = useMemo(() => names.join("\n"), [names]);
 
@@ -710,11 +727,10 @@ export default function NameGenerator({
     }, 220);
   }
 
-  async function onCopy() {
+  const onCopy = useCallback(async () => {
     await navigator.clipboard.writeText(copyText);
-    setToastMsg("Copied to clipboard");
-    setToastOpen(true);
-  }
+    nameResultsRef.current?.notifyCopied();
+  }, [copyText]);
 
   return (
     <section className="space-y-8">
@@ -865,295 +881,54 @@ export default function NameGenerator({
                 </div>
 
                 <div className="space-y-4">
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useNation}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseNation(checked);
-                          if (!checked) {
-                            setNation(null);
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Nation / Realm</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useNation ? "" : "opacity-40 pointer-events-none"}`}>
-                      {NATION_OPTIONS.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            nation === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() => setNation(opt.value)}
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useCulturalOrigin}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseCulturalOrigin(checked);
-                          if (!checked) {
-                            setElfOptions((prev) => ({ ...prev, culturalOrigin: defaultElfOptions.culturalOrigin }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Cultural origin</span>
-                    </label>
-                    <div className="flex flex-wrap items-start justify-start gap-2">
-                      {elfCulturalOriginOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.culturalOrigin === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, culturalOrigin: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useEra}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseEra(checked);
-                          if (!checked) {
-                            setEra(null);
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Era</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useEra ? "" : "opacity-40 pointer-events-none"}`}>
-                      {(
-                        [
-                          { value: "ancient", label: "Ancient" },
-                          { value: "contemporary", label: "Contemporary" },
-                          { value: "revival", label: "Revival" },
-                        ] as const
-                      ).map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            era === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setEra((prev) => (prev === opt.value ? null : opt.value))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useGender}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseGender(checked);
-                          if (!checked) {
-                            setGender(null);
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Gender</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useGender ? "" : "opacity-40 pointer-events-none"}`}>
-                      {(
-                        [
-                          { value: "masculine", label: "Masculine" },
-                          { value: "feminine", label: "Feminine" },
-                          { value: "neutral", label: "Neutral" },
-                        ] as const
-                      ).map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            gender === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setGender((prev) => (prev === opt.value ? null : opt.value))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useCulturalContext}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseCulturalContext(checked);
-                          if (!checked) {
-                            setElfOptions((prev) => ({ ...prev, culturalContext: defaultElfOptions.culturalContext }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Cultural context</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useCulturalContext ? '' : 'opacity-40 pointer-events-none'}`}>
-                      {elfCulturalContextOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.culturalContext === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, culturalContext: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useNameForm}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseNameForm(checked);
-                          if (!checked) {
-                            setElfOptions((prev) => ({ ...prev, nameForm: defaultElfOptions.nameForm }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Name form</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useNameForm ? '' : 'opacity-40 pointer-events-none'}`}>
-                      {elfNameFormOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.nameForm === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, nameForm: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useStyle}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseStyle(checked);
-                          if (!checked) {
-                            setElfOptions((prev) => ({ ...prev, style: defaultElfOptions.style }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Style</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useStyle ? '' : 'opacity-40 pointer-events-none'}`}>
-                      {elfStyleOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.style === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, style: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-start gap-3">
-                    <label className="flex items-start gap-2 w-44 pt-1">
-                      <input
-                        type="checkbox"
-                        checked={useLength}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          setUseLength(checked);
-                          if (!checked) {
-                            setElfOptions((prev) => ({ ...prev, length: defaultElfOptions.length }));
-                          }
-                        }}
-                      />
-                      <span className="text-sm font-medium">Length</span>
-                    </label>
-                    <div className={`flex flex-wrap gap-2 ${useLength ? '' : 'opacity-40 pointer-events-none'}`}>
-                      {elfLengthOptions.map((opt) => (
-                        <button
-                          key={opt.value}
-                          type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
-                            elfOptions.length === opt.value
-                              ? "border-zinc-400 bg-zinc-100 text-zinc-900"
-                              : "border-zinc-200 bg-white text-zinc-800"
-                          }`}
-                          onClick={() =>
-                            setElfOptions((prev) => ({ ...prev, length: opt.value }))
-                          }
-                        >
-                          {opt.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
+                  <TagGroup
+                    label="Nation / Realm"
+                    options={nationOptions}
+                    selectedValue={nation}
+                    onSelect={onSelectNation}
+                  />
+                  <TagGroup
+                    label="Cultural origin"
+                    options={originOptions}
+                    selectedValue={selectedOrigin}
+                    onSelect={onSelectOrigin}
+                  />
+                  <TagGroup
+                    label="Era"
+                    options={eraOptions}
+                    selectedValue={era}
+                    onSelect={onSelectEra}
+                  />
+                  <TagGroup
+                    label="Gender"
+                    options={genderOptions}
+                    selectedValue={gender}
+                    onSelect={onSelectGender}
+                  />
+                  <TagGroup
+                    label="Cultural context"
+                    options={contextOptions}
+                    selectedValue={selectedContext}
+                    onSelect={onSelectContext}
+                  />
+                  <TagGroup
+                    label="Name form"
+                    options={formOptions}
+                    selectedValue={selectedForm}
+                    onSelect={onSelectForm}
+                  />
+                  <TagGroup
+                    label="Style"
+                    options={styleOptions}
+                    selectedValue={selectedStyle}
+                    onSelect={onSelectStyle}
+                  />
+                  <TagGroup
+                    label="Length"
+                    options={lengthOptions}
+                    selectedValue={selectedLength}
+                    onSelect={onSelectLength}
+                  />
                 </div>
               </div>
             </div>
@@ -1214,25 +989,10 @@ export default function NameGenerator({
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-3">
-          {names.map((n, idx) => (
-            <div
-              key={`${n}-${idx}`}
-              className="w-full rounded-xl bg-zinc-50 px-3 py-2 font-medium"
-            >
-              {n}
-            </div>
-          ))}
-        </div>
+        <NameResults ref={nameResultsRef} names={names} />
       </div>
 
       {examples.length > 0 && <ExampleNamesCard items={examples} />}
-
-      <Toast
-        message={toastMsg}
-        open={toastOpen}
-        onClose={() => setToastOpen(false)}
-      />
     </section>
   );
 }

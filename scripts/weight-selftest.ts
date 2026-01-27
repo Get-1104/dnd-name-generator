@@ -54,7 +54,6 @@ function generateBatch(
         options: makeOptions(weightOverrides.options ?? {}),
         separator: " ",
         seed: `${seedBase}-${i}`,
-        forceWeighting: true,
         trace: true,
         weights: {
           race: "elf",
