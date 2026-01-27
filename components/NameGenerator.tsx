@@ -19,6 +19,32 @@ import { generateWeightedElfName, NATION_OPTIONS } from "@/lib/weightedNameGener
 
 type ElfOption = { value: string; label: string };
 
+type WeightSelections = {
+  nation: string | null;
+  culturalOrigin: ElfOptions["culturalOrigin"] | null;
+  era: "ancient" | "contemporary" | "revival" | null;
+  gender: "masculine" | "feminine" | "neutral" | null;
+  culturalContext: ElfOptions["culturalContext"] | null;
+  nameForm: ElfOptions["nameForm"] | null;
+  style: ElfOptions["style"] | null;
+  length: ElfOptions["length"] | null;
+};
+
+type GenerateBatchOptions = {
+  maxAttemptsPerName?: number;
+  maxTotalAttempts?: number;
+  dedupe?: boolean;
+  prefixGuard?: { prefixLen: number; maxShare: number };
+  givenGuard?: { prefixLen: number; suffixLen: number; maxShare: number };
+  fallbackMakers?: Array<() => string>;
+};
+
+type GenerateBatchResult = {
+  batch: string[];
+  totalAttempts: number;
+  fallbackLevel: number;
+};
+
 
 type Parts = {
   first: string[];
@@ -92,12 +118,10 @@ function pick<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-function makeNameDefault(parts: Parts, separator: string) {
-  return (
-    `${pick(parts.first)}${pick(parts.second)}` +
-    `${separator}` +
-    `${pick(parts.lastA)}${pick(parts.lastB)}`
-  );
+function makeNameDefault(parts: Parts, separator: string, includeSurname: boolean) {
+  const given = `${pick(parts.first)}${pick(parts.second)}`;
+  if (!includeSurname) return given;
+  return `${given}${separator}${pick(parts.lastA)}${pick(parts.lastB)}`;
 }
 
 function makeElfName(parts: Parts, separator: string, options: ElfOptions) {
@@ -278,6 +302,9 @@ export default function NameGenerator({
   const [gender, setGender] = useState<"masculine" | "feminine" | "neutral" | null>(null);
   const [useEra, setUseEra] = useState(true);
   const [era, setEra] = useState<"ancient" | "contemporary" | "revival" | null>(null);
+  const [includeSurname, setIncludeSurname] = useState<boolean>(defaultElfOptions.surname);
+
+  const advancedInitializedRef = useRef(false);
 
   const effectiveCjkMode: "two" | "three" | null = useMemo(() => {
     if (cjkMode === "two") return "two";
@@ -311,67 +338,182 @@ export default function NameGenerator({
   function generateUniqueBatch(
     count: number,
     makeOne: () => string,
-    maxAttempts = count * 30,
-    dedupe = true,
-    prefixGuard?: { prefixLen: number; maxShare: number }
-  ) {
+    {
+      maxAttemptsPerName = 60,
+      maxTotalAttempts = count * 80,
+      dedupe = true,
+      prefixGuard,
+      givenGuard,
+      fallbackMakers = [],
+    }: GenerateBatchOptions = {}
+  ): GenerateBatchResult {
     const batch: string[] = [];
     const seen = new Set<string>();
     const prefixCounts = new Map<string, number>();
+    const givenPrefixCounts = new Map<string, number>();
+    const givenSuffixCounts = new Map<string, number>();
+    const makers = [makeOne, ...fallbackMakers];
 
-    let attempts = 0;
-    while (batch.length < count && attempts < maxAttempts) {
-      attempts += 1;
-      const n = makeOne();
-      if (prefixGuard) {
-        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
-        const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
-        const nextShare = nextCount / (batch.length + 1);
-        if (nextShare > prefixGuard.maxShare) {
+    let fallbackLevel = 0;
+    let totalAttempts = 0;
+
+    while (batch.length < count && totalAttempts < maxTotalAttempts) {
+      let attemptsForName = 0;
+      let added = false;
+      const maker = makers[Math.min(fallbackLevel, makers.length - 1)];
+
+      while (!added && attemptsForName < maxAttemptsPerName && totalAttempts < maxTotalAttempts) {
+        totalAttempts += 1;
+        attemptsForName += 1;
+        const n = maker();
+
+        if (givenGuard) {
+          const given = n.split(" ")[0] ?? n;
+          const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+          const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+          if (prefix.length) {
+            const nextCount = (givenPrefixCounts.get(prefix) ?? 0) + 1;
+            const nextShare = nextCount / (batch.length + 1);
+            if (nextShare > givenGuard.maxShare) {
+              continue;
+            }
+          }
+          if (suffix.length) {
+            const nextCount = (givenSuffixCounts.get(suffix) ?? 0) + 1;
+            const nextShare = nextCount / (batch.length + 1);
+            if (nextShare > givenGuard.maxShare) {
+              continue;
+            }
+          }
+        }
+
+        if (prefixGuard) {
+          const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+          const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
+          const nextShare = nextCount / (batch.length + 1);
+          if (nextShare > prefixGuard.maxShare) {
+            continue;
+          }
+        }
+
+        if (dedupe) {
+          if (seen.has(n)) continue;
+          if (recentSetRef.current.has(n)) continue;
+        }
+
+        seen.add(n);
+        if (prefixGuard) {
+          const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+          prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+        }
+        if (givenGuard) {
+          const given = n.split(" ")[0] ?? n;
+          const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+          const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+          if (prefix.length) {
+            givenPrefixCounts.set(prefix, (givenPrefixCounts.get(prefix) ?? 0) + 1);
+          }
+          if (suffix.length) {
+            givenSuffixCounts.set(suffix, (givenSuffixCounts.get(suffix) ?? 0) + 1);
+          }
+        }
+        batch.push(n);
+        added = true;
+      }
+
+      if (!added) {
+        if (fallbackLevel < makers.length - 1) {
+          fallbackLevel += 1;
           continue;
         }
+
+        const fallbackName = makers[makers.length - 1]();
+        totalAttempts += 1;
+        batch.push(fallbackName);
+        seen.add(fallbackName);
+        if (prefixGuard) {
+          const prefix = fallbackName.slice(0, prefixGuard.prefixLen).toLowerCase();
+          prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+        }
+        if (givenGuard) {
+          const given = fallbackName.split(" ")[0] ?? fallbackName;
+          const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+          const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+          if (prefix.length) {
+            givenPrefixCounts.set(prefix, (givenPrefixCounts.get(prefix) ?? 0) + 1);
+          }
+          if (suffix.length) {
+            givenSuffixCounts.set(suffix, (givenSuffixCounts.get(suffix) ?? 0) + 1);
+          }
+        }
       }
-      if (dedupe) {
-        if (seen.has(n)) continue;
-        if (recentSetRef.current.has(n)) continue;
-      }
-      seen.add(n);
-      if (prefixGuard) {
-        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
-        prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
-      }
-      batch.push(n);
     }
 
-    // Fallback: if the pool is too small, allow repeats (when dedupe is off, allow freely)
-    while (batch.length < count) {
-      const n = makeOne();
-      if (prefixGuard) {
-        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
-        const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
-        const nextShare = nextCount / (batch.length + 1);
-        if (nextShare > prefixGuard.maxShare) {
-          continue;
-        }
-      }
-      if (dedupe) {
-        if (seen.has(n)) continue;
-        seen.add(n);
-        batch.push(n);
-      } else {
-        batch.push(n);
-      }
-      if (prefixGuard) {
-        const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
-        prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+    if (batch.length < count) {
+      const maker = makers[makers.length - 1];
+      while (batch.length < count) {
+        batch.push(maker());
+        totalAttempts += 1;
       }
     }
 
     if (dedupe) remember(batch);
-    return batch;
+    return { batch, totalAttempts, fallbackLevel };
   }
 
-  function generateOne(mode: "two" | "three" | null) {
+  function buildWeightSelections(level = 0): WeightSelections {
+    const base: WeightSelections = {
+      nation: useNation ? nation : null,
+      culturalOrigin:
+        useCulturalOrigin &&
+        elfOptions.culturalOrigin &&
+        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
+          ? elfOptions.culturalOrigin
+          : null,
+      era: useEra ? era : null,
+      gender: useGender ? gender : null,
+      culturalContext:
+        useCulturalContext &&
+        elfOptions.culturalContext &&
+        elfOptions.culturalContext !== defaultElfOptions.culturalContext
+          ? elfOptions.culturalContext
+          : null,
+      nameForm:
+        useNameForm &&
+        elfOptions.nameForm &&
+        elfOptions.nameForm !== defaultElfOptions.nameForm
+          ? elfOptions.nameForm
+          : null,
+      style:
+        useStyle && elfOptions.style !== defaultElfOptions.style
+          ? elfOptions.style
+          : null,
+      length:
+        useLength && elfOptions.length !== defaultElfOptions.length
+          ? elfOptions.length
+          : null,
+    };
+
+    if (level >= 1) {
+      base.style = null;
+      base.culturalContext = null;
+      base.nameForm = null;
+    }
+
+    if (level >= 2) {
+      base.gender = null;
+      base.era = null;
+    }
+
+    if (level >= 3) {
+      base.nation = null;
+      base.culturalOrigin = null;
+    }
+
+    return base;
+  }
+
+  function generateOne(mode: "two" | "three" | null, fallbackLevel = 0) {
     if (mode) {
       return makeNameCjk(
         parts,
@@ -383,48 +525,29 @@ export default function NameGenerator({
       );
     }
     if (raceFromUrl === "elf") {
-      const weightSelections = {
-        nation: useNation ? nation : null,
-        culturalOrigin:
-          useCulturalOrigin &&
-          elfOptions.culturalOrigin &&
-          elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
-            ? elfOptions.culturalOrigin
-            : null,
-        era: useEra ? era : null,
-        gender: useGender ? gender : null,
-        culturalContext:
-          useCulturalContext &&
-          elfOptions.culturalContext &&
-          elfOptions.culturalContext !== defaultElfOptions.culturalContext
-            ? elfOptions.culturalContext
-            : null,
-        nameForm:
-          useNameForm &&
-          elfOptions.nameForm &&
-          elfOptions.nameForm !== defaultElfOptions.nameForm
-            ? elfOptions.nameForm
-            : null,
-        style:
-          useStyle && elfOptions.style !== defaultElfOptions.style
-            ? elfOptions.style
-            : null,
-        length:
-          useLength && elfOptions.length !== defaultElfOptions.length
-            ? elfOptions.length
-            : null,
-      };
+      const optionsForGeneration = { ...elfOptions, surname: includeSurname };
+      const weightSelections = buildWeightSelections(fallbackLevel);
       const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
       if (!hasWeightedSelection) {
-        return makeElfName(parts, separator, elfOptions);
+        return makeElfName(parts, separator, optionsForGeneration);
       }
       const result = generateWeightedElfName({
         parts,
-        options: elfOptions,
+        options: optionsForGeneration,
         separator,
         seed,
         trace: traceEnabled,
         forceWeighting: true,
+        enabled: {
+          nation: useNation,
+          origin: useCulturalOrigin,
+          era: useEra,
+          gender: useGender,
+          context: useCulturalContext,
+          form: useNameForm,
+          style: useStyle,
+          length: useLength,
+        },
         weights: {
           race: "elf",
           nation: weightSelections.nation,
@@ -443,98 +566,79 @@ export default function NameGenerator({
       }
       return result.name;
     }
-    return makeNameDefault(parts, separator);
+    return makeNameDefault(parts, separator, includeSurname);
   }
 
   function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
-    const weightSelections = {
-      nation: useNation ? nation : null,
-      culturalOrigin:
-        useCulturalOrigin &&
-        elfOptions.culturalOrigin &&
-        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
-          ? elfOptions.culturalOrigin
-          : null,
-      era: useEra ? era : null,
-      gender: useGender ? gender : null,
-      culturalContext:
-        useCulturalContext &&
-        elfOptions.culturalContext &&
-        elfOptions.culturalContext !== defaultElfOptions.culturalContext
-          ? elfOptions.culturalContext
-          : null,
-      nameForm:
-        useNameForm &&
-        elfOptions.nameForm &&
-        elfOptions.nameForm !== defaultElfOptions.nameForm
-          ? elfOptions.nameForm
-          : null,
-      style:
-        useStyle && elfOptions.style !== defaultElfOptions.style
-          ? elfOptions.style
-          : null,
-      length:
-        useLength && elfOptions.length !== defaultElfOptions.length
-          ? elfOptions.length
-          : null,
-    };
+    const weightSelections = buildWeightSelections(0);
     const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
-    setNames(
-      generateUniqueBatch(
-        batchCount,
-        () => generateOne(mode),
-        undefined,
-        true,
+    const optionsForGeneration = { ...elfOptions, surname: includeSurname };
+    const fallbackMakers =
+      raceFromUrl === "elf" && hasWeightedSelection
+        ? [
+            () => generateOne(mode, 1),
+            () => generateOne(mode, 2),
+            () => generateOne(mode, 3),
+            () => makeElfName(parts, separator, optionsForGeneration),
+            () => makeNameDefault(parts, separator, includeSurname),
+          ]
+        : [];
+    const result = generateUniqueBatch(batchCount, () => generateOne(mode, 0), {
+      maxAttemptsPerName: 60,
+      maxTotalAttempts: batchCount * 80,
+      dedupe: true,
+      prefixGuard:
         raceFromUrl === "elf" && hasWeightedSelection
           ? { prefixLen: 2, maxShare: 0.4 }
-          : undefined
-      )
-    );
+          : undefined,
+      givenGuard:
+        raceFromUrl === "elf" && hasWeightedSelection
+          ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
+          : undefined,
+      fallbackMakers,
+    });
+    setNames(result.batch);
+    if (process.env.NODE_ENV !== "production") {
+      // eslint-disable-next-line no-console
+      console.log("[NameGenerator] generate", {
+        requestedCount: batchCount,
+        generatedCount: result.batch.length,
+        totalAttempts: result.totalAttempts,
+        fallbackLevel: result.fallbackLevel,
+      });
+    }
   }
 
   const [names, setNames] = useState<string[]>(() => {
-    const weightSelections = {
-      nation: useNation ? nation : null,
-      culturalOrigin:
-        useCulturalOrigin &&
-        elfOptions.culturalOrigin &&
-        elfOptions.culturalOrigin !== defaultElfOptions.culturalOrigin
-          ? elfOptions.culturalOrigin
-          : null,
-      era: useEra ? era : null,
-      gender: useGender ? gender : null,
-      culturalContext:
-        useCulturalContext &&
-        elfOptions.culturalContext &&
-        elfOptions.culturalContext !== defaultElfOptions.culturalContext
-          ? elfOptions.culturalContext
-          : null,
-      nameForm:
-        useNameForm &&
-        elfOptions.nameForm &&
-        elfOptions.nameForm !== defaultElfOptions.nameForm
-          ? elfOptions.nameForm
-          : null,
-      style:
-        useStyle && elfOptions.style !== defaultElfOptions.style
-          ? elfOptions.style
-          : null,
-      length:
-        useLength && elfOptions.length !== defaultElfOptions.length
-          ? elfOptions.length
-          : null,
-    };
+    const weightSelections = buildWeightSelections(0);
     const hasWeightedSelection = Object.values(weightSelections).some(Boolean);
-    return generateUniqueBatch(
-      batchCount,
-      () => generateOne(effectiveCjkMode),
-      undefined,
-      true,
+    const optionsForGeneration = { ...elfOptions, surname: includeSurname };
+    const fallbackMakers =
       raceFromUrl === "elf" && hasWeightedSelection
-        ? { prefixLen: 2, maxShare: 0.4 }
-        : undefined
-    );
+        ? [
+            () => generateOne(effectiveCjkMode, 1),
+            () => generateOne(effectiveCjkMode, 2),
+            () => generateOne(effectiveCjkMode, 3),
+            () => makeElfName(parts, separator, optionsForGeneration),
+            () => makeNameDefault(parts, separator, includeSurname),
+          ]
+        : [];
+    const result = generateUniqueBatch(batchCount, () => generateOne(effectiveCjkMode, 0), {
+      maxAttemptsPerName: 60,
+      maxTotalAttempts: batchCount * 80,
+      dedupe: true,
+      prefixGuard:
+        raceFromUrl === "elf" && hasWeightedSelection
+          ? { prefixLen: 2, maxShare: 0.4 }
+          : undefined,
+      givenGuard:
+        raceFromUrl === "elf" && hasWeightedSelection
+          ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
+          : undefined,
+      fallbackMakers,
+    });
+    return result.batch;
   });
 
   // ✅ 当关键控制项变化时，自动刷新一次（用户体验更一致）
@@ -567,13 +671,42 @@ export default function NameGenerator({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [elfOptions]);
 
+  // Initialize defaults once when entering Advanced mode
+  useEffect(() => {
+    if (!isAdvanced || advancedInitializedRef.current) return;
+
+    setUseNation((prev) => (prev ? prev : true));
+    setUseEra((prev) => (prev ? prev : true));
+    setUseGender((prev) => (prev ? prev : true));
+
+    advancedInitializedRef.current = true;
+  }, [isAdvanced]);
+
   const copyText = useMemo(() => names.join("\n"), [names]);
 
   function onGenerate() {
     setIsGenerating(true);
     window.setTimeout(() => {
-      regenerate();
-      setIsGenerating(false);
+      try {
+        regenerate();
+      } catch (error) {
+        if (process.env.NODE_ENV !== "production") {
+          // eslint-disable-next-line no-console
+          console.error("[NameGenerator] generate failed", error);
+        }
+        const fallback = generateUniqueBatch(
+          batchCount,
+          () => makeNameDefault(parts, separator, includeSurname),
+          {
+          maxAttemptsPerName: 20,
+          maxTotalAttempts: batchCount * 20,
+          dedupe: false,
+          }
+        );
+        setNames(fallback.batch);
+      } finally {
+        setIsGenerating(false);
+      }
     }, 220);
   }
 
@@ -752,7 +885,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             nation === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -785,7 +918,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.culturalOrigin === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -826,7 +959,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             era === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -867,7 +1000,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             gender === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -902,7 +1035,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.culturalContext === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -937,7 +1070,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.nameForm === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -972,7 +1105,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.style === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -1007,7 +1140,7 @@ export default function NameGenerator({
                         <button
                           key={opt.value}
                           type="button"
-                          className={`inline-flex items-center justify-center h-8 min-w-[7rem] whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
+                          className={`inline-flex items-center justify-center h-8 min-w-28 whitespace-nowrap rounded-lg border px-3 py-2 text-sm shadow-sm hover:shadow ${
                             elfOptions.length === opt.value
                               ? "border-zinc-400 bg-zinc-100 text-zinc-900"
                               : "border-zinc-200 bg-white text-zinc-800"
@@ -1034,10 +1167,8 @@ export default function NameGenerator({
                   <input
                     type="checkbox"
                     className="h-4 w-4"
-                    checked={elfOptions.surname}
-                    onChange={(e) =>
-                      setElfOptions((prev) => ({ ...prev, surname: e.target.checked }))
-                    }
+                    checked={includeSurname}
+                    onChange={(e) => setIncludeSurname(e.target.checked)}
                   />
                   <span className="text-sm font-medium ml-6">Results</span>
                   <select
@@ -1045,7 +1176,7 @@ export default function NameGenerator({
                     value={batchCount}
                     onChange={(e) => setBatchCount(parseInt(e.target.value, 10))}
                   >
-                    {[20, 50, 100].map((n) => (
+                    {[10, 20, 50].map((n) => (
                       <option key={n} value={n}>
                         {n}
                       </option>
