@@ -97,7 +97,7 @@ export const TOOLS: ToolLink[] = [
     // ✅ SEO 强化：描述里放英文关键词（OK）
     description:
       "生成仙侠/武侠/古风风格的中文名字灵感。Also supports xianxia / wuxia / chinese fantasy name generator searches.",
-    // ✅ tags 只放“主题关键词”，别放过泛的意图词（避免 /en 看起来故意指向它）
+    // ✅ tags 只放“主题关键词”，别放过泛的意图词（避免 / 看起来故意指向它）
     tags: [
       "东方",
       "国风",
@@ -110,7 +110,7 @@ export const TOOLS: ToolLink[] = [
     ],
   },
 
-  // Guides hub（保留在 TOOLS 里没问题；后面 /en 我们会单独展示/标注）
+  // Guides hub（保留在 TOOLS 里没问题；后面 / 我们会单独展示/标注）
   {
     href: "/guides",
     title: "D&D Naming Guides",

@@ -425,7 +425,7 @@ function generateBatch(target: number) {
         ))}
       </div>
 
-      {/* SEO 小提示（页面可留，别放 /en 首页） */}
+      {/* SEO 小提示（页面可留，别放 / 首页） */}
       <div className="text-xs text-zinc-500">
         English keywords: xianxia name generator / wuxia name generator / chinese fantasy name generator
       </div>

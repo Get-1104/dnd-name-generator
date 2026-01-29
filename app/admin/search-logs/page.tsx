@@ -213,7 +213,7 @@ export default function SearchLogsAdminPage() {
         <h2 className="text-xl font-semibold">Top queries (by selects)</h2>
         {topQueries.length === 0 ? (
           <p className="text-zinc-600">
-            No data yet. Use the search on /en first.
+            No data yet. Use the search on / first.
           </p>
         ) : (
           <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
@@ -307,7 +307,7 @@ export default function SearchLogsAdminPage() {
 
         {logs.length === 0 ? (
           <p className="text-zinc-600">
-            No logs found in this browser. Go to <code>/en</code>, use the
+            No logs found in this browser. Go to <code>/</code>, use the
             SmartSearch, then come back and hit Reload.
           </p>
         ) : (

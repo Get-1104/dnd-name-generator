@@ -1,7 +1,7 @@
 "use client";
 
 import type { ForwardedRef, MouseEvent } from "react";
-import { forwardRef, memo, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, memo, startTransition, useCallback, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import ExampleNamesCard from "@/components/ExampleNamesCard";
 import Toast from "@/components/Toast";
@@ -19,6 +19,9 @@ import {
   elfNameFormOptions,
   elfCulturalOriginOptions,
 } from "@/lib/elfOptions";
+import { ELF_NAME_ENTRIES } from "@/lib/elfNameEntries";
+import { generateMixedResultsWithLength } from "@/lib/mixedSampler";
+import { buildResultsWithQualityGate } from "@/lib/resultQualityGate";
 import { generateWeightedElfName, NATION_OPTIONS } from "@/lib/weightedNameGenerator";
 
 type WeightSelections = {
@@ -303,7 +306,7 @@ export default function NameGenerator({
   description,
   backHref = "/", // 目前 UI 不显示 back，这里保留兼容
   parts,
-  initialCount = 20,
+  initialCount = 10,
   examples = [],
   generateLabel = "Generate",
   copyLabel = "Copy",
@@ -361,7 +364,7 @@ export default function NameGenerator({
   const nameResultsRef = useRef<NameResultsHandle>(null);
 
   // ✅ Toolbar controls (layout-first)
-  const [batchCount, setBatchCount] = useState<number>(initialCount);
+  const batchCount = 10;
 
   // Elf options
   const [elfOptions] = useState<ElfOptions>(defaultElfOptions);
@@ -375,6 +378,7 @@ export default function NameGenerator({
   const [selectedStyle, setSelectedStyle] = useState<ElfStyle | null>(null);
   const [selectedLength, setSelectedLength] = useState<ElfLength | null>(null);
   const [includeSurname, setIncludeSurname] = useState<boolean>(defaultElfOptions.surname);
+  const [lengthWarning, setLengthWarning] = useState(false);
 
   const nationOptions = useMemo(() => NATION_OPTIONS, []);
   const originOptions = useMemo(() => [...elfCulturalOriginOptions], []);
@@ -500,6 +504,7 @@ export default function NameGenerator({
         totalAttempts += 1;
         attemptsForName += 1;
         const n = maker();
+        if (!n) continue;
 
         if (givenGuard) {
           const given = n.split(" ")[0] ?? n;
@@ -562,6 +567,7 @@ export default function NameGenerator({
         }
 
         const fallbackName = makers[makers.length - 1]();
+        if (!fallbackName) continue;
         totalAttempts += 1;
         batch.push(fallbackName);
         seen.add(fallbackName);
@@ -588,6 +594,143 @@ export default function NameGenerator({
       while (batch.length < count) {
         batch.push(maker());
         totalAttempts += 1;
+      }
+    }
+
+    if (dedupe) remember(batch);
+    return { batch, totalAttempts, fallbackLevel };
+  }
+
+  async function generateUniqueBatchAsync(
+    count: number,
+    makeOne: () => string,
+    {
+      maxAttemptsPerName = 60,
+      maxTotalAttempts = count * 80,
+      dedupe = true,
+      prefixGuard,
+      givenGuard,
+      fallbackMakers = [],
+    }: GenerateBatchOptions = {}
+  ): Promise<GenerateBatchResult> {
+    const batch: string[] = [];
+    const seen = new Set<string>();
+    const prefixCounts = new Map<string, number>();
+    const givenPrefixCounts = new Map<string, number>();
+    const givenSuffixCounts = new Map<string, number>();
+    const makers = [makeOne, ...fallbackMakers];
+
+    let fallbackLevel = 0;
+    let totalAttempts = 0;
+
+    while (batch.length < count && totalAttempts < maxTotalAttempts) {
+      let attemptsForName = 0;
+      let added = false;
+      const maker = makers[Math.min(fallbackLevel, makers.length - 1)];
+
+      while (!added && attemptsForName < maxAttemptsPerName && totalAttempts < maxTotalAttempts) {
+        totalAttempts += 1;
+        attemptsForName += 1;
+        const n = maker();
+        if (!n) continue;
+
+        if (givenGuard) {
+          const given = n.split(" ")[0] ?? n;
+          const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+          const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+          if (prefix.length) {
+            const nextCount = (givenPrefixCounts.get(prefix) ?? 0) + 1;
+            const nextShare = nextCount / (batch.length + 1);
+            if (nextShare > givenGuard.maxShare) {
+              continue;
+            }
+          }
+          if (suffix.length) {
+            const nextCount = (givenSuffixCounts.get(suffix) ?? 0) + 1;
+            const nextShare = nextCount / (batch.length + 1);
+            if (nextShare > givenGuard.maxShare) {
+              continue;
+            }
+          }
+        }
+
+        if (prefixGuard) {
+          const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+          const nextCount = (prefixCounts.get(prefix) ?? 0) + 1;
+          const nextShare = nextCount / (batch.length + 1);
+          if (nextShare > prefixGuard.maxShare) {
+            continue;
+          }
+        }
+
+        if (dedupe) {
+          if (seen.has(n)) continue;
+          if (recentSetRef.current.has(n)) continue;
+        }
+
+        seen.add(n);
+        if (prefixGuard) {
+          const prefix = n.slice(0, prefixGuard.prefixLen).toLowerCase();
+          prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+        }
+        if (givenGuard) {
+          const given = n.split(" ")[0] ?? n;
+          const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+          const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+          if (prefix.length) {
+            givenPrefixCounts.set(prefix, (givenPrefixCounts.get(prefix) ?? 0) + 1);
+          }
+          if (suffix.length) {
+            givenSuffixCounts.set(suffix, (givenSuffixCounts.get(suffix) ?? 0) + 1);
+          }
+        }
+        batch.push(n);
+        added = true;
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      }
+
+      if (!added) {
+        if (fallbackLevel < makers.length - 1) {
+          fallbackLevel += 1;
+          continue;
+        }
+
+        const fallbackName = makers[makers.length - 1]();
+        if (fallbackName) {
+          totalAttempts += 1;
+          batch.push(fallbackName);
+          seen.add(fallbackName);
+          if (prefixGuard) {
+            const prefix = fallbackName.slice(0, prefixGuard.prefixLen).toLowerCase();
+            prefixCounts.set(prefix, (prefixCounts.get(prefix) ?? 0) + 1);
+          }
+          if (givenGuard) {
+            const given = fallbackName.split(" ")[0] ?? fallbackName;
+            const prefix = given.slice(0, givenGuard.prefixLen).toLowerCase();
+            const suffix = given.slice(-givenGuard.suffixLen).toLowerCase();
+            if (prefix.length) {
+              givenPrefixCounts.set(prefix, (givenPrefixCounts.get(prefix) ?? 0) + 1);
+            }
+            if (suffix.length) {
+              givenSuffixCounts.set(suffix, (givenSuffixCounts.get(suffix) ?? 0) + 1);
+            }
+          }
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        }
+      }
+    }
+
+    if (batch.length < count) {
+      const maker = makers[makers.length - 1];
+      while (batch.length < count) {
+        const nextName = maker();
+        if (nextName) {
+          batch.push(nextName);
+          totalAttempts += 1;
+          await new Promise((resolve) => setTimeout(resolve, 0));
+        } else {
+          break;
+        }
       }
     }
 
@@ -640,7 +783,7 @@ export default function NameGenerator({
           culturalContext: weightSelections.culturalContext,
           nameForm: weightSelections.nameForm,
           style: weightSelections.style,
-          length: weightSelections.length,
+          length: null,
         },
       });
       if (traceEnabled && result.trace) {
@@ -652,79 +795,159 @@ export default function NameGenerator({
     return makeNameDefault(parts, separator, includeSurname);
   }
 
-  function regenerate(nextMode?: "two" | "three") {
+  function buildElfName(given: string) {
+    if (!includeSurname) return given;
+    const surname = `${pick(parts.lastA)}${pick(parts.lastB)}`;
+    return `${given}${separator}${surname}`;
+  }
+
+  async function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
-    const result = generateUniqueBatch(batchCount, () => generateOne(mode), {
-      maxAttemptsPerName: 60,
-      maxTotalAttempts: batchCount * 80,
-      dedupe: true,
-      prefixGuard:
-        raceFromUrl === "elf"
-          ? { prefixLen: 2, maxShare: 0.4 }
-          : undefined,
-      givenGuard:
-        raceFromUrl === "elf"
-          ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
-          : undefined,
-      fallbackMakers: [],
-    });
-    setNames(result.batch);
+    const prefixK = 4;
+    const maxRounds = 120;
+    const candidateBatchSize = Math.max(20, batchCount * 3);
+    let candidates: string[] = [];
+    let results: string[] = [];
+
+    for (let round = 0; round < maxRounds && results.length < batchCount; round += 1) {
+      if (raceFromUrl === "elf") {
+        const weightSelections = buildWeightSelections();
+        const mixed = generateMixedResultsWithLength(
+          ELF_NAME_ENTRIES,
+          {
+            nation: weightSelections.nation,
+            culturalOrigin: weightSelections.culturalOrigin,
+            era: weightSelections.era,
+            gender: weightSelections.gender,
+            culturalContext: weightSelections.culturalContext,
+            nameForm: weightSelections.nameForm,
+            style: weightSelections.style,
+          },
+          candidateBatchSize,
+          null,
+          {
+            batchSize: candidateBatchSize,
+            maxAttempts: Math.max(10, candidateBatchSize * 6),
+            makeName: (entry) => buildElfName(entry.name),
+          }
+        );
+        if (mixed.results.length === 0) break;
+        candidates = candidates.concat(mixed.results);
+      } else {
+        const batch = await generateUniqueBatchAsync(candidateBatchSize, () => generateOne(mode), {
+          maxAttemptsPerName: 40,
+          maxTotalAttempts: candidateBatchSize * 60,
+          dedupe: false,
+          fallbackMakers: [],
+        });
+        if (batch.batch.length === 0) break;
+        candidates = candidates.concat(batch.batch);
+      }
+
+      results = buildResultsWithQualityGate({
+        candidates,
+        targetCount: batchCount,
+        selectedLength: selectedLength ?? null,
+        prefixK,
+        maxRounds,
+        familyHardLimitRatio: 0.12,
+        familySoftLimitRatio: 0.09,
+      });
+    }
+
+    setLengthWarning(Boolean(selectedLength) && results.length < batchCount);
+    startTransition(() => setNames(results));
     if (process.env.NODE_ENV !== "production") {
       // eslint-disable-next-line no-console
       console.log("[NameGenerator] generate", {
         requestedCount: batchCount,
-        generatedCount: result.batch.length,
-        totalAttempts: result.totalAttempts,
-        fallbackLevel: result.fallbackLevel,
+        generatedCount: results.length,
+        totalAttempts: candidates.length,
       });
     }
   }
 
   const [names, setNames] = useState<string[]>(() => {
-    const result = generateUniqueBatch(batchCount, () => generateOne(effectiveCjkMode), {
-      maxAttemptsPerName: 60,
-      maxTotalAttempts: batchCount * 80,
-      dedupe: true,
-      prefixGuard:
-        raceFromUrl === "elf"
-          ? { prefixLen: 2, maxShare: 0.4 }
-          : undefined,
-      givenGuard:
-        raceFromUrl === "elf"
-          ? { prefixLen: 3, suffixLen: 3, maxShare: 0.3 }
-          : undefined,
-      fallbackMakers: [],
-    });
-    return result.batch;
+    const prefixK = 4;
+    const maxRounds = 40;
+    const candidateBatchSize = Math.max(20, batchCount * 3);
+    let candidates: string[] = [];
+    let results: string[] = [];
+
+    for (let round = 0; round < maxRounds && results.length < batchCount; round += 1) {
+      if (raceFromUrl === "elf") {
+        const weightSelections = buildWeightSelections();
+        const mixed = generateMixedResultsWithLength(
+          ELF_NAME_ENTRIES,
+          {
+            nation: weightSelections.nation,
+            culturalOrigin: weightSelections.culturalOrigin,
+            era: weightSelections.era,
+            gender: weightSelections.gender,
+            culturalContext: weightSelections.culturalContext,
+            nameForm: weightSelections.nameForm,
+            style: weightSelections.style,
+          },
+          candidateBatchSize,
+          null,
+          {
+            batchSize: candidateBatchSize,
+            maxAttempts: Math.max(10, candidateBatchSize * 6),
+            makeName: (entry) => buildElfName(entry.name),
+          }
+        );
+        if (mixed.results.length === 0) break;
+        candidates = candidates.concat(mixed.results);
+      } else {
+        const batch = generateUniqueBatch(candidateBatchSize, () => generateOne(effectiveCjkMode), {
+          maxAttemptsPerName: 40,
+          maxTotalAttempts: candidateBatchSize * 60,
+          dedupe: false,
+          fallbackMakers: [],
+        });
+        if (batch.batch.length === 0) break;
+        candidates = candidates.concat(batch.batch);
+      }
+
+      results = buildResultsWithQualityGate({
+        candidates,
+        targetCount: batchCount,
+        selectedLength: selectedLength ?? null,
+        prefixK,
+        maxRounds,
+        familyHardLimitRatio: 0.12,
+        familySoftLimitRatio: 0.09,
+      });
+    }
+
+    return results;
   });
 
 
   const copyText = useMemo(() => names.join("\n"), [names]);
 
-  function onGenerate() {
+  async function onGenerate() {
     setIsGenerating(true);
-    window.setTimeout(() => {
-      try {
-        regenerate();
-      } catch (error) {
-        if (process.env.NODE_ENV !== "production") {
-          // eslint-disable-next-line no-console
-          console.error("[NameGenerator] generate failed", error);
-        }
-        const fallback = generateUniqueBatch(
-          batchCount,
-          () => makeNameDefault(parts, separator, includeSurname),
-          {
+    try {
+      await regenerate();
+    } catch (error) {
+      if (process.env.NODE_ENV !== "production") {
+        // eslint-disable-next-line no-console
+        console.error("[NameGenerator] generate failed", error);
+      }
+      const fallback = await generateUniqueBatchAsync(
+        batchCount,
+        () => makeNameDefault(parts, separator, includeSurname),
+        {
           maxAttemptsPerName: 20,
           maxTotalAttempts: batchCount * 20,
           dedupe: false,
-          }
-        );
-        setNames(fallback.batch);
-      } finally {
-        setIsGenerating(false);
-      }
-    }, 220);
+        }
+      );
+      startTransition(() => setNames(fallback.batch));
+    } finally {
+      setIsGenerating(false);
+    }
   }
 
   const onCopy = useCallback(async () => {
@@ -946,17 +1169,7 @@ export default function NameGenerator({
                     onChange={(e) => setIncludeSurname(e.target.checked)}
                   />
                   <span className="text-sm font-medium ml-6">Results</span>
-                  <select
-                    className="rounded-xl border border-zinc-200 bg-white px-3 py-2 text-sm shadow-sm"
-                    value={batchCount}
-                    onChange={(e) => setBatchCount(parseInt(e.target.value, 10))}
-                  >
-                    {[10, 20, 50].map((n) => (
-                      <option key={n} value={n}>
-                        {n}
-                      </option>
-                    ))}
-                  </select>
+                  <span className="text-sm text-zinc-600">10</span>
                 </div>
               </div>
             )}
@@ -989,7 +1202,19 @@ export default function NameGenerator({
           </div>
         )}
 
-        <NameResults ref={nameResultsRef} names={names} />
+        {lengthWarning && (
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
+            Not enough names match the selected length. Try another length or remove 1–2 tags.
+          </div>
+        )}
+
+        {names.length === 0 ? (
+          <div className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-3 text-sm text-zinc-700">
+            No names match the current tags. Try removing 1–2 tags.
+          </div>
+        ) : (
+          <NameResults ref={nameResultsRef} names={names} />
+        )}
       </div>
 
       {examples.length > 0 && <ExampleNamesCard items={examples} />}

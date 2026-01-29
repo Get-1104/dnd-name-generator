@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getCanonicalUrl } from "@/lib/site";
 
 type CreatePageMetadataArgs = {
-  /** Absolute path, e.g. "/", "/en", "/elf" */
+  /** Absolute path, e.g. "/", "/elf" */
   path: string;
   title: string;
   description: string;

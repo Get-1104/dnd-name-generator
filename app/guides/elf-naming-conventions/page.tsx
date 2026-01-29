@@ -67,7 +67,7 @@ export default function ElfNamingConventionsPage() {
           "@type": "ListItem",
           position: 1,
           name: "D&D Name Generators",
-          item: getPageUrl("/en"),
+          item: getPageUrl("/"),
         },
         {
           "@type": "ListItem",
@@ -145,7 +145,7 @@ export default function ElfNamingConventionsPage() {
               </li>
               <li>
                 Browse all tools on the{" "}
-                <Link href="/en" className="underline underline-offset-4">
+                <Link href="/" className="underline underline-offset-4">
                   generator hub
                 </Link>
                 .

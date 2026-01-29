@@ -66,7 +66,7 @@ export default function HowToNameADndCharacterPage() {
             <ul className="mt-2 list-disc pl-5 space-y-1 text-zinc-700">
               <li>
                 Need instant ideas? Try the{" "}
-                <Link href="/en" className="underline underline-offset-4">
+                <Link href="/" className="underline underline-offset-4">
                   generator hub
                 </Link>
                 .
@@ -196,7 +196,7 @@ export default function HowToNameADndCharacterPage() {
           <ol className="list-decimal pl-5 space-y-2 text-zinc-700 leading-7">
             <li>
               Generate on the{" "}
-              <Link href="/en" className="underline underline-offset-4">
+              <Link href="/" className="underline underline-offset-4">
                 hub
               </Link>
               .

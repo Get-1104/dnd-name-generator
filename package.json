@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "dump:elf": "node --import tsx scripts/dumpElfEntries.ts"
+    "dump:elf": "node --import tsx scripts/dumpElfEntries.ts",
+    "gen:elf:expand": "node --import tsx scripts/generateElfExpanded.ts",
+    "report:elf": "node --import tsx scripts/reportElfInventory.ts"
   },
   "dependencies": {
     "next": "16.1.4",

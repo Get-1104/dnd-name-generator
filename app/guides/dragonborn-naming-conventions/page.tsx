@@ -68,7 +68,7 @@ export default function DragonbornNamingConventionsPage() {
           "@type": "ListItem",
           position: 1,
           name: "D&D Name Generators",
-          item: getPageUrl("/en"),
+          item: getPageUrl("/"),
         },
         {
           "@type": "ListItem",
@@ -236,7 +236,7 @@ export default function DragonbornNamingConventionsPage() {
           <RelatedGenerators
             hrefs={["/dragonborn", "/dwarf", "/tiefling", "/orc"]}
             extraLinks={[
-              { href: "/en", title: "Browse all generators" },
+              { href: "/", title: "Browse all generators" },
               { href: "/guides", title: "Read more naming guides" },
             ]}
           />

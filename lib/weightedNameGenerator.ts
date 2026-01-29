@@ -116,6 +116,96 @@ function mapForm(value: ElfNameForm | null | undefined): NameEntry["form"] | nul
   return "outsider";
 }
 
+function applyFilter(
+  entries: NameEntry[],
+  label: string,
+  predicate: (entry: NameEntry) => boolean,
+  trace?: GenerationTrace
+) {
+  const next = entries.filter(predicate);
+  if (trace) {
+    trace.applied.push(label);
+    trace.decisions.push(`${label}:${next.length}/${entries.length}`);
+  }
+  if (next.length === 0) {
+    if (trace) {
+      trace.filteredCount = 0;
+      trace.fallback?.push(`no_match:${label}`);
+    }
+  }
+  return next;
+}
+
+export function filterElfNameEntries(weights: ElfWeightedInputs, trace?: GenerationTrace) {
+  let entries = ELF_NAME_ENTRIES;
+  if (trace) {
+    trace.totalCount = entries.length;
+  }
+
+  if (weights.gender) {
+    entries = applyFilter(entries, "gender", (entry) => entry.gender === weights.gender, trace);
+    if (entries.length === 0) return entries;
+  }
+
+  if (weights.culturalOrigin) {
+    const origin = mapOrigin(weights.culturalOrigin);
+    if (origin) {
+      entries = applyFilter(entries, "origin", (entry) => entry.origin === origin, trace);
+      if (entries.length === 0) return entries;
+    }
+  }
+
+  if (weights.era) {
+    const era = mapEra(weights.era);
+    if (era) {
+      entries = applyFilter(entries, "era", (entry) => entry.era === era, trace);
+      if (entries.length === 0) return entries;
+    }
+  }
+
+  if (weights.culturalContext) {
+    entries = applyFilter(entries, "context", (entry) => entry.context === weights.culturalContext, trace);
+    if (entries.length === 0) return entries;
+  }
+
+  if (weights.nameForm) {
+    const form = mapForm(weights.nameForm);
+    if (form) {
+      entries = applyFilter(entries, "form", (entry) => entry.form === form, trace);
+      if (entries.length === 0) return entries;
+    }
+  }
+
+  if (weights.style) {
+    entries = applyFilter(entries, "style", (entry) => entry.style === weights.style, trace);
+    if (entries.length === 0) return entries;
+  }
+
+  if (weights.length) {
+    entries = applyFilter(entries, "length", (entry) => matchesLength(entry.name, weights.length!), trace);
+    if (entries.length === 0) return entries;
+  }
+
+  if (weights.nation) {
+    const mapping = NATION_ENTRY_MAP[weights.nation];
+    if (mapping) {
+      entries = applyFilter(
+        entries,
+        "nation",
+        (entry) => mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era),
+        trace
+      );
+      if (entries.length === 0) return entries;
+    }
+  }
+
+  if (trace) {
+    trace.filteredCount = entries.length;
+  }
+
+  return entries;
+}
+
 const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
   "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
   "forest-realm": { origins: ["wood"], eras: ["revival"] },
@@ -308,12 +398,20 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     return false;
   };
 
+  const filteredEntries = filterElfNameEntries(params.weights, trace);
+  if (trace) {
+    trace.filteredCount = filteredEntries.length;
+  }
+  if (filteredEntries.length === 0) {
+    return { name: "", trace };
+  }
+
   const maxAttempts = 140;
   let attempts = 0;
 
   while (attempts < maxAttempts) {
     attempts += 1;
-    const entry = weightedPickByScore(ELF_NAME_ENTRIES, params.weights, rng, state);
+    const entry = weightedPickByScore(filteredEntries, params.weights, rng, state);
     if (!entry) break;
     const given = entry.name;
     if (state.givenNames.has(given)) continue;
@@ -365,7 +463,7 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     return { name: fullName, trace };
   }
 
-  const fallbackEntry = weightedPickByScore(ELF_NAME_ENTRIES, params.weights, rng, state);
+  const fallbackEntry = weightedPickByScore(filteredEntries, params.weights, rng, state);
   const fallbackName = fallbackEntry?.name ?? "Elin";
   if (trace && fallbackEntry) {
     trace.entry = fallbackEntry;

@@ -34,7 +34,7 @@ type BaseJsonLdInput = {
 
   /**
    * ✅ 可选：Breadcrumb 的“Home”指向哪里
-   * - 英文内容页建议传 "/en"
+   * - 英文内容页建议传 "/"
    * - 默认 "/"
    */
   homePath?: string;

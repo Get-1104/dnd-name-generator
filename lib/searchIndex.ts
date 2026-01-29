@@ -69,7 +69,7 @@ function dedupe(arr: string[]) {
 
 /**
  * ✅ 从 TOOLS 生成 generator items
- * 并对 /eastern 做关键词增强（只影响搜索，不影响 /en 页面展示）
+ * 并对 /eastern 做关键词增强（只影响搜索，不影响 / 页面展示）
  */
 function buildGeneratorItems(): SearchItem[] {
   const items: SearchItem[] = (TOOLS ?? [])
@@ -87,7 +87,7 @@ function buildGeneratorItems(): SearchItem[] {
       ]),
     }));
 
-  // ✅ Eastern：让 /en 能搜到 xianxia / wuxia 等英文词
+  // ✅ Eastern：让 / 能搜到 xianxia / wuxia 等英文词
   const eastern = items.find((x) => x.href === "/eastern");
   if (eastern) {
     const extra = [

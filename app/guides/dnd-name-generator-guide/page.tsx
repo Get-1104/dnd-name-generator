@@ -63,7 +63,7 @@ export default function DndNameGeneratorGuidePage() {
 
           <p className="text-zinc-700 leading-7">
             If you want to jump straight into tools, start on{" "}
-            <Link href="/en" className="underline underline-offset-4">
+            <Link href="/" className="underline underline-offset-4">
               the generator hub
             </Link>{" "}
             and pick a style you like.
