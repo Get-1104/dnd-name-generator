@@ -1,5 +1,2293 @@
 [
   {
+    "name": "Aelthirion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elarion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Saelendor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thalorien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elendir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Faelion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aeryndor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elithar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Lorandel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Calethir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Ithilren",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelmir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Eryndal",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thiravel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Althorien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Silandor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelcarin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elorath",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Faelarion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Ilyndor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elandris",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thalinar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aerendil",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elthorien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Lorathiel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Saelith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Calendir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelithor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elanthal",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thirion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelrion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Erythil",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Faelthir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Ilandor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thalorienn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elisar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aerendilion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Lorandir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Calithor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelindor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Eltharion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Silendir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Thiravelor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elandor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Faelor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Ithilion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Lorendil",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Saelion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Calithren",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Aelthorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Elirand",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "ancient-high-kingdom"
+  },
+  {
+    "name": "Lirien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faela",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Eryni",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Sylwen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Thyraen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Elwyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Caelys",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Ilyra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Saelin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Wyneth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Lethar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faerin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Eryla",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Silvae",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Thalen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Elira",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Caelin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Ilyen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Saeril",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Wynra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Lorien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faelae",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Erynd",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Sylrin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Thylen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Elwynne",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Caelyr",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Ilyraen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Wynel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Liriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faenor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Erynis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Silren",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Thalara",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Elwynar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Caelith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Ilyndra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Saelor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Wynith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Lethiel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faelaith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Erylen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Sylara",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Thyriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Elorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Caelwyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Ilyriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Saelwen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Wynelor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Lorienn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Faerith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Eryndel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Sylorien",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "forest-realm"
+  },
+  {
+    "name": "Aeralis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Neriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Thalassar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Elysea",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Caerion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Mariel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Saereth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Ithalis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Pelion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Aelora",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Nerys",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Thalorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Elyndar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Caelios",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Marisel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Saelinor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Ithalor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Pelaris",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Aeralyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Neritha",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Thalessa",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Elyra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Caerith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Marielis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Saerion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Ithalyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Pelionis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Aelaris",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Nerynd",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Caelaris",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Marith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Saeriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Itharion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Pelindra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Nerel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Thalyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Caerelis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "coastal-elven-state"
+  },
+  {
+    "name": "Zerath",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Moriel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Thraedis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Velkyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Drasiel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Xelthar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Narion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Vaelris",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Ulthir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Zyrael",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Morath",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Threxil",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Velorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Draveth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Xelyra",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Narith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Vaelor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Ulther",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Zeral",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Morith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Thraen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Velthir",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Drasyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Xelorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Nariel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Vaelth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Ulthyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Zyrel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Morinel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Threxor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Velaryn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Drathis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Xelthyn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Narorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Vaelis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Ulthar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Zerith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "drow",
+    "era": "ancient",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "fallen-empire"
+  },
+  {
+    "name": "Brinel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Kareth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Thornel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Aldrin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Morik",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Helryn",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Stelion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Durath",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Keldor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Arven",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Bryneth",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Karion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Thorin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Aldrel",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Morin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Helrath",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Stelar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Durion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Kelthar",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Arvend",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Brinor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Karethin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Thornis",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Aldrith",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Helrion",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Stelrin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Durathen",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Keldrin",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
+    "name": "Arvenor",
+    "weight": 10,
+    "gender": "neutral",
+    "origin": "high",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "nation": "isolated-mountain-enclave"
+  },
+  {
     "name": "Aeren",
     "gender": "masculine",
     "origin": "high",
@@ -140,16 +2428,6 @@
     "weight": 6
   },
   {
-    "name": "Thalen",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 6
-  },
-  {
     "name": "Thalion",
     "gender": "masculine",
     "origin": "high",
@@ -217,7 +2495,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Lorion",
@@ -341,6 +2619,16 @@
   },
   {
     "name": "Valon",
+    "gender": "masculine",
+    "origin": "high",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Calen",
     "gender": "masculine",
     "origin": "high",
     "era": "ancient",
@@ -580,16 +2868,6 @@
     "weight": 2
   },
   {
-    "name": "Liriel",
-    "gender": "feminine",
-    "origin": "high",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Lirina",
     "gender": "feminine",
     "origin": "high",
@@ -691,6 +2969,16 @@
   },
   {
     "name": "Raelira",
+    "gender": "feminine",
+    "origin": "high",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Sera",
     "gender": "feminine",
     "origin": "high",
     "era": "ancient",
@@ -850,16 +3138,6 @@
     "weight": 2
   },
   {
-    "name": "Calen",
-    "gender": "neutral",
-    "origin": "high",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Calis",
     "gender": "neutral",
     "origin": "high",
@@ -891,6 +3169,16 @@
   },
   {
     "name": "Calir",
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Calan",
     "gender": "neutral",
     "origin": "high",
     "era": "ancient",
@@ -1290,16 +3578,6 @@
     "weight": 2
   },
   {
-    "name": "Nerel",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Nereth",
     "gender": "masculine",
     "origin": "high",
@@ -1331,16 +3609,6 @@
   },
   {
     "name": "Saelen",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
-    "name": "Saelor",
     "gender": "masculine",
     "origin": "high",
     "era": "revival",
@@ -1400,17 +3668,27 @@
     "weight": 2
   },
   {
-    "name": "Elinena",
-    "gender": "feminine",
+    "name": "Raelen",
+    "gender": "masculine",
     "origin": "high",
     "era": "revival",
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 12
+    "weight": 2
   },
   {
-    "name": "Elira",
+    "name": "Raelor",
+    "gender": "masculine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Elinena",
     "gender": "feminine",
     "origin": "high",
     "era": "revival",
@@ -1507,7 +3785,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 6
+    "weight": 12
   },
   {
     "name": "Linia",
@@ -1640,16 +3918,6 @@
     "weight": 6
   },
   {
-    "name": "Faela",
-    "gender": "feminine",
-    "origin": "high",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 6
-  },
-  {
     "name": "Faelia",
     "gender": "feminine",
     "origin": "high",
@@ -1707,7 +3975,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Saera",
@@ -1717,20 +3985,10 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Saeria",
-    "gender": "feminine",
-    "origin": "high",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
-    "name": "Saeriel",
     "gender": "feminine",
     "origin": "high",
     "era": "revival",
@@ -1870,16 +4128,6 @@
     "weight": 2
   },
   {
-    "name": "Neriel",
-    "gender": "feminine",
-    "origin": "high",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Nerina",
     "gender": "feminine",
     "origin": "high",
@@ -1891,6 +4139,46 @@
   },
   {
     "name": "Nerena",
+    "gender": "feminine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Nerela",
+    "gender": "feminine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Nerira",
+    "gender": "feminine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Seria",
+    "gender": "feminine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Seriel",
     "gender": "feminine",
     "origin": "high",
     "era": "revival",
@@ -2280,16 +4568,6 @@
     "weight": 2
   },
   {
-    "name": "Wyneth",
-    "gender": "masculine",
-    "origin": "wood",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Wynir",
     "gender": "masculine",
     "origin": "wood",
@@ -2311,6 +4589,16 @@
   },
   {
     "name": "Rilen",
+    "gender": "masculine",
+    "origin": "wood",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Rilion",
     "gender": "masculine",
     "origin": "wood",
     "era": "ancient",
@@ -2358,16 +4646,6 @@
     "form": "everyday",
     "style": "simple",
     "weight": 12
-  },
-  {
-    "name": "Sylara",
-    "gender": "feminine",
-    "origin": "wood",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 6
   },
   {
     "name": "Sylela",
@@ -2457,7 +4735,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Wyna",
@@ -2531,6 +4809,16 @@
   },
   {
     "name": "Rila",
+    "gender": "feminine",
+    "origin": "wood",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Rilia",
     "gender": "feminine",
     "origin": "wood",
     "era": "ancient",
@@ -2670,16 +4958,6 @@
     "weight": 2
   },
   {
-    "name": "Wynel",
-    "gender": "neutral",
-    "origin": "wood",
-    "era": "ancient",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Wynan",
     "gender": "neutral",
     "origin": "wood",
@@ -2691,6 +4969,16 @@
   },
   {
     "name": "Rilenen",
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "ancient",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Rilenis",
     "gender": "neutral",
     "origin": "wood",
     "era": "ancient",
@@ -2781,16 +5069,6 @@
   },
   {
     "name": "Faelen",
-    "gender": "masculine",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 6
-  },
-  {
-    "name": "Faelor",
     "gender": "masculine",
     "origin": "wood",
     "era": "revival",
@@ -2917,7 +5195,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Brynen",
@@ -2951,16 +5229,6 @@
   },
   {
     "name": "Brynel",
-    "gender": "masculine",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
-    "name": "Bryneth",
     "gender": "masculine",
     "origin": "wood",
     "era": "revival",
@@ -3050,6 +5318,26 @@
     "weight": 2
   },
   {
+    "name": "Rowenon",
+    "gender": "masculine",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Gwynen",
+    "gender": "masculine",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
     "name": "Sylena",
     "gender": "feminine",
     "origin": "wood",
@@ -3071,16 +5359,6 @@
   },
   {
     "name": "Wynena",
-    "gender": "feminine",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 12
-  },
-  {
-    "name": "Rilia",
     "gender": "feminine",
     "origin": "wood",
     "era": "revival",
@@ -3127,7 +5405,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 6
+    "weight": 12
   },
   {
     "name": "Rilira",
@@ -3267,7 +5545,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Brynira",
@@ -3400,6 +5678,16 @@
     "weight": 2
   },
   {
+    "name": "Gwynela",
+    "gender": "feminine",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
     "name": "Feninen",
     "gender": "neutral",
     "origin": "wood",
@@ -3451,16 +5739,6 @@
   },
   {
     "name": "Feninir",
-    "gender": "neutral",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 6
-  },
-  {
-    "name": "Rilenis",
     "gender": "neutral",
     "origin": "wood",
     "era": "revival",
@@ -3527,7 +5805,7 @@
     "context": "common",
     "form": "everyday",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Faenel",
@@ -3570,16 +5848,6 @@
     "weight": 2
   },
   {
-    "name": "Erynis",
-    "gender": "neutral",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Erynan",
     "gender": "neutral",
     "origin": "wood",
@@ -3591,6 +5859,26 @@
   },
   {
     "name": "Brynis",
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Brynan",
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Rowenis",
     "gender": "neutral",
     "origin": "wood",
     "era": "revival",
@@ -4770,16 +7058,6 @@
     "weight": 2
   },
   {
-    "name": "Aelaris",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "ancient",
-    "context": "noble",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 2
-  },
-  {
     "name": "Thalael",
     "gender": "masculine",
     "origin": "high",
@@ -4791,6 +7069,16 @@
   },
   {
     "name": "Thalaer",
+    "gender": "masculine",
+    "origin": "high",
+    "era": "ancient",
+    "context": "noble",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Thaliel",
     "gender": "masculine",
     "origin": "high",
     "era": "ancient",
@@ -5560,16 +7848,6 @@
     "weight": 12
   },
   {
-    "name": "Thaliel",
-    "gender": "neutral",
-    "origin": "high",
-    "era": "ancient",
-    "context": "noble",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 6
-  },
-  {
     "name": "Thalior",
     "gender": "neutral",
     "origin": "high",
@@ -5607,7 +7885,7 @@
     "context": "noble",
     "form": "formal",
     "style": "elegant",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Loraer",
@@ -5631,6 +7909,16 @@
   },
   {
     "name": "Lorior",
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "noble",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Loreon",
     "gender": "neutral",
     "origin": "high",
     "era": "ancient",
@@ -5690,16 +7978,6 @@
     "weight": 2
   },
   {
-    "name": "Aelmir",
-    "gender": "neutral",
-    "origin": "high",
-    "era": "ancient",
-    "context": "ritual",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 2
-  },
-  {
     "name": "Aelaeth",
     "gender": "neutral",
     "origin": "high",
@@ -5711,6 +7989,16 @@
   },
   {
     "name": "Aelorim",
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "ritual",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Aeldiel",
     "gender": "neutral",
     "origin": "high",
     "era": "ancient",
@@ -5910,16 +8198,6 @@
     "weight": 6
   },
   {
-    "name": "Calan",
-    "gender": "neutral",
-    "origin": "high",
-    "era": "ancient",
-    "context": "common",
-    "form": "outsider",
-    "style": "simple",
-    "weight": 6
-  },
-  {
     "name": "Caler",
     "gender": "neutral",
     "origin": "high",
@@ -5927,7 +8205,7 @@
     "context": "common",
     "form": "outsider",
     "style": "simple",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Serin",
@@ -5951,6 +8229,16 @@
   },
   {
     "name": "Serer",
+    "gender": "neutral",
+    "origin": "high",
+    "era": "ancient",
+    "context": "common",
+    "form": "outsider",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Liren",
     "gender": "neutral",
     "origin": "high",
     "era": "ancient",
@@ -6070,16 +8358,6 @@
     "weight": 12
   },
   {
-    "name": "Elithar",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "revival",
-    "context": "ritual",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 6
-  },
-  {
     "name": "Elaeth",
     "gender": "masculine",
     "origin": "high",
@@ -6107,7 +8385,7 @@
     "context": "ritual",
     "form": "formal",
     "style": "elegant",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Elielor",
@@ -6131,6 +8409,16 @@
   },
   {
     "name": "Eliaeth",
+    "gender": "masculine",
+    "origin": "high",
+    "era": "revival",
+    "context": "ritual",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Eliamir",
     "gender": "masculine",
     "origin": "high",
     "era": "revival",
@@ -6200,16 +8488,6 @@
     "weight": 2
   },
   {
-    "name": "Eliamir",
-    "gender": "masculine",
-    "origin": "high",
-    "era": "revival",
-    "context": "records",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 2
-  },
-  {
     "name": "Elieron",
     "gender": "masculine",
     "origin": "high",
@@ -6220,14 +8498,14 @@
     "weight": 2
   },
   {
-    "name": "Elwyn",
+    "name": "Arianor",
     "gender": "masculine",
     "origin": "high",
     "era": "revival",
-    "context": "common",
-    "form": "everyday",
-    "style": "nature",
-    "weight": 12
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
   },
   {
     "name": "Ellorn",
@@ -6237,7 +8515,7 @@
     "context": "common",
     "form": "everyday",
     "style": "nature",
-    "weight": 6
+    "weight": 12
   },
   {
     "name": "Elbryn",
@@ -6267,7 +8545,7 @@
     "context": "common",
     "form": "everyday",
     "style": "nature",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Elthorn",
@@ -6291,6 +8569,16 @@
   },
   {
     "name": "Elilorn",
+    "gender": "masculine",
+    "origin": "high",
+    "era": "revival",
+    "context": "common",
+    "form": "everyday",
+    "style": "nature",
+    "weight": 2
+  },
+  {
+    "name": "Elibryn",
     "gender": "masculine",
     "origin": "high",
     "era": "revival",
@@ -8520,16 +10808,6 @@
     "weight": 6
   },
   {
-    "name": "Rilion",
-    "gender": "masculine",
-    "origin": "wood",
-    "era": "revival",
-    "context": "noble",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 6
-  },
-  {
     "name": "Rilior",
     "gender": "masculine",
     "origin": "wood",
@@ -8547,7 +10825,7 @@
     "context": "noble",
     "form": "formal",
     "style": "elegant",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Faelael",
@@ -8570,7 +10848,17 @@
     "weight": 2
   },
   {
-    "name": "Faelion",
+    "name": "Faelior",
+    "gender": "masculine",
+    "origin": "wood",
+    "era": "revival",
+    "context": "noble",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Faelaris",
     "gender": "masculine",
     "origin": "wood",
     "era": "revival",
@@ -8680,16 +10968,6 @@
     "weight": 6
   },
   {
-    "name": "Wynelor",
-    "gender": "masculine",
-    "origin": "wood",
-    "era": "revival",
-    "context": "records",
-    "form": "formal",
-    "style": "elegant",
-    "weight": 6
-  },
-  {
     "name": "Wynedon",
     "gender": "masculine",
     "origin": "wood",
@@ -8707,7 +10985,7 @@
     "context": "records",
     "form": "formal",
     "style": "elegant",
-    "weight": 2
+    "weight": 6
   },
   {
     "name": "Rilanor",
@@ -8731,6 +11009,16 @@
   },
   {
     "name": "Riledon",
+    "gender": "masculine",
+    "origin": "wood",
+    "era": "revival",
+    "context": "records",
+    "form": "formal",
+    "style": "elegant",
+    "weight": 2
+  },
+  {
+    "name": "Rilamir",
     "gender": "masculine",
     "origin": "wood",
     "era": "revival",
@@ -9480,7 +11768,7 @@
     "weight": 2
   },
   {
-    "name": "Wynith",
+    "name": "Wynmir",
     "gender": "neutral",
     "origin": "wood",
     "era": "revival",
@@ -9490,7 +11778,7 @@
     "weight": 2
   },
   {
-    "name": "Wynmir",
+    "name": "Wynorim",
     "gender": "neutral",
     "origin": "wood",
     "era": "revival",
@@ -9710,16 +11998,6 @@
     "weight": 2
   },
   {
-    "name": "Brynan",
-    "gender": "neutral",
-    "origin": "wood",
-    "era": "revival",
-    "context": "common",
-    "form": "outsider",
-    "style": "simple",
-    "weight": 2
-  },
-  {
     "name": "Bryner",
     "gender": "neutral",
     "origin": "wood",
@@ -9731,6 +12009,16 @@
   },
   {
     "name": "Rowenin",
+    "gender": "neutral",
+    "origin": "wood",
+    "era": "revival",
+    "context": "common",
+    "form": "outsider",
+    "style": "simple",
+    "weight": 2
+  },
+  {
+    "name": "Rowenan",
     "gender": "neutral",
     "origin": "wood",
     "era": "revival",

@@ -36,6 +36,14 @@ const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: N
   "fallen-empire": { origins: ["drow"], eras: ["ancient", "revival"] },
 };
 
+function matchesNation(entry: NameEntry, nation: string | null | undefined) {
+  if (!nation) return true;
+  if (entry.nation) return entry.nation === nation;
+  const mapping = NATION_ENTRY_MAP[nation];
+  if (!mapping) return false;
+  return mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era);
+}
+
 function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["origin"] | null {
   if (!value) return null;
   if (value === "wood-elf") return "wood";
@@ -83,49 +91,50 @@ function weightedPick(entries: NameEntry[]) {
   return entries[entries.length - 1];
 }
 
-function filterByCategory(entries: NameEntry[], key: CategoryKey, selections: MixedSelections) {
-  if (key === "nation") {
-    const nation = selections.nation;
-    if (!nation) return entries;
-    const mapping = NATION_ENTRY_MAP[nation];
-    if (!mapping) return [];
-    return entries.filter((entry) => mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era));
-  }
+function hasSoftSelections(selections: MixedSelections) {
+  return Boolean(
+    selections.culturalOrigin ||
+      selections.era ||
+      selections.gender ||
+      selections.culturalContext ||
+      selections.nameForm ||
+      selections.style
+  );
+}
 
-  if (key === "origin") {
-    const origin = mapOrigin(selections.culturalOrigin ?? null);
-    if (!origin) return entries;
-    return entries.filter((entry) => entry.origin === origin);
+function getMatchScore(entry: NameEntry, selections: MixedSelections) {
+  let score = 0;
+  if (selections.culturalOrigin) {
+    const origin = mapOrigin(selections.culturalOrigin);
+    if (origin && entry.origin === origin) score += 1;
   }
-
-  if (key === "era") {
-    const era = mapEra(selections.era ?? null);
-    if (!era) return entries;
-    return entries.filter((entry) => entry.era === era);
+  if (selections.era) {
+    const era = mapEra(selections.era);
+    if (era && entry.era === era) score += 1;
   }
-
-  if (key === "gender") {
-    if (!selections.gender) return entries;
-    return entries.filter((entry) => entry.gender === selections.gender);
+  if (selections.gender && entry.gender === selections.gender) score += 1;
+  if (selections.culturalContext && entry.context === selections.culturalContext) score += 1;
+  if (selections.nameForm) {
+    const form = mapForm(selections.nameForm);
+    if (form && entry.form === form) score += 1;
   }
+  if (selections.style && entry.style === selections.style) score += 1;
+  return score;
+}
 
-  if (key === "context") {
-    if (!selections.culturalContext) return entries;
-    return entries.filter((entry) => entry.context === selections.culturalContext);
+function weightedPickByScore(entries: NameEntry[], selections: MixedSelections) {
+  const scores = entries.map((entry) => {
+    const matchScore = getMatchScore(entry, selections);
+    return entry.weight * (1 + matchScore);
+  });
+  const total = scores.reduce((sum, score) => sum + score, 0);
+  if (total <= 0) return null;
+  let roll = Math.random() * total;
+  for (let i = 0; i < entries.length; i += 1) {
+    roll -= scores[i];
+    if (roll <= 0) return entries[i];
   }
-
-  if (key === "form") {
-    const form = mapForm(selections.nameForm ?? null);
-    if (!form) return entries;
-    return entries.filter((entry) => entry.form === form);
-  }
-
-  if (key === "style") {
-    if (!selections.style) return entries;
-    return entries.filter((entry) => entry.style === selections.style);
-  }
-
-  return entries;
+  return entries[entries.length - 1];
 }
 
 function pickUniqueFromPool(
@@ -150,16 +159,9 @@ function buildRequiredPool(entries: NameEntry[], selections: MixedSelections) {
   let pool = entries;
   const nation = selections.nation ?? null;
   if (nation) {
-    const mapping = NATION_ENTRY_MAP[nation];
-    if (!mapping) return [];
-    pool = pool.filter((entry) => mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era));
+    pool = pool.filter((entry) => matchesNation(entry, nation));
+    if (!pool.length) return [];
   }
-
-  const origin = mapOrigin(selections.culturalOrigin ?? null);
-  if (origin) {
-    pool = pool.filter((entry) => entry.origin === origin);
-  }
-
   return pool;
 }
 
@@ -179,24 +181,31 @@ function generateMixedBatch(
 ) {
   const requiredPool = buildRequiredPool(entries, selections);
   if (!requiredPool.length) return [];
-  const plan = buildPlan(target);
+  const softSelected = hasSoftSelections(selections);
+  const pool = softSelected
+    ? requiredPool.filter((entry) => getMatchScore(entry, selections) > 0)
+    : requiredPool;
+  if (!pool.length) return [];
+
   const batch: NameEntry[] = [];
   const localSeen = new Set<string>();
+  const maxAttempts = Math.max(12, pool.length * 3);
+  let attempts = 0;
 
-  for (const key of plan) {
-    if (batch.length >= target) break;
-    const pool = filterByCategory(requiredPool, key, selections);
-    if (!pool.length) continue;
-    const pick = pickUniqueFromPool(pool, seen, localSeen, Math.max(10, pool.length * 2));
-    if (!pick) continue;
+  while (batch.length < target && attempts < maxAttempts) {
+    attempts += 1;
+    const pick = weightedPickByScore(pool, selections);
+    if (!pick) break;
+    if (seen.has(pick.name)) continue;
+    if (localSeen.has(pick.name)) continue;
     batch.push(pick);
     localSeen.add(pick.name);
   }
 
   if (batch.length < target) {
-    const pool = requiredPool;
+    const fallbackPool = pool;
     while (batch.length < target) {
-      const pick = pickUniqueFromPool(pool, seen, localSeen, Math.max(10, pool.length * 2));
+      const pick = pickUniqueFromPool(fallbackPool, seen, localSeen, Math.max(10, fallbackPool.length * 2));
       if (!pick) break;
       batch.push(pick);
       localSeen.add(pick.name);

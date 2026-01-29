@@ -52,10 +52,10 @@ function mapEra(value: ElfWeightedInputs["era"] | null | undefined): NameEntry["
 
 const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
   "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
-  "forest-realm": { origins: ["wood"], eras: ["revival"] },
+  "forest-realm": { origins: ["wood"], eras: ["ancient", "revival"] },
   "coastal-elven-state": { origins: ["high"], eras: ["revival"] },
   "isolated-mountain-enclave": { origins: ["high"], eras: ["revival"] },
-  "fallen-empire": { origins: ["drow"], eras: ["ancient"] },
+  "fallen-empire": { origins: ["drow"], eras: ["ancient", "revival"] },
 };
 
 function matchesLength(name: string, length: LengthKey) {
@@ -65,41 +65,62 @@ function matchesLength(name: string, length: LengthKey) {
   return n >= 8 && n <= 11;
 }
 
+function matchesNation(entry: NameEntry, nation: string | null | undefined) {
+  if (!nation) return true;
+  if (entry.nation) return entry.nation === nation;
+  const mapping = NATION_ENTRY_MAP[nation];
+  if (!mapping) return false;
+  return mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era);
+}
+
+function hasSoftSelections(weights: ElfWeightedInputs) {
+  return Boolean(
+    weights.culturalOrigin ||
+      weights.era ||
+      weights.gender ||
+      weights.culturalContext ||
+      weights.nameForm ||
+      weights.style
+  );
+}
+
+function getMatchScore(entry: NameEntry, weights: ElfWeightedInputs) {
+  let score = 0;
+  if (weights.culturalOrigin) {
+    const origin = mapOrigin(weights.culturalOrigin);
+    if (origin && entry.origin === origin) score += 1;
+  }
+  if (weights.era) {
+    const era = mapEra(weights.era);
+    if (era && entry.era === era) score += 1;
+  }
+  if (weights.gender && entry.gender === weights.gender) score += 1;
+  if (weights.culturalContext && entry.context === weights.culturalContext) score += 1;
+  if (weights.nameForm) {
+    const form = mapForm(weights.nameForm);
+    if (form && entry.form === form) score += 1;
+  }
+  if (weights.style && entry.style === weights.style) score += 1;
+  return score;
+}
+
 function clamp(min: number, value: number, max: number) {
   return Math.min(max, Math.max(min, value));
 }
 
 function scoreEntry(entry: NameEntry, weights: ElfWeightedInputs) {
   let w = entry.weight;
-  if (weights.gender && entry.gender === weights.gender) w *= 2.0;
-  if (weights.culturalOrigin) {
-    const origin = mapOrigin(weights.culturalOrigin);
-    if (origin && entry.origin === origin) w *= 2.0;
-  }
-  if (weights.era) {
-    const era = mapEra(weights.era);
-    if (era && entry.era === era) w *= 1.8;
-  }
-  if (weights.culturalContext && entry.context === weights.culturalContext) w *= 1.5;
-  if (weights.nameForm) {
-    const form = mapForm(weights.nameForm);
-    if (form && entry.form === form) w *= 1.4;
-  }
-  if (weights.style && entry.style === weights.style) w *= 1.3;
-  if (weights.length && matchesLength(entry.name, weights.length)) w *= 1.15;
-  if (weights.nation) {
-    const mapping = NATION_ENTRY_MAP[weights.nation];
-    if (mapping) {
-      if (mapping.origins.includes(entry.origin)) w *= 1.25;
-      if (mapping.eras.includes(entry.era)) w *= 1.25;
-    }
-  }
+  if (weights.nation && !matchesNation(entry, weights.nation)) return 0;
+  const matchScore = getMatchScore(entry, weights);
+  if (hasSoftSelections(weights) && matchScore === 0) return 0;
+  w *= 1 + matchScore;
   return clamp(0.05, w, 9999);
 }
 
 function weightedPickByScore(entries: NameEntry[], weights: ElfWeightedInputs, rng: RNG) {
   const scores = entries.map((entry) => scoreEntry(entry, weights));
   const total = scores.reduce((sum, score) => sum + score, 0);
+  if (total <= 0) return null;
   let roll = rng() * total;
   for (let i = 0; i < entries.length; i += 1) {
     roll -= scores[i];
@@ -133,6 +154,7 @@ export function generateElfFromEntries(params: {
     attempts += 1;
     const entry = weightedPickByScore(params.entries, params.weights, rng);
     if (!entry) break;
+    if (params.weights.length && !matchesLength(entry.name, params.weights.length)) continue;
     if (used.has(entry.name)) continue;
     used.add(entry.name);
     results.push(entry.name);

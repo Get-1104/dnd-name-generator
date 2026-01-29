@@ -6,6 +6,7 @@ export type NameEntry = {
   context: "common" | "noble" | "ritual" | "records";
   form: "everyday" | "formal" | "outsider";
   style: "elegant" | "nature" | "simple";
+  nation?: "ancient-high-kingdom" | "forest-realm" | "coastal-elven-state" | "isolated-mountain-enclave" | "fallen-empire";
   weight: number;
 };
 
@@ -49,6 +50,108 @@ function makeNames(
 
 const usedNames = new Set<string>();
 const entries: NameEntry[] = [];
+
+function pushSeedEntries(
+  names: string[],
+  tags: Omit<NameEntry, "name" | "weight">
+) {
+  const weight = 10;
+  for (const name of names) {
+    const candidate = toTitle(name.trim());
+    if (!isValidName(candidate)) continue;
+    if (usedNames.has(candidate)) continue;
+    usedNames.add(candidate);
+    entries.push({
+      name: candidate,
+      weight,
+      ...tags,
+    });
+  }
+}
+
+const ELF_SEED_GROUPS: Array<{
+  nation: NameEntry["nation"];
+  origin: NameEntry["origin"];
+  era: NameEntry["era"];
+  names: string[];
+}> = [
+  {
+    nation: "ancient-high-kingdom",
+    origin: "high",
+    era: "ancient",
+    names: [
+      "Aelthirion","Elarion","Saelendor","Thalorien","Elendir","Faelion","Aeryndor","Elithar",
+      "Lorandel","Calethir","Ithilren","Aelmir","Eryndal","Thiravel","Althorien","Silandor",
+      "Aelcarin","Elorath","Faelarion","Ilyndor","Elandris","Thalinar","Aerendil","Elthorien",
+      "Lorathiel","Saelith","Calendir","Aelithor","Elanthal","Thirion",
+      "Aelrion","Erythil","Faelthir","Ilandor","Thalorienn","Elisar","Aerendilion","Lorandir",
+      "Calithor","Aelindor","Eltharion","Silendir","Thiravelor","Aelorin","Elandor","Faelor",
+      "Ithilion","Lorendil","Saelion","Calithren","Aelthorin","Elirand",
+    ],
+  },
+  {
+    nation: "forest-realm",
+    origin: "wood",
+    era: "revival",
+    names: [
+      "Lirien","Faela","Eryni","Sylwen","Thyraen","Elwyn","Caelys","Ilyra","Saelin","Wyneth",
+      "Lethar","Faerin","Eryla","Silvae","Thalen","Elira","Caelin","Ilyen","Saeril","Wynra",
+      "Lorien","Faelae","Erynd","Sylrin","Thylen","Elwynne","Caelyr","Ilyraen","Saelith",
+      "Wynel","Liriel","Faenor","Erynis","Silren","Thalara","Elwynar","Caelith","Ilyndra",
+      "Saelor","Wynith","Lethiel","Faelaith","Erylen","Sylara","Thyriel","Elorin",
+      "Caelwyn","Ilyriel","Saelwen","Wynelor","Lorienn","Faerith","Eryndel","Sylorien",
+    ],
+  },
+  {
+    nation: "coastal-elven-state",
+    origin: "high",
+    era: "revival",
+    names: [
+      "Aeralis","Neriel","Thalassar","Elysea","Caerion","Mariel","Saereth","Ithalis","Pelion",
+      "Aelora","Nerys","Thalorin","Elyndar","Caelios","Marisel","Saelinor","Ithalor",
+      "Pelaris","Aeralyn","Neritha","Thalessa","Elyra","Caerith","Marielis","Saerion",
+      "Ithalyn","Pelionis","Aelaris","Nerynd","Thalorien","Elysea","Caelaris","Marith",
+      "Saeriel","Itharion","Pelindra","Aeralis","Nerel","Thalyn","Elyndar","Caerelis",
+      "Mariel","Saereth","Ithalis","Pelion","Aelora","Nerys","Thalorin","Elyra",
+    ],
+  },
+  {
+    nation: "fallen-empire",
+    origin: "drow",
+    era: "ancient",
+    names: [
+      "Zerath","Moriel","Thraedis","Velkyn","Drasiel","Xelthar","Narion","Vaelris","Ulthir",
+      "Zyrael","Morath","Threxil","Velorin","Draveth","Xelyra","Narith","Vaelor","Ulther",
+      "Zeral","Morith","Thraen","Velthir","Drasyn","Xelorin","Nariel","Vaelth","Ulthyn",
+      "Zyrel","Morinel","Threxor","Velaryn","Drathis","Xelthyn","Narorin","Vaelis",
+      "Ulthar","Zerith","Moriel","Thraedis","Velkyn","Drasiel","Xelthar","Narion",
+      "Vaelris","Ulthir","Zyrael","Morath","Threxil","Velorin","Draveth","Xelyra",
+    ],
+  },
+  {
+    nation: "isolated-mountain-enclave",
+    origin: "high",
+    era: "revival",
+    names: [
+      "Brinel","Kareth","Thornel","Aldrin","Morik","Helryn","Stelion","Durath","Keldor","Arven",
+      "Bryneth","Karion","Thorin","Aldrel","Morin","Helrath","Stelar","Durion","Kelthar",
+      "Arvend","Brinor","Karethin","Thornis","Aldrith","Moriel","Helrion","Stelrin",
+      "Durathen","Keldrin","Arvenor",
+    ],
+  },
+];
+
+for (const group of ELF_SEED_GROUPS) {
+  pushSeedEntries(group.names, {
+    gender: "neutral",
+    origin: group.origin,
+    era: group.era,
+    context: "records",
+    form: "formal",
+    style: "elegant",
+    nation: group.nation,
+  });
+}
 
 const ENDINGS_MASC_ANCIENT = ["en", "ion", "or", "ar", "eth", "ir", "on"];
 const ENDINGS_MASC_REVIVAL = ["en", "or", "ar", "el", "eth", "ir", "on"];

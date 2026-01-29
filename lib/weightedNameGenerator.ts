@@ -116,6 +116,37 @@ function mapForm(value: ElfNameForm | null | undefined): NameEntry["form"] | nul
   return "outsider";
 }
 
+function hasSoftSelections(weights: ElfWeightedInputs) {
+  return Boolean(
+    weights.culturalOrigin ||
+      weights.era ||
+      weights.gender ||
+      weights.culturalContext ||
+      weights.nameForm ||
+      weights.style
+  );
+}
+
+function getMatchScore(entry: NameEntry, weights: ElfWeightedInputs) {
+  let score = 0;
+  if (weights.culturalOrigin) {
+    const origin = mapOrigin(weights.culturalOrigin);
+    if (origin && entry.origin === origin) score += 1;
+  }
+  if (weights.era) {
+    const era = mapEra(weights.era);
+    if (era && entry.era === era) score += 1;
+  }
+  if (weights.gender && entry.gender === weights.gender) score += 1;
+  if (weights.culturalContext && entry.context === weights.culturalContext) score += 1;
+  if (weights.nameForm) {
+    const form = mapForm(weights.nameForm);
+    if (form && entry.form === form) score += 1;
+  }
+  if (weights.style && entry.style === weights.style) score += 1;
+  return score;
+}
+
 function applyFilter(
   entries: NameEntry[],
   label: string,
@@ -136,67 +167,28 @@ function applyFilter(
   return next;
 }
 
+function matchesNation(entry: NameEntry, nation: string | null | undefined) {
+  if (!nation) return true;
+  if (entry.nation) return entry.nation === nation;
+  const mapping = NATION_ENTRY_MAP[nation];
+  if (!mapping) return false;
+  return mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era);
+}
+
 export function filterElfNameEntries(weights: ElfWeightedInputs, trace?: GenerationTrace) {
   let entries = ELF_NAME_ENTRIES;
   if (trace) {
     trace.totalCount = entries.length;
   }
 
-  if (weights.gender) {
-    entries = applyFilter(entries, "gender", (entry) => entry.gender === weights.gender, trace);
-    if (entries.length === 0) return entries;
-  }
-
-  if (weights.culturalOrigin) {
-    const origin = mapOrigin(weights.culturalOrigin);
-    if (origin) {
-      entries = applyFilter(entries, "origin", (entry) => entry.origin === origin, trace);
-      if (entries.length === 0) return entries;
-    }
-  }
-
-  if (weights.era) {
-    const era = mapEra(weights.era);
-    if (era) {
-      entries = applyFilter(entries, "era", (entry) => entry.era === era, trace);
-      if (entries.length === 0) return entries;
-    }
-  }
-
-  if (weights.culturalContext) {
-    entries = applyFilter(entries, "context", (entry) => entry.context === weights.culturalContext, trace);
-    if (entries.length === 0) return entries;
-  }
-
-  if (weights.nameForm) {
-    const form = mapForm(weights.nameForm);
-    if (form) {
-      entries = applyFilter(entries, "form", (entry) => entry.form === form, trace);
-      if (entries.length === 0) return entries;
-    }
-  }
-
-  if (weights.style) {
-    entries = applyFilter(entries, "style", (entry) => entry.style === weights.style, trace);
-    if (entries.length === 0) return entries;
-  }
-
-  if (weights.length) {
-    entries = applyFilter(entries, "length", (entry) => matchesLength(entry.name, weights.length!), trace);
-    if (entries.length === 0) return entries;
-  }
-
   if (weights.nation) {
-    const mapping = NATION_ENTRY_MAP[weights.nation];
-    if (mapping) {
-      entries = applyFilter(
-        entries,
-        "nation",
-        (entry) => mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era),
-        trace
-      );
-      if (entries.length === 0) return entries;
-    }
+    entries = applyFilter(entries, "nation", (entry) => matchesNation(entry, weights.nation), trace);
+    if (entries.length === 0) return entries;
+  }
+
+  if (hasSoftSelections(weights)) {
+    entries = applyFilter(entries, "softMatch", (entry) => getMatchScore(entry, weights) > 0, trace);
+    if (entries.length === 0) return entries;
   }
 
   if (trace) {
@@ -208,10 +200,10 @@ export function filterElfNameEntries(weights: ElfWeightedInputs, trace?: Generat
 
 const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
   "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
-  "forest-realm": { origins: ["wood"], eras: ["revival"] },
+  "forest-realm": { origins: ["wood"], eras: ["ancient", "revival"] },
   "coastal-elven-state": { origins: ["high"], eras: ["revival"] },
   "isolated-mountain-enclave": { origins: ["high"], eras: ["revival"] },
-  "fallen-empire": { origins: ["drow"], eras: ["ancient"] },
+  "fallen-empire": { origins: ["drow"], eras: ["ancient", "revival"] },
 };
 
 function matchesLength(name: string, length: LengthKey) {
@@ -313,29 +305,10 @@ function registerGivenName(state: BatchState, given: string, suffix: string) {
 
 function scoreEntry(entry: NameEntry, weights: ElfWeightedInputs) {
   let w = entry.weight;
-  if (weights.gender && entry.gender === weights.gender) w *= 2.0;
-  if (weights.culturalOrigin) {
-    const origin = mapOrigin(weights.culturalOrigin);
-    if (origin && entry.origin === origin) w *= 2.0;
-  }
-  if (weights.era) {
-    const era = mapEra(weights.era);
-    if (era && entry.era === era) w *= 1.8;
-  }
-  if (weights.culturalContext && entry.context === weights.culturalContext) w *= 1.5;
-  if (weights.nameForm) {
-    const form = mapForm(weights.nameForm);
-    if (form && entry.form === form) w *= 1.4;
-  }
-  if (weights.style && entry.style === weights.style) w *= 1.3;
-  if (weights.length && matchesLength(entry.name, weights.length)) w *= 1.15;
-  if (weights.nation) {
-    const mapping = NATION_ENTRY_MAP[weights.nation];
-    if (mapping) {
-      if (mapping.origins.includes(entry.origin)) w *= 1.25;
-      if (mapping.eras.includes(entry.era)) w *= 1.25;
-    }
-  }
+  const matchScore = getMatchScore(entry, weights);
+  if (hasSoftSelections(weights) && matchScore === 0) return 0;
+  w *= 1 + matchScore;
+  if (weights.nation && !matchesNation(entry, weights.nation)) return 0;
   return clamp(0.05, w, 9999);
 }
 
@@ -349,6 +322,7 @@ function weightedPickByScore(
   const pool = available.length ? available : entries;
   const scores = pool.map((entry) => scoreEntry(entry, weights));
   const total = scores.reduce((sum, score) => sum + score, 0);
+  if (total <= 0) return null;
   let roll = rng() * total;
   for (let i = 0; i < pool.length; i += 1) {
     roll -= scores[i];
@@ -414,6 +388,7 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     const entry = weightedPickByScore(filteredEntries, params.weights, rng, state);
     if (!entry) break;
     const given = entry.name;
+    if (params.weights.length && !matchesLength(given, params.weights.length)) continue;
     if (state.givenNames.has(given)) continue;
     if (banned(given)) continue;
 
@@ -463,9 +438,14 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     return { name: fullName, trace };
   }
 
-  const fallbackEntry = weightedPickByScore(filteredEntries, params.weights, rng, state);
-  const fallbackName = fallbackEntry?.name ?? "Elin";
-  if (trace && fallbackEntry) {
+  const lengthPool = params.weights.length
+    ? filteredEntries.filter((entry) => matchesLength(entry.name, params.weights.length!))
+    : filteredEntries;
+  if (params.weights.length && lengthPool.length === 0) {
+    return { name: "", trace };
+  }
+  const fallbackEntry = weightedPickByScore(lengthPool, params.weights, rng, state);
+  if (fallbackEntry && trace) {
     trace.entry = fallbackEntry;
     trace.entryTags = {
       gender: fallbackEntry.gender,
@@ -476,5 +456,5 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
       style: fallbackEntry.style,
     };
   }
-  return { name: fallbackName, trace };
+  return { name: fallbackEntry?.name ?? "", trace };
 }
