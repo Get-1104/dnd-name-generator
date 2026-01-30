@@ -1,3 +1,10 @@
+/**
+ * 结论（report:elf 数据源）:
+ * - report:elf 读取的 entries 来自本文件默认 input: lib/nameEntries/elf.generated.json（可用 --in 覆盖），并直接 JSON.parse。
+ * - 本文件未导入 ELF_NAME_ENTRIES；仅从 lib/weightedNameGenerator 读取 NATION_OPTIONS 用于输出顺序。
+ * - elf.generated.json 的来源：scripts/dumpElfEntries.ts 将 lib/elfNameEntries.ts 的 ELF_NAME_ENTRIES 写入该 JSON。
+ * - report:elf 运行链路中未发现 entries 的 merge/concat 或从 pools 动态合并。
+ */
 import fs from "node:fs";
 import path from "node:path";
 import { elfCulturalOriginOptions } from "../lib/elfOptions";

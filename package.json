@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "clean:elf": "node --import tsx scripts/cleanElfEntries.ts",
     "dump:elf": "node --import tsx scripts/dumpElfEntries.ts",
     "gen:elf:expand": "node --import tsx scripts/generateElfExpanded.ts",
     "report:elf": "node --import tsx scripts/reportElfInventory.ts",

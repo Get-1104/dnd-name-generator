@@ -19,8 +19,7 @@ import {
   elfNameFormOptions,
   elfCulturalOriginOptions,
 } from "@/lib/elfOptions";
-import { ELF_NAME_ENTRIES } from "@/lib/elfNameEntries";
-import { generateMixedResultsWithLength } from "@/lib/mixedSampler";
+import { ELF_NAME_ENTRIES, type NameEntry } from "@/lib/elfNameEntries";
 import { buildResultsWithQualityGate } from "@/lib/resultQualityGate";
 import { generateWeightedElfName, NATION_OPTIONS } from "@/lib/weightedNameGenerator";
 
@@ -132,13 +131,6 @@ const TagButton = memo(function TagButton({
   isSelected: boolean;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
 }) {
-  const renderCount = useRef(0);
-  renderCount.current += 1;
-  if (process.env.NODE_ENV !== "production") {
-    // eslint-disable-next-line no-console
-    console.debug("[TagButton]", label, "render", renderCount.current);
-  }
-
   return (
     <button
       type="button"
@@ -238,6 +230,52 @@ const NameResults = memo(
 
 function pick<T>(arr: T[]) {
   return arr[Math.floor(Math.random() * arr.length)];
+}
+
+function shuffleArray<T>(arr: T[]) {
+  const next = [...arr];
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [next[i], next[j]] = [next[j], next[i]];
+  }
+  return next;
+}
+
+type EntryFilterOptions = {
+  nation: string | null;
+  culturalOrigin: ElfOptions["culturalOrigin"] | null;
+  era: WeightSelections["era"] | null;
+  gender: WeightSelections["gender"] | null;
+  culturalContext: ElfOptions["culturalContext"] | null;
+  nameForm: ElfOptions["nameForm"] | null;
+  style: ElfOptions["style"] | null;
+  length: ElfOptions["length"] | null;
+};
+
+function getEntryRealm(entry: NameEntry) {
+  return entry.realm ?? entry.nation;
+}
+
+function buildResultsFromEntriesFast(
+  entries: NameEntry[],
+  filters: EntryFilterOptions,
+  count: number,
+  makeName: (entry: NameEntry) => string
+) {
+  const filtered = entries.filter((entry) => {
+    if (filters.nation && getEntryRealm(entry) !== filters.nation) return false;
+    if (filters.culturalOrigin && entry.culturalOrigin !== filters.culturalOrigin) return false;
+    if (filters.era && entry.era !== filters.era) return false;
+    if (filters.gender && entry.gender !== filters.gender) return false;
+    if (filters.culturalContext && entry.context !== filters.culturalContext) return false;
+    if (filters.nameForm && entry.form !== filters.nameForm) return false;
+    if (filters.style && entry.style !== filters.style) return false;
+    if (filters.length && entry.length !== filters.length) return false;
+    return true;
+  });
+  if (filtered.length === 0) return [];
+  const shuffled = shuffleArray(filtered);
+  return shuffled.slice(0, count).map((entry) => makeName(entry));
 }
 
 function makeNameDefault(parts: Parts, separator: string, includeSurname: boolean) {
@@ -803,6 +841,35 @@ export default function NameGenerator({
 
   async function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
+    if (raceFromUrl === "elf") {
+      const weightSelections = buildWeightSelections();
+      const results = buildResultsFromEntriesFast(
+        ELF_NAME_ENTRIES,
+        {
+          nation: weightSelections.nation,
+          culturalOrigin: weightSelections.culturalOrigin,
+          era: weightSelections.era,
+          gender: weightSelections.gender,
+          culturalContext: weightSelections.culturalContext,
+          nameForm: weightSelections.nameForm,
+          style: weightSelections.style,
+          length: weightSelections.length,
+        },
+        batchCount,
+        (entry) => buildElfName(entry.name)
+      );
+      setLengthWarning(Boolean(selectedLength) && results.length < batchCount);
+      startTransition(() => setNames(results));
+      if (process.env.NODE_ENV !== "production") {
+        // eslint-disable-next-line no-console
+        console.log("[NameGenerator] generate", {
+          requestedCount: batchCount,
+          generatedCount: results.length,
+          totalAttempts: results.length,
+        });
+      }
+      return;
+    }
     const prefixK = 4;
     const maxRounds = 120;
     const candidateBatchSize = Math.max(20, batchCount * 3);
@@ -810,40 +877,16 @@ export default function NameGenerator({
     let results: string[] = [];
 
     for (let round = 0; round < maxRounds && results.length < batchCount; round += 1) {
-      if (raceFromUrl === "elf") {
-        const weightSelections = buildWeightSelections();
-        const mixed = generateMixedResultsWithLength(
-          ELF_NAME_ENTRIES,
-          {
-            nation: weightSelections.nation,
-            culturalOrigin: weightSelections.culturalOrigin,
-            era: weightSelections.era,
-            gender: weightSelections.gender,
-            culturalContext: weightSelections.culturalContext,
-            nameForm: weightSelections.nameForm,
-            style: weightSelections.style,
-          },
-          candidateBatchSize,
-          null,
-          {
-            batchSize: candidateBatchSize,
-            maxAttempts: Math.max(10, candidateBatchSize * 6),
-            makeName: (entry) => buildElfName(entry.name),
-          }
-        );
-        if (mixed.results.length === 0) break;
-        candidates = candidates.concat(mixed.results);
-      } else {
-        const batch = await generateUniqueBatchAsync(candidateBatchSize, () => generateOne(mode), {
-          maxAttemptsPerName: 40,
-          maxTotalAttempts: candidateBatchSize * 60,
-          dedupe: false,
-          fallbackMakers: [],
-        });
-        if (batch.batch.length === 0) break;
-        candidates = candidates.concat(batch.batch);
-      }
+      const batch = await generateUniqueBatchAsync(candidateBatchSize, () => generateOne(mode), {
+        maxAttemptsPerName: 40,
+        maxTotalAttempts: candidateBatchSize * 60,
+        dedupe: false,
+        fallbackMakers: [],
+      });
+      if (batch.batch.length === 0) break;
+      candidates = candidates.concat(batch.batch);
 
+      console.time("[GEN] pick");
       results = buildResultsWithQualityGate({
         candidates,
         targetCount: batchCount,
@@ -853,6 +896,7 @@ export default function NameGenerator({
         familyHardLimitRatio: 0.12,
         familySoftLimitRatio: 0.09,
       });
+      console.timeEnd("[GEN] pick");
     }
 
     setLengthWarning(Boolean(selectedLength) && results.length < batchCount);
@@ -868,6 +912,24 @@ export default function NameGenerator({
   }
 
   const [names, setNames] = useState<string[]>(() => {
+    if (raceFromUrl === "elf") {
+      const weightSelections = buildWeightSelections();
+      return buildResultsFromEntriesFast(
+        ELF_NAME_ENTRIES,
+        {
+          nation: weightSelections.nation,
+          culturalOrigin: weightSelections.culturalOrigin,
+          era: weightSelections.era,
+          gender: weightSelections.gender,
+          culturalContext: weightSelections.culturalContext,
+          nameForm: weightSelections.nameForm,
+          style: weightSelections.style,
+          length: weightSelections.length,
+        },
+        batchCount,
+        (entry) => buildElfName(entry.name)
+      );
+    }
     const prefixK = 4;
     const maxRounds = 40;
     const candidateBatchSize = Math.max(20, batchCount * 3);
@@ -875,39 +937,14 @@ export default function NameGenerator({
     let results: string[] = [];
 
     for (let round = 0; round < maxRounds && results.length < batchCount; round += 1) {
-      if (raceFromUrl === "elf") {
-        const weightSelections = buildWeightSelections();
-        const mixed = generateMixedResultsWithLength(
-          ELF_NAME_ENTRIES,
-          {
-            nation: weightSelections.nation,
-            culturalOrigin: weightSelections.culturalOrigin,
-            era: weightSelections.era,
-            gender: weightSelections.gender,
-            culturalContext: weightSelections.culturalContext,
-            nameForm: weightSelections.nameForm,
-            style: weightSelections.style,
-          },
-          candidateBatchSize,
-          null,
-          {
-            batchSize: candidateBatchSize,
-            maxAttempts: Math.max(10, candidateBatchSize * 6),
-            makeName: (entry) => buildElfName(entry.name),
-          }
-        );
-        if (mixed.results.length === 0) break;
-        candidates = candidates.concat(mixed.results);
-      } else {
-        const batch = generateUniqueBatch(candidateBatchSize, () => generateOne(effectiveCjkMode), {
-          maxAttemptsPerName: 40,
-          maxTotalAttempts: candidateBatchSize * 60,
-          dedupe: false,
-          fallbackMakers: [],
-        });
-        if (batch.batch.length === 0) break;
-        candidates = candidates.concat(batch.batch);
-      }
+      const batch = generateUniqueBatch(candidateBatchSize, () => generateOne(effectiveCjkMode), {
+        maxAttemptsPerName: 40,
+        maxTotalAttempts: candidateBatchSize * 60,
+        dedupe: false,
+        fallbackMakers: [],
+      });
+      if (batch.batch.length === 0) break;
+      candidates = candidates.concat(batch.batch);
 
       results = buildResultsWithQualityGate({
         candidates,
@@ -927,6 +964,8 @@ export default function NameGenerator({
   const copyText = useMemo(() => names.join("\n"), [names]);
 
   async function onGenerate() {
+    console.log("[GEN] click", Date.now());
+    console.time("[GEN] total");
     setIsGenerating(true);
     try {
       await regenerate();
@@ -946,6 +985,7 @@ export default function NameGenerator({
       );
       startTransition(() => setNames(fallback.batch));
     } finally {
+      console.timeEnd("[GEN] total");
       setIsGenerating(false);
     }
   }

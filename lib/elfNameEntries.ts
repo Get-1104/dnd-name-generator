@@ -1,705 +1,324 @@
-export type NameEntry = {
+﻿export type NameEntry = {
   name: string;
-  gender: "masculine" | "feminine" | "neutral";
-  origin: "high" | "wood" | "drow";
-  era: "ancient" | "revival";
-  context: "common" | "noble" | "ritual" | "records";
-  form: "everyday" | "formal" | "outsider";
-  style: "elegant" | "nature" | "simple";
+  realm: "ancient-high-kingdom" | "forest-realm" | "coastal-elven-state" | "isolated-mountain-enclave" | "fallen-empire";
   nation?: "ancient-high-kingdom" | "forest-realm" | "coastal-elven-state" | "isolated-mountain-enclave" | "fallen-empire";
-  weight: number;
+  culturalOrigin?: "high-elf" | "wood-elf" | "drow" | "ancient-highborn";
+  era?: "ancient" | "revival";
+  gender?: "masculine" | "feminine" | "neutral";
+  context?: "noble" | "common" | "ritual" | "records";
+  form?: "everyday" | "formal" | "outsider";
+  style?: "elegant" | "nature" | "simple";
+  length?: "short" | "medium" | "long";
 };
 
-const FORBIDDEN = /qw|jh|vk|yy|ii/i;
-
-function hasTripleSame(value: string) {
-  return /(.)\1\1/i.test(value);
+function e(
+  name: string,
+  realm: NameEntry["realm"],
+  culturalOrigin?: NameEntry["culturalOrigin"],
+  era?: NameEntry["era"],
+  gender?: NameEntry["gender"],
+  context?: NameEntry["context"],
+  form?: NameEntry["form"],
+  style?: NameEntry["style"],
+  length?: NameEntry["length"]
+): NameEntry {
+  return { name, realm, nation: realm, culturalOrigin, era, gender, context, form, style, length };
 }
 
-function toTitle(name: string) {
-  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-}
+/**
+ * IMPORTANT:
+ * - This is a fixed, curated inventory (no phonetic/syllable generation).
+ * - Delete means delete: no fallback, no mixing, no backups.
+ * - Nation is the primary library bucket (60/60/50/50/30 = 250).
+ */
+export const ELF_NAME_ENTRIES: NameEntry[] = [
+  e("Aethenor", "ancient-high-kingdom", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
+  e("Caelwyn", "ancient-high-kingdom", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
 
-function isValidName(name: string) {
-  if (FORBIDDEN.test(name)) return false;
-  if (hasTripleSame(name)) return false;
-  if (name.toLowerCase() === name) return false;
-  return true;
-}
+  e("Elarion", "forest-realm", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
+  e("Thalendir", "forest-realm", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
 
-function makeNames(
-  stems: string[],
-  endings: string[],
-  count: number,
-  used: Set<string>
-) {
-  const names: string[] = [];
-  for (const stem of stems) {
-    for (const ending of endings) {
-      if (names.length >= count) return names;
-      const candidate = toTitle(`${stem}${ending}`);
-      if (!isValidName(candidate)) continue;
-      if (used.has(candidate)) continue;
-      used.add(candidate);
-      names.push(candidate);
-    }
-  }
-  return names;
-}
+  e("Lythael", "coastal-elven-state", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
+  e("Serenith", "coastal-elven-state", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
 
+  e("Virelith", "fallen-empire", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
+  e("Maerath", "fallen-empire", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
 
-const usedNames = new Set<string>();
-const entries: NameEntry[] = [];
+  e("Aelmir", "isolated-mountain-enclave", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
+  e("Erynael", "isolated-mountain-enclave", undefined, undefined, undefined, undefined, undefined, undefined, undefined),
 
-function pushSeedEntries(
-  names: string[],
-  tags: Omit<NameEntry, "name" | "weight">
-) {
-  const weight = 10;
-  for (const name of names) {
-    const candidate = toTitle(name.trim());
-    if (!isValidName(candidate)) continue;
-    if (usedNames.has(candidate)) continue;
-    usedNames.add(candidate);
-    entries.push({
-      name: candidate,
-      weight,
-      ...tags,
-    });
-  }
-}
+  // =========================================================
+  // Ancient High Kingdom (60)  ancient-highborn
+  // vibe: courtly, old, high register
+  // =========================================================
+  e("Aeltharion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "long"),
+  e("Eloweniel", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "long"),
+  e("Caelendir", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Serelith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thalanor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Elarienne", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "long"),
+  e("Alarion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Valenith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Lorienar", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "noble", "formal", "elegant", "medium"),
+  e("Aerendil", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Elenara", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Calethir", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Saerina", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Eryndor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Elisandre", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "long"),
+  e("Aelorian", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Liraelith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Thalerion", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Elandor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Aralith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Saelion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Eleniel", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Calanor", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Aethlorin", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "long"),
+  e("Serenia", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Elirion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Aelira", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "short"),
+  e("Loraniel", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thalendir", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "long"),
+  e("Eryssae", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "ritual", "formal", "elegant", "medium"),
+  e("Calerion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Saelith", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Elarion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Valeria", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Aelwyn", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "noble", "formal", "elegant", "short"),
+  e("Elenor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "common", "everyday", "elegant", "short"),
+  e("Serelor", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Caelith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thalor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "common", "everyday", "simple", "short"),
+  e("Lirion", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "common", "everyday", "elegant", "medium"),
+  e("Eryna", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "common", "everyday", "elegant", "short"),
+  e("Calith", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "common", "everyday", "simple", "short"),
+  e("Aelthir", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Elisara", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Saerinor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "ritual", "formal", "elegant", "long"),
+  e("Elandria", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Calenor", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Thalienne", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "noble", "formal", "elegant", "long"),
+  e("Aelorin", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Elenwyn", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "common", "everyday", "elegant", "medium"),
+  e("Serethir", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Caeriel", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thalara", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Lorienel", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "noble", "formal", "elegant", "long"),
+  e("Eryndiel", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "ritual", "formal", "elegant", "long"),
+  e("Calessia", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "long"),
+  e("Saelor", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "common", "everyday", "simple", "short"),
+  e("Elarith", "ancient-high-kingdom", "ancient-highborn", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Valendor", "ancient-high-kingdom", "ancient-highborn", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Aelion", "ancient-high-kingdom", "ancient-highborn", "ancient", "neutral", "common", "outsider", "simple", "short"),
 
-const ELF_SEED_GROUPS: Array<{
-  nation: NameEntry["nation"];
-  origin: NameEntry["origin"];
-  era: NameEntry["era"];
-  names: string[];
-}> = [
-  {
-    nation: "ancient-high-kingdom",
-    origin: "high",
-    era: "ancient",
-    names: [
-      "Aelthirion","Elarion","Saelendor","Thalorien","Elendir","Faelion","Aeryndor","Elithar",
-      "Lorandel","Calethir","Ithilren","Aelmir","Eryndal","Thiravel","Althorien","Silandor",
-      "Aelcarin","Elorath","Faelarion","Ilyndor","Elandris","Thalinar","Aerendil","Elthorien",
-      "Lorathiel","Saelith","Calendir","Aelithor","Elanthal","Thirion",
-      "Aelrion","Erythil","Faelthir","Ilandor","Thalorienn","Elisar","Aerendilion","Lorandir",
-      "Calithor","Aelindor","Eltharion","Silendir","Thiravelor","Aelorin","Elandor","Faelor",
-      "Ithilion","Lorendil","Saelion","Calithren","Aelthorin","Elirand",
-    ],
-  },
-  {
-    nation: "forest-realm",
-    origin: "wood",
-    era: "revival",
-    names: [
-      "Lirien","Faela","Eryni","Sylwen","Thyraen","Elwyn","Caelys","Ilyra","Saelin","Wyneth",
-      "Lethar","Faerin","Eryla","Silvae","Thalen","Elira","Caelin","Ilyen","Saeril","Wynra",
-      "Lorien","Faelae","Erynd","Sylrin","Thylen","Elwynne","Caelyr","Ilyraen","Saelith",
-      "Wynel","Liriel","Faenor","Erynis","Silren","Thalara","Elwynar","Caelith","Ilyndra",
-      "Saelor","Wynith","Lethiel","Faelaith","Erylen","Sylara","Thyriel","Elorin",
-      "Caelwyn","Ilyriel","Saelwen","Wynelor","Lorienn","Faerith","Eryndel","Sylorien",
-    ],
-  },
-  {
-    nation: "coastal-elven-state",
-    origin: "high",
-    era: "revival",
-    names: [
-      "Aeralis","Neriel","Thalassar","Elysea","Caerion","Mariel","Saereth","Ithalis","Pelion",
-      "Aelora","Nerys","Thalorin","Elyndar","Caelios","Marisel","Saelinor","Ithalor",
-      "Pelaris","Aeralyn","Neritha","Thalessa","Elyra","Caerith","Marielis","Saerion",
-      "Ithalyn","Pelionis","Aelaris","Nerynd","Thalorien","Elysea","Caelaris","Marith",
-      "Saeriel","Itharion","Pelindra","Aeralis","Nerel","Thalyn","Elyndar","Caerelis",
-      "Mariel","Saereth","Ithalis","Pelion","Aelora","Nerys","Thalorin","Elyra",
-    ],
-  },
-  {
-    nation: "fallen-empire",
-    origin: "drow",
-    era: "ancient",
-    names: [
-      "Zerath","Moriel","Thraedis","Velkyn","Drasiel","Xelthar","Narion","Vaelris","Ulthir",
-      "Zyrael","Morath","Threxil","Velorin","Draveth","Xelyra","Narith","Vaelor","Ulther",
-      "Zeral","Morith","Thraen","Velthir","Drasyn","Xelorin","Nariel","Vaelth","Ulthyn",
-      "Zyrel","Morinel","Threxor","Velaryn","Drathis","Xelthyn","Narorin","Vaelis",
-      "Ulthar","Zerith","Moriel","Thraedis","Velkyn","Drasiel","Xelthar","Narion",
-      "Vaelris","Ulthir","Zyrael","Morath","Threxil","Velorin","Draveth","Xelyra",
-    ],
-  },
-  {
-    nation: "isolated-mountain-enclave",
-    origin: "high",
-    era: "revival",
-    names: [
-      "Brinel","Kareth","Thornel","Aldrin","Morik","Helryn","Stelion","Durath","Keldor","Arven",
-      "Bryneth","Karion","Thorin","Aldrel","Morin","Helrath","Stelar","Durion","Kelthar",
-      "Arvend","Brinor","Karethin","Thornis","Aldrith","Moriel","Helrion","Stelrin",
-      "Durathen","Keldrin","Arvenor",
-    ],
-  },
+  // =========================================================
+  // Forest Realm (60)  wood-elf
+  // vibe: soft, organic, ranger-friendly
+  // =========================================================
+  e("Sylwen", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "short"),
+  e("Faelar", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Rilwyn", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "short"),
+  e("Lethiel", "forest-realm", "wood-elf", "revival", "feminine", "ritual", "formal", "nature", "medium"),
+  e("Myrion", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Sylira", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Fennor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Risana", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Theryn", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Sylanor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Faenith", "forest-realm", "wood-elf", "revival", "feminine", "ritual", "formal", "nature", "medium"),
+  e("Rilion", "forest-realm", "wood-elf", "revival", "masculine", "common", "outsider", "simple", "medium"),
+  e("Liora", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "short"),
+  e("Meren", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Sylthir", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Faewyn", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Rilen", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "simple", "short"),
+  e("Lethira", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Myrwen", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Fenna", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "short"),
+  e("Risael", "forest-realm", "wood-elf", "revival", "neutral", "ritual", "formal", "nature", "medium"),
+  e("Sylamir", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Faenor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Lirin", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Myrla", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "simple", "short"),
+  e("Fenthiel", "forest-realm", "wood-elf", "revival", "masculine", "ritual", "formal", "nature", "long"),
+  e("Rilara", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Sylena", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Faelith", "forest-realm", "wood-elf", "revival", "neutral", "ritual", "formal", "nature", "medium"),
+  e("Lethor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "simple", "short"),
+  e("Myrith", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "short"),
+  e("Fenniel", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Risaen", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Sylorin", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Faenya", "forest-realm", "wood-elf", "revival", "feminine", "ritual", "formal", "nature", "medium"),
+  e("Lethen", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Myrionel", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "long"),
+  e("Fennoril", "forest-realm", "wood-elf", "revival", "masculine", "common", "outsider", "nature", "long"),
+  e("Rilith", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "short"),
+  e("Sylara", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Faelor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Liorael", "forest-realm", "wood-elf", "revival", "feminine", "ritual", "formal", "nature", "long"),
+  e("Merenyl", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Fennwyn", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Risanael", "forest-realm", "wood-elf", "revival", "feminine", "records", "formal", "nature", "long"),
+  e("Sylthiel", "forest-realm", "wood-elf", "revival", "masculine", "ritual", "formal", "nature", "long"),
+  e("Faeniel", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Lethwyn", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Myranor", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Fenael", "forest-realm", "wood-elf", "revival", "neutral", "ritual", "formal", "nature", "medium"),
+  e("Rilenna", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "simple", "medium"),
+  e("Syliren", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "nature", "medium"),
+  e("Faethir", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Lioren", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Myris", "forest-realm", "wood-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Fennara", "forest-realm", "wood-elf", "revival", "feminine", "common", "everyday", "nature", "medium"),
+  e("Rilamir", "forest-realm", "wood-elf", "revival", "masculine", "common", "everyday", "nature", "medium"),
+  e("Sylmaer", "forest-realm", "wood-elf", "revival", "neutral", "records", "formal", "nature", "medium"),
+  e("Faenithiel", "forest-realm", "wood-elf", "revival", "feminine", "ritual", "formal", "nature", "long"),
+  e("Lethirion", "forest-realm", "wood-elf", "revival", "masculine", "records", "formal", "nature", "long"),
+
+  // =========================================================
+  // Coastal Elven State (50)  high-elf
+  // vibe: bright, maritime, diplomatic
+  // =========================================================
+  e("Aerelion", "coastal-elven-state", "high-elf", "revival", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Eiranel", "coastal-elven-state", "high-elf", "revival", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Caladir", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Saelina", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Aeralith", "coastal-elven-state", "high-elf", "revival", "neutral", "noble", "formal", "elegant", "medium"),
+  e("Eirion", "coastal-elven-state", "high-elf", "revival", "masculine", "common", "everyday", "elegant", "short"),
+  e("Calenya", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Vaelorin", "coastal-elven-state", "high-elf", "revival", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Aerienna", "coastal-elven-state", "high-elf", "revival", "feminine", "noble", "formal", "elegant", "long"),
+  e("Eirana", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "short"),
+  e("Calerith", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Saelorin", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "long"),
+  e("Aerendria", "coastal-elven-state", "high-elf", "revival", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Eirathiel", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "long"),
+  e("Calanor", "coastal-elven-state", "high-elf", "revival", "masculine", "common", "everyday", "simple", "medium"),
+  e("Vaelira", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "short"),
+  e("Aeralen", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "elegant", "medium"),
+  e("Eirendor", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Calessa", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Saerel", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Aeryn", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Eiriel", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "short"),
+  e("Calethir", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Vaelion", "coastal-elven-state", "high-elf", "revival", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Aerilith", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Eirith", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Calenor", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Saerinae", "coastal-elven-state", "high-elf", "revival", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Aerendil", "coastal-elven-state", "high-elf", "revival", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Eiranor", "coastal-elven-state", "high-elf", "revival", "masculine", "common", "everyday", "elegant", "medium"),
+  e("Calira", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "short"),
+  e("Vaelith", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Aerion", "coastal-elven-state", "high-elf", "revival", "masculine", "common", "outsider", "simple", "short"),
+  e("Eiravyn", "coastal-elven-state", "high-elf", "revival", "feminine", "common", "outsider", "simple", "medium"),
+  e("Calenith", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Saelith", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Aerendria", "coastal-elven-state", "high-elf", "revival", "feminine", "noble", "formal", "elegant", "long"),
+  e("Eirathor", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Calerion", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Vaeloria", "coastal-elven-state", "high-elf", "revival", "feminine", "noble", "formal", "elegant", "long"),
+  e("Aerelithiel", "coastal-elven-state", "high-elf", "revival", "neutral", "records", "formal", "elegant", "long"),
+  e("Eiraniel", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Calion", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Saerendor", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "long"),
+  e("Aeraloria", "coastal-elven-state", "high-elf", "revival", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Eiralen", "coastal-elven-state", "high-elf", "revival", "neutral", "common", "everyday", "elegant", "medium"),
+  e("Vaelorien", "coastal-elven-state", "high-elf", "revival", "neutral", "noble", "formal", "elegant", "long"),
+  e("Calethia", "coastal-elven-state", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Aerendir", "coastal-elven-state", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Saeliora", "coastal-elven-state", "high-elf", "revival", "feminine", "noble", "formal", "elegant", "long"),
+
+  // =========================================================
+  // Fallen Empire (50)  drow
+  // vibe: sharp, shadowed, imperial ruins
+  // =========================================================
+  e("Draveth", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Zirnaeth", "fallen-empire", "drow", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Vesryn", "fallen-empire", "drow", "ancient", "neutral", "common", "everyday", "simple", "medium"),
+  e("Thariz", "fallen-empire", "drow", "ancient", "masculine", "common", "outsider", "simple", "short"),
+  e("Drisara", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Zireth", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "short"),
+  e("Varyn", "fallen-empire", "drow", "ancient", "masculine", "common", "everyday", "simple", "short"),
+  e("Thalrys", "fallen-empire", "drow", "ancient", "neutral", "ritual", "formal", "elegant", "medium"),
+  e("Dravira", "fallen-empire", "drow", "ancient", "feminine", "noble", "formal", "elegant", "medium"),
+  e("Zirveth", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Veslith", "fallen-empire", "drow", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thariel", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Driseth", "fallen-empire", "drow", "ancient", "masculine", "common", "everyday", "simple", "medium"),
+  e("Ziraesha", "fallen-empire", "drow", "ancient", "feminine", "ritual", "formal", "elegant", "long"),
+  e("Varynna", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "simple", "medium"),
+  e("Thalorin", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Draventh", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Zirielle", "fallen-empire", "drow", "ancient", "feminine", "noble", "formal", "elegant", "long"),
+  e("Vesrion", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Tharissa", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Drisniel", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Zirath", "fallen-empire", "drow", "ancient", "masculine", "common", "outsider", "simple", "short"),
+  e("Varyneth", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Thalvyr", "fallen-empire", "drow", "ancient", "masculine", "common", "everyday", "simple", "medium"),
+  e("Dravryn", "fallen-empire", "drow", "ancient", "masculine", "common", "everyday", "simple", "medium"),
+  e("Zirael", "fallen-empire", "drow", "ancient", "neutral", "ritual", "formal", "elegant", "medium"),
+  e("Vesnara", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "simple", "medium"),
+  e("Tharenth", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Driselle", "fallen-empire", "drow", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Zirniel", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Varyssa", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Thalreth", "fallen-empire", "drow", "ancient", "neutral", "ritual", "formal", "elegant", "medium"),
+  e("Dravisa", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "simple", "medium"),
+  e("Zirvyr", "fallen-empire", "drow", "ancient", "masculine", "common", "everyday", "simple", "medium"),
+  e("Vesriel", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Tharilyn", "fallen-empire", "drow", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Drisareth", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "long"),
+  e("Zirona", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "simple", "short"),
+  e("Varyniel", "fallen-empire", "drow", "ancient", "neutral", "records", "formal", "elegant", "medium"),
+  e("Thalrion", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Draviel", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Zirathiel", "fallen-empire", "drow", "ancient", "neutral", "ritual", "formal", "elegant", "long"),
+  e("Veslira", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Tharveth", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Drisvyr", "fallen-empire", "drow", "ancient", "neutral", "common", "everyday", "simple", "medium"),
+  e("Zirethra", "fallen-empire", "drow", "ancient", "feminine", "records", "formal", "elegant", "medium"),
+  e("Varynlor", "fallen-empire", "drow", "ancient", "masculine", "records", "formal", "elegant", "medium"),
+  e("Thalessa", "fallen-empire", "drow", "ancient", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Dravorn", "fallen-empire", "drow", "ancient", "masculine", "common", "outsider", "simple", "short"),
+  e("Zirsel", "fallen-empire", "drow", "ancient", "neutral", "common", "outsider", "simple", "short"),
+
+  // =========================================================
+  // Isolated Mountain Enclave (30)  high-elf (austere, carved-stone tradition)
+  // vibe: crisp, restrained, formal-leaning
+  // =========================================================
+  e("Aethren", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Caelthir", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Elenmir", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Thalren", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "common", "everyday", "simple", "short"),
+  e("Aelthra", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Calenreth", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "long"),
+  e("Eryndir", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Serenith", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Aethlor", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Caelorin", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "noble", "formal", "elegant", "medium"),
+  e("Elenreth", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Thalendir", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "records", "formal", "elegant", "long"),
+  e("Aelmir", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "common", "everyday", "simple", "short"),
+  e("Caleth", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "common", "everyday", "simple", "short"),
+  e("Erynael", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "ritual", "formal", "elegant", "medium"),
+  e("Serelor", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Aethrion", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Caelira", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "short"),
+  e("Elenara", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Thalorim", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Aelreth", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Caelwyn", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "common", "everyday", "simple", "medium"),
+  e("Eryndel", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "records", "formal", "elegant", "medium"),
+  e("Serenya", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "common", "everyday", "elegant", "medium"),
+  e("Aethlith", "isolated-mountain-enclave", "high-elf", "revival", "feminine", "records", "formal", "elegant", "medium"),
+  e("Calenor", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
+  e("Elenor", "isolated-mountain-enclave", "high-elf", "revival", "masculine", "common", "everyday", "simple", "short"),
+  e("Thalwyn", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "common", "everyday", "simple", "medium"),
+  e("Aelthiel", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "long"),
+  e("Aethenor", "isolated-mountain-enclave", "high-elf", "revival", "neutral", "records", "formal", "elegant", "medium"),
 ];
-
-for (const group of ELF_SEED_GROUPS) {
-  pushSeedEntries(group.names, {
-    gender: "neutral",
-    origin: group.origin,
-    era: group.era,
-    context: "records",
-    form: "formal",
-    style: "elegant",
-    nation: group.nation,
-  });
-}
-
-const ENDINGS_MASC_ANCIENT = ["en", "ion", "or", "ar", "eth", "ir", "on"];
-const ENDINGS_MASC_REVIVAL = ["en", "or", "ar", "el", "eth", "ir", "on"];
-const ENDINGS_FEM_ANCIENT = ["a", "ia", "iel", "ina", "ara", "ela", "ira"];
-const ENDINGS_FEM_REVIVAL = ["a", "ia", "iel", "ina", "ena", "ela", "ira"];
-const ENDINGS_FEM_FORMAL = ["ielle", "ienne", "essa", "oria", "aera", "elyn"];
-const ENDINGS_NEU_ANCIENT = ["en", "is", "on", "el", "ir", "an"];
-const ENDINGS_NEU_REVIVAL = ["en", "is", "el", "an", "on", "ir"];
-const ENDINGS_MASC_NOBLE = ["ael", "aer", "iel", "ion", "ior", "aris"];
-const ENDINGS_MASC_RITUAL = ["ethar", "ithar", "aeth", "amir", "orion", "ielor"];
-const ENDINGS_MASC_RECORDS = ["anor", "elor", "edon", "aris", "amir", "eron"];
-const ENDINGS_MASC_NATURE = ["wyn", "lorn", "bryn", "glen", "rion", "thorn"];
-const ENDINGS_MASC_OUTSIDER = ["an", "en", "el", "er", "in", "on"];
-const ENDINGS_FEM_NOBLE = ["ielle", "ienne", "essa", "oria", "aera", "elyn"];
-const ENDINGS_FEM_RITUAL = ["ethia", "ithia", "myra", "oriah", "aesha", "elith"];
-const ENDINGS_FEM_RECORDS = ["aria", "elira", "ionna", "essae", "aenya", "elyra"];
-const ENDINGS_FEM_NATURE = ["wyn", "lira", "thiel", "lith", "sylva", "flora"];
-const ENDINGS_FEM_OUTSIDER = ["ana", "ena", "elle", "ine", "ira", "ila"];
-const ENDINGS_NEU_NOBLE = ["ael", "aer", "iel", "ior", "eon", "aris"];
-const ENDINGS_NEU_RITUAL = ["eth", "ith", "mir", "aeth", "orim", "diel"];
-const ENDINGS_NEU_RECORDS = ["enor", "elis", "eron", "aeris", "orin", "arion"];
-const ENDINGS_NEU_NATURE = ["wyn", "lith", "bryn", "glen", "syl", "thorn"];
-const ENDINGS_NEU_OUTSIDER = ["en", "el", "in", "on", "an", "er"];
-
-const HIGH_ANCIENT_MASC_STEMS = [
-  "Aer",
-  "Ael",
-  "Thal",
-  "Lor",
-  "Val",
-  "Cal",
-  "Ser",
-  "Ith",
-  "Rae",
-  "Lir",
-  "Nael",
-  "Sael",
-  "Mael",
-  "Cael",
-  "Aen",
-  "Ery",
-  "Eld",
-  "Tir",
-  "Var",
-  "Nor",
-];
-const HIGH_ANCIENT_FEM_STEMS = [
-  "Elin",
-  "Ael",
-  "Aer",
-  "Lir",
-  "Rael",
-  "Ser",
-  "Thal",
-  "Val",
-  "Cael",
-  "Maer",
-  "Sael",
-  "Nael",
-  "Eri",
-  "Iri",
-  "Lir",
-  "Mir",
-  "Ner",
-  "Syl",
-  "Thi",
-  "Vel",
-];
-const HIGH_ANCIENT_NEU_STEMS = [
-  "Aer",
-  "Ael",
-  "Thal",
-  "Lor",
-  "Val",
-  "Cal",
-  "Ser",
-  "Lir",
-  "Nael",
-  "Sael",
-  "Mael",
-  "Cael",
-  "Elen",
-  "Rin",
-  "Tir",
-  "Ver",
-  "Sel",
-  "Tal",
-  "Aerin",
-  "Ery",
-];
-
-const HIGH_REVIVAL_MASC_STEMS = [
-  "El",
-  "Eli",
-  "Ael",
-  "Ari",
-  "Lor",
-  "Val",
-  "Cal",
-  "Ser",
-  "Mer",
-  "Ner",
-  "Sael",
-  "Rael",
-  "Fael",
-  "Leor",
-  "Talen",
-  "Eren",
-  "Cair",
-  "Alen",
-  "Daren",
-  "Galen",
-];
-const HIGH_REVIVAL_FEM_STEMS = [
-  "Elin",
-  "Elir",
-  "Ael",
-  "Aer",
-  "Lin",
-  "Ren",
-  "Fael",
-  "Saer",
-  "Mir",
-  "Ner",
-  "Ser",
-  "Syl",
-  "Thal",
-  "Val",
-  "Cal",
-  "Ely",
-  "Ariel",
-  "Lier",
-  "Nael",
-  "Rael",
-];
-const HIGH_REVIVAL_NEU_STEMS = [
-  "Elen",
-  "Elis",
-  "Aeris",
-  "Liren",
-  "Rin",
-  "Selen",
-  "Valen",
-  "Calen",
-  "Merin",
-  "Nerin",
-  "Aelin",
-  "Faen",
-  "Talen",
-  "Verin",
-  "Saelen",
-  "Lorin",
-  "Eryen",
-  "Naen",
-  "Saren",
-  "Loren",
-];
-
-const WOOD_ANCIENT_MASC_STEMS = [
-  "Syl",
-  "Fen",
-  "Wyn",
-  "Ril",
-  "Thyr",
-  "Fael",
-  "Lys",
-  "Eryn",
-  "Bryn",
-  "Tarin",
-  "Mora",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Kern",
-  "Ther",
-  "Fenn",
-  "Ryn",
-  "Cair",
-  "Halin",
-];
-const WOOD_ANCIENT_FEM_STEMS = [
-  "Syl",
-  "Fen",
-  "Wyn",
-  "Ril",
-  "Thyr",
-  "Fael",
-  "Lys",
-  "Eryn",
-  "Bryn",
-  "Tar",
-  "Mor",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Kir",
-  "Ther",
-  "Fenn",
-  "Ryn",
-  "Cair",
-  "Hal",
-];
-const WOOD_ANCIENT_NEU_STEMS = [
-  "Sylen",
-  "Fenn",
-  "Wyn",
-  "Rilen",
-  "Thyr",
-  "Faen",
-  "Lysen",
-  "Eryn",
-  "Bryn",
-  "Tarin",
-  "Moren",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Kern",
-  "Ther",
-  "Fenn",
-  "Ryn",
-  "Cairn",
-  "Halen",
-];
-
-const WOOD_REVIVAL_MASC_STEMS = [
-  "Syl",
-  "Fen",
-  "Wyn",
-  "Ril",
-  "Fael",
-  "Eryn",
-  "Bryn",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Tarin",
-  "Maren",
-  "Loran",
-  "Faren",
-  "Riven",
-  "Thalen",
-  "Calen",
-  "Saren",
-  "Noren",
-  "Halden",
-];
-const WOOD_REVIVAL_FEM_STEMS = [
-  "Syl",
-  "Fen",
-  "Wyn",
-  "Ril",
-  "Fael",
-  "Eryn",
-  "Bryn",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Tar",
-  "Maren",
-  "Lor",
-  "Far",
-  "Rin",
-  "Thal",
-  "Cal",
-  "Sar",
-  "Nor",
-  "Hal",
-];
-const WOOD_REVIVAL_NEU_STEMS = [
-  "Sylen",
-  "Fenin",
-  "Wyn",
-  "Rilen",
-  "Faen",
-  "Eryn",
-  "Bryn",
-  "Rowen",
-  "Gwyn",
-  "Leth",
-  "Tarin",
-  "Maren",
-  "Lorin",
-  "Faren",
-  "Rinen",
-  "Thalen",
-  "Calen",
-  "Saren",
-  "Noren",
-  "Halen",
-];
-
-const DROW_ANCIENT_MASC_STEMS = [
-  "Zar",
-  "Vyr",
-  "Xil",
-  "Nyx",
-  "Dris",
-  "Zel",
-  "Vex",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Drael",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Voren",
-  "Xerin",
-  "Draven",
-  "Zarek",
-];
-const DROW_ANCIENT_FEM_STEMS = [
-  "Zir",
-  "Vyr",
-  "Xil",
-  "Nyx",
-  "Dris",
-  "Zel",
-  "Vex",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Drael",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Vyren",
-  "Xer",
-  "Dran",
-  "Zar",
-];
-const DROW_ANCIENT_NEU_STEMS = [
-  "Zar",
-  "Vyr",
-  "Xil",
-  "Nyx",
-  "Dris",
-  "Zel",
-  "Vex",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Draen",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Vyren",
-  "Xer",
-  "Draven",
-  "Zarek",
-];
-
-const DROW_REVIVAL_MASC_STEMS = [
-  "Zar",
-  "Vyr",
-  "Xil",
-  "Dris",
-  "Zel",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Drael",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Voren",
-];
-const DROW_REVIVAL_FEM_STEMS = [
-  "Zir",
-  "Vyr",
-  "Xil",
-  "Dris",
-  "Zel",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Drael",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Vyren",
-];
-const DROW_REVIVAL_NEU_STEMS = [
-  "Zar",
-  "Vyr",
-  "Xil",
-  "Dris",
-  "Zel",
-  "Syr",
-  "Vel",
-  "Ryl",
-  "Zor",
-  "Kyr",
-  "Draen",
-  "Xar",
-  "Vor",
-  "Zyn",
-  "Vyren",
-];
-
-function pushGroupFixed(
-  stems: string[],
-  endings: string[],
-  count: number,
-  tags: Omit<NameEntry, "name" | "weight">
-) {
-  const names = makeNames(stems, endings, count, usedNames);
-  const commonCutoff = Math.floor(names.length * 0.2);
-  const midCutoff = Math.floor(names.length * 0.6);
-  names.forEach((name, i) => {
-    const weight = i < commonCutoff ? 12 : i < midCutoff ? 6 : 2;
-    entries.push({
-      name,
-      gender: tags.gender,
-      origin: tags.origin,
-      era: tags.era,
-      context: tags.context,
-      form: tags.form,
-      style: tags.style,
-      weight,
-    });
-  });
-}
-
-const BASE_GROUPS = [
-  { stems: HIGH_ANCIENT_MASC_STEMS, endings: ENDINGS_MASC_ANCIENT, count: 35, gender: "masculine", origin: "high", era: "ancient" },
-  { stems: HIGH_ANCIENT_FEM_STEMS, endings: ENDINGS_FEM_ANCIENT, count: 35, gender: "feminine", origin: "high", era: "ancient" },
-  { stems: HIGH_ANCIENT_NEU_STEMS, endings: ENDINGS_NEU_ANCIENT, count: 20, gender: "neutral", origin: "high", era: "ancient" },
-  { stems: HIGH_REVIVAL_MASC_STEMS, endings: ENDINGS_MASC_REVIVAL, count: 50, gender: "masculine", origin: "high", era: "revival" },
-  { stems: HIGH_REVIVAL_FEM_STEMS, endings: ENDINGS_FEM_REVIVAL, count: 50, gender: "feminine", origin: "high", era: "revival" },
-  { stems: HIGH_REVIVAL_NEU_STEMS, endings: ENDINGS_NEU_REVIVAL, count: 20, gender: "neutral", origin: "high", era: "revival" },
-  { stems: WOOD_ANCIENT_MASC_STEMS, endings: ENDINGS_MASC_ANCIENT, count: 22, gender: "masculine", origin: "wood", era: "ancient" },
-  { stems: WOOD_ANCIENT_FEM_STEMS, endings: ENDINGS_FEM_ANCIENT, count: 22, gender: "feminine", origin: "wood", era: "ancient" },
-  { stems: WOOD_ANCIENT_NEU_STEMS, endings: ENDINGS_NEU_ANCIENT, count: 16, gender: "neutral", origin: "wood", era: "ancient" },
-  { stems: WOOD_REVIVAL_MASC_STEMS, endings: ENDINGS_MASC_REVIVAL, count: 35, gender: "masculine", origin: "wood", era: "revival" },
-  { stems: WOOD_REVIVAL_FEM_STEMS, endings: ENDINGS_FEM_REVIVAL, count: 35, gender: "feminine", origin: "wood", era: "revival" },
-  { stems: WOOD_REVIVAL_NEU_STEMS, endings: ENDINGS_NEU_REVIVAL, count: 20, gender: "neutral", origin: "wood", era: "revival" },
-  { stems: DROW_ANCIENT_MASC_STEMS, endings: ENDINGS_MASC_ANCIENT, count: 22, gender: "masculine", origin: "drow", era: "ancient" },
-  { stems: DROW_ANCIENT_FEM_STEMS, endings: ENDINGS_FEM_ANCIENT, count: 22, gender: "feminine", origin: "drow", era: "ancient" },
-  { stems: DROW_ANCIENT_NEU_STEMS, endings: ENDINGS_NEU_ANCIENT, count: 16, gender: "neutral", origin: "drow", era: "ancient" },
-  { stems: DROW_REVIVAL_MASC_STEMS, endings: ENDINGS_MASC_REVIVAL, count: 20, gender: "masculine", origin: "drow", era: "revival" },
-  { stems: DROW_REVIVAL_FEM_STEMS, endings: ENDINGS_FEM_REVIVAL, count: 20, gender: "feminine", origin: "drow", era: "revival" },
-  { stems: DROW_REVIVAL_NEU_STEMS, endings: ENDINGS_NEU_REVIVAL, count: 10, gender: "neutral", origin: "drow", era: "revival" },
-];
-
-BASE_GROUPS.forEach((group) => {
-  pushGroupFixed(group.stems, group.endings, group.count, {
-    gender: group.gender as NameEntry["gender"],
-    origin: group.origin as NameEntry["origin"],
-    era: group.era as NameEntry["era"],
-    context: "common",
-    form: "everyday",
-    style: "simple",
-  });
-});
-
-const ADVANCED_COUNTS = {
-  noble: 10,
-  ritual: 8,
-  records: 8,
-  nature: 8,
-  outsider: 8,
-};
-
-BASE_GROUPS.forEach((group) => {
-  const gender = group.gender as NameEntry["gender"];
-  const origin = group.origin as NameEntry["origin"];
-  const era = group.era as NameEntry["era"];
-  const isMasc = gender === "masculine";
-  const isFem = gender === "feminine";
-  const isNeu = gender === "neutral";
-  const nobleEndings = isMasc
-    ? ENDINGS_MASC_NOBLE
-    : isFem
-      ? ENDINGS_FEM_NOBLE
-      : ENDINGS_NEU_NOBLE;
-  const ritualEndings = isMasc
-    ? ENDINGS_MASC_RITUAL
-    : isFem
-      ? ENDINGS_FEM_RITUAL
-      : ENDINGS_NEU_RITUAL;
-  const recordsEndings = isMasc
-    ? ENDINGS_MASC_RECORDS
-    : isFem
-      ? ENDINGS_FEM_RECORDS
-      : ENDINGS_NEU_RECORDS;
-  const natureEndings = isMasc
-    ? ENDINGS_MASC_NATURE
-    : isFem
-      ? ENDINGS_FEM_NATURE
-      : ENDINGS_NEU_NATURE;
-  const outsiderEndings = isMasc
-    ? ENDINGS_MASC_OUTSIDER
-    : isFem
-      ? ENDINGS_FEM_OUTSIDER
-      : ENDINGS_NEU_OUTSIDER;
-
-  pushGroupFixed(group.stems, nobleEndings, ADVANCED_COUNTS.noble, {
-    gender,
-    origin,
-    era,
-    context: "noble",
-    form: "formal",
-    style: "elegant",
-  });
-  pushGroupFixed(group.stems, ritualEndings, ADVANCED_COUNTS.ritual, {
-    gender,
-    origin,
-    era,
-    context: "ritual",
-    form: "formal",
-    style: "elegant",
-  });
-  pushGroupFixed(group.stems, recordsEndings, ADVANCED_COUNTS.records, {
-    gender,
-    origin,
-    era,
-    context: "records",
-    form: "formal",
-    style: "elegant",
-  });
-  pushGroupFixed(group.stems, natureEndings, ADVANCED_COUNTS.nature, {
-    gender,
-    origin,
-    era,
-    context: "common",
-    form: "everyday",
-    style: "nature",
-  });
-  pushGroupFixed(group.stems, outsiderEndings, ADVANCED_COUNTS.outsider, {
-    gender,
-    origin,
-    era,
-    context: "common",
-    form: "outsider",
-    style: "simple",
-  });
-});
-
-export const ELF_NAME_ENTRIES: NameEntry[] = entries;

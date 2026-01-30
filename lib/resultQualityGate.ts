@@ -8,6 +8,7 @@ type BuildResultsOptions = {
   selectedLength: LengthOpt | null;
   prefixK?: number;
   maxRounds?: number;
+  maxAttempts?: number;
   familyHardLimitRatio?: number;
   familySoftLimitRatio?: number;
   similarityRelaxation?: number[];
@@ -54,6 +55,7 @@ export function buildResultsWithQualityGate(options: BuildResultsOptions) {
     selectedLength,
     prefixK = 4,
     maxRounds = 120,
+    maxAttempts = 500,
     familyHardLimitRatio = 0.12,
     familySoftLimitRatio = 0.09,
     similarityRelaxation = [0, 1, 2],
@@ -71,12 +73,16 @@ export function buildResultsWithQualityGate(options: BuildResultsOptions) {
   let pass = 0;
   let relaxIndex = 0;
   const maxRelaxIndex = similarityRelaxation.length - 1;
+  let attempts = 0;
 
   while (results.length < targetCount && pass < maxRounds) {
+    if (attempts >= maxAttempts) break;
     const relax = similarityRelaxation[Math.min(relaxIndex, maxRelaxIndex)];
     let addedThisPass = 0;
 
     for (const candidate of candidates) {
+      if (attempts >= maxAttempts) break;
+      attempts += 1;
       if (results.length >= targetCount) break;
       const name = getCandidateName(candidate);
       if (!name) continue;
