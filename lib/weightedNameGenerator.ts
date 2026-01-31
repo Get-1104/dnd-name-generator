@@ -2,7 +2,7 @@ import type { ElfCulturalContext, ElfCulturalOrigin, ElfLength, ElfNameForm, Elf
 import { ELF_NAME_ENTRIES } from "./elfNameEntries";
 import type { NameEntry } from "./elfNameEntries";
 import { hasSoftBigrams, isPronounceableEN } from "./phonotactics";
-import { ELF_SURNAME_FAMILIES } from "./namePools/elfPools";
+import { ELF_SURNAME_LIBRARY } from "./namePools/elfSurnames";
 
 export type Parts = {
   first: string[];
@@ -32,7 +32,7 @@ export type GenerationTrace = {
   filteredCount?: number;
   totalCount?: number;
   entry?: NameEntry;
-  entryTags?: Pick<NameEntry, "gender" | "origin" | "era" | "context" | "form" | "style">;
+  entryTags?: Pick<NameEntry, "gender" | "culturalOrigin" | "era" | "context" | "form" | "style">;
 };
 
 export type ElfWeightedInputs = {
@@ -95,11 +95,9 @@ function createRng(seed?: string | number): RNG {
   return mulberry32(hashSeed(seed));
 }
 
-function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["origin"] | null {
+function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["culturalOrigin"] | null {
   if (!value) return null;
-  if (value === "wood-elf") return "wood";
-  if (value === "drow") return "drow";
-  return "high";
+  return value;
 }
 
 function mapEra(value: ElfWeightedInputs["era"] | null | undefined): NameEntry["era"] | null {
@@ -131,7 +129,7 @@ function getMatchScore(entry: NameEntry, weights: ElfWeightedInputs) {
   let score = 0;
   if (weights.culturalOrigin) {
     const origin = mapOrigin(weights.culturalOrigin);
-    if (origin && entry.origin === origin) score += 1;
+    if (origin && entry.culturalOrigin === origin) score += 1;
   }
   if (weights.era) {
     const era = mapEra(weights.era);
@@ -172,7 +170,7 @@ function matchesNation(entry: NameEntry, nation: string | null | undefined) {
   if (entry.nation) return entry.nation === nation;
   const mapping = NATION_ENTRY_MAP[nation];
   if (!mapping) return false;
-  return mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era);
+  return mapping.origins.includes(entry.culturalOrigin) && mapping.eras.includes(entry.era);
 }
 
 export function filterElfNameEntries(weights: ElfWeightedInputs, trace?: GenerationTrace) {
@@ -198,11 +196,11 @@ export function filterElfNameEntries(weights: ElfWeightedInputs, trace?: Generat
   return entries;
 }
 
-const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
-  "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
-  "forest-realm": { origins: ["wood"], eras: ["ancient", "revival"] },
-  "coastal-elven-state": { origins: ["high"], eras: ["revival"] },
-  "isolated-mountain-enclave": { origins: ["high"], eras: ["revival"] },
+const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["culturalOrigin"][]; eras: NameEntry["era"][] }> = {
+  "ancient-high-kingdom": { origins: ["ancient-highborn", "high-elf"], eras: ["ancient"] },
+  "forest-realm": { origins: ["wood-elf"], eras: ["ancient", "revival"] },
+  "coastal-elven-state": { origins: ["high-elf"], eras: ["revival"] },
+  "isolated-mountain-enclave": { origins: ["high-elf"], eras: ["revival"] },
   "fallen-empire": { origins: ["drow"], eras: ["ancient", "revival"] },
 };
 
@@ -304,7 +302,7 @@ function registerGivenName(state: BatchState, given: string, suffix: string) {
 }
 
 function scoreEntry(entry: NameEntry, weights: ElfWeightedInputs) {
-  let w = entry.weight;
+  let w = 1;
   const matchScore = getMatchScore(entry, weights);
   if (hasSoftSelections(weights) && matchScore === 0) return 0;
   w *= 1 + matchScore;
@@ -331,29 +329,10 @@ function weightedPickByScore(
   return pool[pool.length - 1];
 }
 
-function pick<T>(arr: readonly T[], rng: RNG) {
-  return arr[Math.floor(rng() * arr.length)];
-}
-
-function weightedPickFamily(rng: RNG) {
-  const total = ELF_SURNAME_FAMILIES.reduce((sum, family) => sum + family.weight, 0);
-  let roll = rng() * total;
-  for (const family of ELF_SURNAME_FAMILIES) {
-    roll -= family.weight;
-    if (roll <= 0) return family;
-  }
-  return ELF_SURNAME_FAMILIES[ELF_SURNAME_FAMILIES.length - 1];
-}
-
-function buildSurnameCandidate(rng: RNG) {
-  const family = weightedPickFamily(rng);
-  const prefix = pick(family.prefixes, rng) ?? "";
-  const root = pick(family.roots, rng) ?? "";
-  let suffix = pick(family.suffixes, rng) ?? "";
-  if (family.compounds?.length && rng() < 0.2) {
-    suffix = pick(family.compounds, rng) ?? suffix;
-  }
-  return `${prefix}${root}${suffix}`;
+function buildSurnameCandidate(rng: RNG): string {
+  if (!ELF_SURNAME_LIBRARY.length) return "Galanodel";
+  const idx = Math.floor(rng() * ELF_SURNAME_LIBRARY.length);
+  return ELF_SURNAME_LIBRARY[idx] ?? "Galanodel";
 }
 
 export function generateWeightedElfName(params: WeightedElfNameParams): WeightedElfNameResult {
@@ -400,21 +379,26 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     if (wouldExceedSuffixShare(state, suffixKey, 0.35)) continue;
 
     let surname = "";
+    const surnameCustom = params.options.surnameCustom?.trim() ?? "";
     if (params.options.surname) {
-      let surnameAttempts = 0;
-      let valid = false;
-      while (surnameAttempts < 40) {
-        surnameAttempts += 1;
-        const candidate = buildSurnameCandidate(rng);
-        if (candidate.length < SURNAME_LENGTH.min || candidate.length > SURNAME_LENGTH.max) continue;
-        const pronounceSurname = isPronounceableEN(candidate);
-        if (!pronounceSurname.ok) continue;
-        if (hasSoftBigrams(candidate) && rng() > 0.35) continue;
-        surname = candidate;
-        valid = true;
-        break;
+      if (surnameCustom) {
+        surname = surnameCustom;
+      } else {
+        let surnameAttempts = 0;
+        let valid = false;
+        while (surnameAttempts < 40) {
+          surnameAttempts += 1;
+          const candidate = buildSurnameCandidate(rng);
+          if (candidate.length < SURNAME_LENGTH.min || candidate.length > SURNAME_LENGTH.max) continue;
+          const pronounceSurname = isPronounceableEN(candidate);
+          if (!pronounceSurname.ok) continue;
+          if (hasSoftBigrams(candidate) && rng() > 0.35) continue;
+          surname = candidate;
+          valid = true;
+          break;
+        }
+        if (!valid) continue;
       }
-      if (!valid) continue;
     }
 
     const fullName = surname ? `${given}${params.separator}${surname}` : given;
@@ -427,7 +411,7 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
       trace.entry = entry;
       trace.entryTags = {
         gender: entry.gender,
-        origin: entry.origin,
+        culturalOrigin: entry.culturalOrigin,
         era: entry.era,
         context: entry.context,
         form: entry.form,
@@ -449,7 +433,7 @@ export function generateWeightedElfName(params: WeightedElfNameParams): Weighted
     trace.entry = fallbackEntry;
     trace.entryTags = {
       gender: fallbackEntry.gender,
-      origin: fallbackEntry.origin,
+      culturalOrigin: fallbackEntry.culturalOrigin,
       era: fallbackEntry.era,
       context: fallbackEntry.context,
       form: fallbackEntry.form,

@@ -134,16 +134,16 @@ function scoreEntry(entry: NameEntry, weights: ElfWeightedInputs) {
   return clamp(0.05, w, 9999);
 }
 
-function weightedPickByScore(entries: NameEntry[], weights: ElfWeightedInputs, rng: RNG) {
+function weightedPickIndexByScore(entries: NameEntry[], weights: ElfWeightedInputs, rng: RNG) {
   const scores = entries.map((entry) => scoreEntry(entry, weights));
   const total = scores.reduce((sum, score) => sum + score, 0);
   if (total <= 0) return null;
   let roll = rng() * total;
   for (let i = 0; i < entries.length; i += 1) {
     roll -= scores[i];
-    if (roll <= 0) return entries[i];
+    if (roll <= 0) return i;
   }
-  return entries[entries.length - 1];
+  return entries.length - 1;
 }
 
 export function generateElfFromEntries(params: {
@@ -152,6 +152,7 @@ export function generateElfFromEntries(params: {
   count: number;
   seed?: string | number;
   includeSurname: boolean;
+  exclude?: Set<string>;
 }): { name: string[]; trace?: GenerationTrace } {
   if (process.env.NODE_ENV !== "production") {
     // eslint-disable-next-line no-console
@@ -225,18 +226,78 @@ export function generateElfFromEntries(params: {
 
   const results: string[] = [];
   const used = new Set<string>();
-  const maxAttempts = Math.max(10, params.count * 10);
+  const maxAttempts = Math.max(10, params.count * 12);
   let attempts = 0;
 
-  while (results.length < params.count && attempts < maxAttempts) {
-    attempts += 1;
-    const entry = weightedPickByScore(params.entries, params.weights, rng);
-    if (!entry) break;
-    if (params.weights.length && entry.length !== undefined && entry.length !== params.weights.length) continue;
-    if (used.has(entry.name)) continue;
-    used.add(entry.name);
-    results.push(entry.name);
-    trace!.entry = entry;
+  const exclude = params.exclude ?? new Set<string>();
+  const primaryPool = params.entries.filter((entry) => !exclude.has(entry.name));
+  const fallbackPool = params.entries.filter((entry) => exclude.has(entry.name));
+
+  function pickFromPool(pool: NameEntry[]) {
+    const idx = weightedPickIndexByScore(pool, params.weights, rng);
+    if (idx === null) return null;
+    const [picked] = pool.splice(idx, 1);
+    return picked ?? null;
+  }
+
+  function normalizeName(name: string) {
+    return name.toLowerCase().replace(/[^a-z]/g, "");
+  }
+
+  function similarityRatio(a: string, b: string) {
+    const left = normalizeName(a);
+    const right = normalizeName(b);
+    if (!left.length || !right.length) return 0;
+    const minLen = Math.min(left.length, right.length);
+    let same = 0;
+    for (let i = 0; i < minLen; i += 1) {
+      if (left[i] === right[i]) same += 1;
+    }
+    return same / Math.max(left.length, right.length);
+  }
+
+  function canUse(name: string, strict: boolean, allowPrefixSuffix: boolean) {
+    const normalized = normalizeName(name);
+    const prefix = normalized.slice(0, 4);
+    const suffix = normalized.slice(-3);
+
+    if (!allowPrefixSuffix) {
+      for (const existing of results) {
+        const exNorm = normalizeName(existing);
+        if (prefix.length >= 4 && exNorm.startsWith(prefix)) return false;
+        if (suffix.length >= 3 && exNorm.endsWith(suffix)) return false;
+      }
+    }
+
+    for (const existing of results) {
+      const ratio = similarityRatio(existing, name);
+      if (ratio >= (strict ? 0.8 : 0.9)) return false;
+    }
+    return true;
+  }
+
+  const stages: Array<{ strict: boolean; allowPrefixSuffix: boolean }> = [
+    { strict: true, allowPrefixSuffix: false },
+    { strict: true, allowPrefixSuffix: true },
+    { strict: false, allowPrefixSuffix: true },
+  ];
+
+  const pools = [primaryPool, fallbackPool];
+  for (const pool of pools) {
+    for (const stage of stages) {
+      while (results.length < params.count && attempts < maxAttempts && pool.length > 0) {
+        attempts += 1;
+        const entry = pickFromPool(pool);
+        if (!entry) break;
+        if (params.weights.length && entry.length !== undefined && entry.length !== params.weights.length) continue;
+        if (used.has(entry.name)) continue;
+        if (!canUse(entry.name, stage.strict, stage.allowPrefixSuffix)) continue;
+        used.add(entry.name);
+        results.push(entry.name);
+        trace!.entry = entry;
+      }
+      if (results.length >= params.count) break;
+    }
   }
 
   return { name: results, trace: trace ?? undefined };

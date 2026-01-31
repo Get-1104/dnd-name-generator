@@ -70,3 +70,12 @@ lib/
 │
 public/
 └─ favicon.ico
+
+
+---
+
+## 🧹 Cache Cleanup (PowerShell)
+
+If you need to clear the Next.js cache on Windows PowerShell, run:
+
+Remove-Item -Recurse -Force .next

@@ -9,6 +9,7 @@ export interface ElfOptions {
   style: ElfStyle;
   length: ElfLength;
   surname: boolean;
+  surnameCustom?: string;
   culturalContext?: ElfCulturalContext;
   nameForm?: ElfNameForm;
   pronunciation: ElfPronunciation;
@@ -19,7 +20,8 @@ export interface ElfOptions {
 export const defaultElfOptions: ElfOptions = {
   style: "elegant",
   length: "medium",
-  surname: false,
+  surname: true,
+  surnameCustom: "",
   culturalContext: "common",
   nameForm: "full",
   pronunciation: "original",

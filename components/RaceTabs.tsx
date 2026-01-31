@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { RACES } from "@/lib/races";
 
 export type RaceTabsProps = {
 	current?: string;
@@ -11,20 +12,20 @@ export type RaceTabsProps = {
 
 type RaceItem = { slug: string; label: string; href: string };
 
-const RACES: RaceItem[] = [
-	{ slug: "human", label: "Human", href: "/human" },
-	{ slug: "elf", label: "Elf", href: "/elf" },
-	{ slug: "dwarf", label: "Dwarf", href: "/dwarf" },
-	{ slug: "halfling", label: "Halfling", href: "/halfling" },
-	{ slug: "gnome", label: "Gnome", href: "/gnome" },
-	{ slug: "half-elf", label: "Half-Elf", href: "/half-elf" },
-	{ slug: "half-orc", label: "Half-Orc", href: "/half-orc" },
-	{ slug: "dragonborn", label: "Dragonborn", href: "/dragonborn" },
-	{ slug: "tiefling", label: "Tiefling", href: "/tiefling" },
-	{ slug: "orc", label: "Orc", href: "/orc" },
-	{ slug: "aasimar", label: "Aasimar", href: "/aasimar" },
-	{ slug: "goliath", label: "Goliath", href: "/goliath" },
-];
+function labelFromTitle(title: string, slug: string) {
+	const base = title.replace(/\s*Name Generator\s*$/i, "").trim();
+	if (base) return base;
+	return slug
+		.split("-")
+		.map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+		.join(" ");
+}
+
+const RACE_ITEMS: RaceItem[] = RACES.map((race) => ({
+	slug: race.slug,
+	label: race.label || labelFromTitle(race.title, race.slug),
+	href: `/${race.slug}`,
+}));
 
 const PRIMARY_SLUGS = ["human", "elf", "dwarf", "halfling", "gnome", "dragonborn", "tiefling", "orc"];
 
@@ -42,8 +43,8 @@ export default function RaceTabs({ current, className }: RaceTabsProps) {
 	const [isMoreOpen, setIsMoreOpen] = useState(false);
 	const ref = useRef<HTMLDivElement>(null);
 
-	const primaryRaces = RACES.filter(r => PRIMARY_SLUGS.includes(r.slug));
-	const moreRaces = RACES.filter(r => !PRIMARY_SLUGS.includes(r.slug));
+	const primaryRaces = RACE_ITEMS.filter(r => PRIMARY_SLUGS.includes(r.slug));
+	const moreRaces = RACE_ITEMS.filter(r => !PRIMARY_SLUGS.includes(r.slug));
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {

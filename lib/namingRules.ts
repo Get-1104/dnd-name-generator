@@ -1,18 +1,4 @@
-export type RaceSlug =
-  | "human"
-  | "elf"
-  | "dwarf"
-  | "halfling"
-  | "gnome"
-  | "half-elf"
-  | "half-orc"
-  | "dragonborn"
-  | "tiefling"
-  | "orc"
-  | "angel"
-  | "demon"
-  | "eastern"
-  | "goblin";
+export type RaceSlug = keyof typeof NAMING_RULES;
 
 export interface NamingRuleConfig {
   raceLabel: string;
@@ -46,17 +32,20 @@ export const NAMING_RULES: Record<RaceSlug, NamingRuleConfig> = {
   elf: {
     raceLabel: "Elf",
     default: {
+      title: "Naming rules",
       paragraphs: [
         "Elven names in Dungeons & Dragons are typically melodic and flowing, often drawing inspiration from nature, moonlight, stars, and ancient elven culture.",
-        "Most elves use a personal given name, sometimes accompanied by a family name or honorific. These names favor soft consonants, vowel-rich syllables, and a lyrical rhythm that reflects the long-lived and artistic nature of elven societies.",
-        "This generator follows common D&D elven naming conventions, helping you quickly create authentic elf names for player characters or NPCs.",
+        "Most elves use a personal given name, sometimes accompanied by a family name or honorific.",
+        "These names favor soft consonants, vowel-rich syllables, and a lyrical rhythm that reflects the long-lived and artistic nature of elven societies.",
+        "This generator follows common D&D elven naming conventions, helping you quickly create authentic names for PCs and NPCs.",
       ],
     },
     advanced: {
+      title: "Advanced naming rules",
       paragraphs: [
-        "In Dungeons & Dragons, elven naming traditions are shaped by longevity, culture, and social context. Because elves can live for centuries, their names are designed to sound timeless rather than tied to short-lived trends. Soft consonants, extended vowels, and fluid syllable structures help elven names remain elegant across generations.",
-        "Many elves use different forms of their names depending on situation. A personal name may be used among family and close companions, while a longer or more formal name can appear in elven society, historical records, or ceremonial contexts. When interacting with other races, elves may simplify or adapt their names for easier pronunciation.",
-        "Elven names often carry cultural meaning connected to nature, artistry, lineage, or notable deeds. Rather than indicating rank directly, a name reflects identity, heritage, and personal history within elven culture. The names generated here are intended to feel natural within typical D&D settings, making them suitable for player characters, NPCs, noble houses, scouts, mages, and long-established elven communities.",
+        "Advanced options let you tune culture, style, and structure (including surnames) for more specific results.",
+        "For broader variety, select fewer tags. For stricter lore accuracy, select more tags that match your character’s background.",
+        "If you see repeated patterns, reset to defaults or reduce constraints so the generator can mix more pools naturally.",
       ],
     },
   },

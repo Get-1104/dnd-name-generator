@@ -39,12 +39,13 @@ function pickToolsByHrefs(hrefs: string[]) {
 }
 
 export default function RelatedGenerators({
-  title = "Try these name generators",
+  title = "Try related generators",
   hrefs,
   extraLinks = [],
   note,
 }: Props) {
-  const items = pickToolsByHrefs(hrefs);
+  const safeHrefs = hrefs?.length ? hrefs : ["/human", "/dwarf", "/orc", "/halfling"];
+  const items = pickToolsByHrefs(safeHrefs);
 
   const merged: ExtraLink[] = [
     ...items.map((t) => ({
