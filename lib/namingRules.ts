@@ -1,16 +1,9 @@
-export type RaceSlug = keyof typeof NAMING_RULES;
-
-export interface NamingRuleConfig {
-  raceLabel: string;
-  default: {
-    title?: string;
-    paragraphs: string[];
-  };
-  advanced: {
-    title?: string;
-    paragraphs: string[];
-  };
-}
+type RuleBlock = { title?: string; paragraphs: string[] };
+export type NamingRuleConfig = {
+  raceLabel?: string;
+  default: RuleBlock;
+  advanced?: RuleBlock;
+};
 
 const PLACEHOLDER_DEFAULT = {
   paragraphs: [
@@ -28,7 +21,7 @@ const PLACEHOLDER_ADVANCED = {
   ],
 };
 
-export const NAMING_RULES: Record<RaceSlug, NamingRuleConfig> = {
+export const NAMING_RULES = {
   elf: {
     raceLabel: "Elf",
     default: {
@@ -114,4 +107,6 @@ export const NAMING_RULES: Record<RaceSlug, NamingRuleConfig> = {
     default: PLACEHOLDER_DEFAULT,
     advanced: PLACEHOLDER_ADVANCED,
   },
-};
+} satisfies Record<string, NamingRuleConfig>;
+
+export type RaceSlug = keyof typeof NAMING_RULES;
