@@ -1,0 +1,30 @@
+[33m4bc81db[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{Fri Jan 30 18:55:07 2026}: commit: Update elf generation flow and entries
+[33mff75680[m HEAD@{Thu Jan 29 23:27:05 2026}: commit: Fix elf entry filtering and generation
+[33m099906b[m HEAD@{Thu Jan 29 13:34:35 2026}: commit: Update elf generation and reporting
+[33mabed768[m HEAD@{Tue Jan 27 23:33:49 2026}: commit: Update elf generator weighting and UI
+[33mfb5a85a[m HEAD@{Tue Jan 27 18:51:38 2026}: commit: Improve elf name phonotactics and pools
+[33mb24b5c5[m HEAD@{Mon Jan 26 23:32:21 2026}: commit: Add weighted elf name generation and lexicons
+[33m38ed7aa[m HEAD@{Mon Jan 26 13:22:43 2026}: commit: wip: elf advanced naming rules + ui structure (save point)
+[33ma31ad8f[m HEAD@{Sun Jan 25 22:16:17 2026}: commit: WIP: unify global header, remove RaceSwitcher (paused)
+[33m99cde3d[m HEAD@{Sun Jan 25 00:14:11 2026}: commit: update races list
+[33mf78f4db[m HEAD@{Sat Jan 24 02:05:00 2026}: commit: fix: resolve build and lint blockers (Iter K+)
+[33m52a2ee4[m HEAD@{Sat Jan 24 01:25:09 2026}: commit: fix: ExtraLink type (label -> title)
+[33m3d49b9a[m HEAD@{Sat Jan 24 01:17:14 2026}: checkout: moving from main to main
+[33m3d49b9a[m HEAD@{Sat Jan 24 01:02:04 2026}: commit: UI refactor and unified styles
+[33m43cda06[m HEAD@{Fri Jan 23 23:33:28 2026}: commit: Fix: add missing dragonborn naming guide page to match SSOT
+[33m8204238[m HEAD@{Fri Jan 23 22:56:36 2026}: commit: Fix: add missing dragonborn naming guide page to match SSOT
+[33m9da3c6d[m HEAD@{Fri Jan 23 22:30:50 2026}: commit: UI: iteration G - hub polish + examples + social proof
+[33mffc100c[m HEAD@{Fri Jan 23 22:09:46 2026}: commit: Name quality: batch + short-term dedupe to reduce repeats
+[33m1e83b8f[m HEAD@{Fri Jan 23 22:00:14 2026}: commit: SEO: iteration E - auto related generators by tag overlap
+[33md9b07ec[m HEAD@{Fri Jan 23 21:55:28 2026}: commit: SEO: iteration D - /en hub sections + guides internal linking
+[33m519d46e[m HEAD@{Fri Jan 23 21:49:40 2026}: commit: SEO: iteration C - SSOT guides + admin noindex
+[33mb6f4c42[m HEAD@{Fri Jan 23 21:43:53 2026}: commit: SEO: iteration B - schema and hub semantic cleanup
+[33m4d4a901[m HEAD@{Fri Jan 23 21:38:16 2026}: commit: SEO: add canonical and metadata (iteration A)
+[33m82b8b19[m HEAD@{Fri Jan 23 03:59:20 2026}: commit: feat: finalize generators, guides, smart search, and /en hub
+[33m0303108[m HEAD@{Thu Jan 22 18:07:15 2026}: commit: feat: smart search popular items + search logs admin
+[33m11386c2[m HEAD@{Thu Jan 22 17:02:19 2026}: commit: SmartSearch: add popular suggestions when empty query
+[33me46b45c[m HEAD@{Thu Jan 22 13:27:44 2026}: commit: Use SmartSearch on /en and remove old search
+[33m2658114[m HEAD@{Thu Jan 22 13:26:39 2026}: commit: Move SmartSearch to hero and remove HomeSearch on /en
+[33mbc4386c[m HEAD@{Thu Jan 22 12:56:26 2026}: commit: Add new guides and update sitemap
+[33m149fdc7[m HEAD@{Wed Jan 21 23:43:36 2026}: commit: Improve README for SEO, AI discovery, and project overview
+[33mb21b482[m HEAD@{Wed Jan 21 23:28:55 2026}: commit: Add IndexNow key
