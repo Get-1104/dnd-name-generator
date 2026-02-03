@@ -28,11 +28,11 @@ const MIX_PLAN: MixedPlan = [
   { key: "style", quota: 1 },
 ];
 
-const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
-  "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
-  "forest-realm": { origins: ["wood"], eras: ["ancient", "revival"] },
-  "coastal-elven-state": { origins: ["high"], eras: ["revival"] },
-  "isolated-mountain-enclave": { origins: ["high"], eras: ["revival"] },
+const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["culturalOrigin"][]; eras: NameEntry["era"][] }> = {
+  "ancient-high-kingdom": { origins: ["ancient-highborn"], eras: ["ancient"] },
+  "forest-realm": { origins: ["wood-elf"], eras: ["ancient", "revival"] },
+  "coastal-elven-state": { origins: ["high-elf"], eras: ["revival"] },
+  "isolated-mountain-enclave": { origins: ["high-elf"], eras: ["revival"] },
   "fallen-empire": { origins: ["drow"], eras: ["ancient", "revival"] },
 };
 
@@ -41,14 +41,15 @@ function matchesNation(entry: NameEntry, nation: string | null | undefined) {
   if (entry.nation) return entry.nation === nation;
   const mapping = NATION_ENTRY_MAP[nation];
   if (!mapping) return false;
-  return mapping.origins.includes(entry.origin) && mapping.eras.includes(entry.era);
+  return mapping.origins.includes(entry.culturalOrigin) && mapping.eras.includes(entry.era);
 }
 
-function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["origin"] | null {
+function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["culturalOrigin"] | null {
   if (!value) return null;
-  if (value === "wood-elf") return "wood";
+  if (value === "wood-elf") return "wood-elf";
   if (value === "drow") return "drow";
-  return "high";
+  if (value === "ancient-highborn") return "ancient-highborn";
+  return "high-elf";
 }
 
 function mapEra(value: EraOpt | null | undefined): NameEntry["era"] | null {
@@ -82,10 +83,10 @@ function buildPlan(target: number) {
 }
 
 function weightedPick(entries: NameEntry[]) {
-  const total = entries.reduce((sum, entry) => sum + entry.weight, 0);
+  const total = entries.reduce((sum, entry) => sum + (entry.weight ?? 1), 0);
   let roll = Math.random() * total;
   for (const entry of entries) {
-    roll -= entry.weight;
+    roll -= entry.weight ?? 1;
     if (roll <= 0) return entry;
   }
   return entries[entries.length - 1];
@@ -106,7 +107,7 @@ function getMatchScore(entry: NameEntry, selections: MixedSelections) {
   let score = 0;
   if (selections.culturalOrigin) {
     const origin = mapOrigin(selections.culturalOrigin);
-    if (origin && entry.origin === origin) score += 1;
+    if (origin && entry.culturalOrigin === origin) score += 1;
   }
   if (selections.era) {
     const era = mapEra(selections.era);
@@ -125,7 +126,7 @@ function getMatchScore(entry: NameEntry, selections: MixedSelections) {
 function weightedPickByScore(entries: NameEntry[], selections: MixedSelections) {
   const scores = entries.map((entry) => {
     const matchScore = getMatchScore(entry, selections);
-    return entry.weight * (1 + matchScore);
+    return (entry.weight ?? 1) * (1 + matchScore);
   });
   const total = scores.reduce((sum, score) => sum + score, 0);
   if (total <= 0) return null;

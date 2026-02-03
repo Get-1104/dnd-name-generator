@@ -13,6 +13,7 @@ export type NameEntry = {
   form?: "everyday" | "formal" | "outsider";
   style?: "elegant" | "nature" | "simple";
   length: "short" | "medium" | "long";
+  weight?: number;
 };
 
 function e(

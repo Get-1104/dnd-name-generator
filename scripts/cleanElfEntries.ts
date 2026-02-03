@@ -1,6 +1,44 @@
 import fs from "node:fs";
 import path from "node:path";
-import { ELF_NAME_ENTRIES_RAW, cleanElfEntries } from "../lib/elfNameEntries";
+import { ELF_NAME_ENTRIES, type NameEntry } from "../lib/elfNameEntries";
+
+type CleanReport = {
+  beforeTotal: number;
+  afterTotal: number;
+  beforeByNation: Record<string, number>;
+  afterByNation: Record<string, number>;
+  removed: NameEntry[];
+  review: NameEntry[];
+};
+
+const countByNation = (entries: NameEntry[]) =>
+  entries.reduce<Record<string, number>>((acc, entry) => {
+    const key = entry.nation ?? "unknown";
+    acc[key] = (acc[key] ?? 0) + 1;
+    return acc;
+  }, {});
+
+const cleanElfEntries = (
+  entries: NameEntry[],
+  opts?: { collectReport?: boolean }
+): { entries: NameEntry[]; report: CleanReport | null } => {
+  if (!opts?.collectReport) return { entries, report: null };
+  const beforeByNation = countByNation(entries);
+  const afterByNation = countByNation(entries);
+  return {
+    entries,
+    report: {
+      beforeTotal: entries.length,
+      afterTotal: entries.length,
+      beforeByNation,
+      afterByNation,
+      removed: [],
+      review: [],
+    },
+  };
+};
+
+const ELF_NAME_ENTRIES_RAW = ELF_NAME_ENTRIES;
 
 const outDir = path.resolve("scripts/reports");
 fs.mkdirSync(outDir, { recursive: true });

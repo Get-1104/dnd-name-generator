@@ -211,7 +211,13 @@ export default function SimpleNameGenerator({
         ))}
       </ul>
 
-      {toast ? <Toast message={toast} /> : null}
+      {toast ? (
+        <Toast
+          message={toast}
+          open={true}
+          onClose={() => setToast(null)}
+        />
+      ) : null}
     </div>
   );
 }

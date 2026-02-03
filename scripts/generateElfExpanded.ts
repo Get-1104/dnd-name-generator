@@ -11,7 +11,6 @@ type OutputEntry = {
   tags: {
     nation?: string;
     culturalOrigin?: ElfCulturalOrigin;
-    origin?: NameEntry["origin"];
     era?: NameEntry["era"];
     gender?: NameEntry["gender"];
     context?: NameEntry["context"];
@@ -28,11 +27,11 @@ type Stats = {
   failures: number;
 };
 
-const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["origin"][]; eras: NameEntry["era"][] }> = {
-  "ancient-high-kingdom": { origins: ["high"], eras: ["ancient"] },
-  "forest-realm": { origins: ["wood"], eras: ["ancient", "revival"] },
-  "coastal-elven-state": { origins: ["high"], eras: ["revival"] },
-  "isolated-mountain-enclave": { origins: ["high"], eras: ["revival"] },
+const NATION_ENTRY_MAP: Record<string, { origins: NameEntry["culturalOrigin"][]; eras: NameEntry["era"][] }> = {
+  "ancient-high-kingdom": { origins: ["ancient-highborn"], eras: ["ancient"] },
+  "forest-realm": { origins: ["wood-elf"], eras: ["ancient", "revival"] },
+  "coastal-elven-state": { origins: ["high-elf"], eras: ["revival"] },
+  "isolated-mountain-enclave": { origins: ["high-elf"], eras: ["revival"] },
   "fallen-empire": { origins: ["drow"], eras: ["ancient"] },
 };
 
@@ -43,11 +42,12 @@ const ORIGIN_ERA_PREF: Record<ElfCulturalOrigin, NameEntry["era"]> = {
   drow: "ancient",
 };
 
-function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["origin"] | null {
+function mapOrigin(value: ElfCulturalOrigin | null | undefined): NameEntry["culturalOrigin"] | null {
   if (!value) return null;
-  if (value === "wood-elf") return "wood";
+  if (value === "wood-elf") return "wood-elf";
   if (value === "drow") return "drow";
-  return "high";
+  if (value === "ancient-highborn") return "ancient-highborn";
+  return "high-elf";
 }
 
 function normalizeName(name: string) {
@@ -211,13 +211,11 @@ while (stats.total < args.maxTotal) {
     stats.total += 1;
     progressThisPass += 1;
 
-    const origin = result.trace?.entryTags?.origin ?? mapOrigin(combo.culturalOrigin) ?? undefined;
     const entry: OutputEntry = {
       name: result.name,
       tags: {
         nation: combo.nation,
         culturalOrigin: combo.culturalOrigin,
-        origin,
         era: result.trace?.entryTags?.era,
         gender: result.trace?.entryTags?.gender,
         context: result.trace?.entryTags?.context,

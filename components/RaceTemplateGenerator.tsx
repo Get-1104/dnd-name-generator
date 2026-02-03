@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 import NameGenerator from "@/components/NameGenerator";
 import type { NameEntry } from "@/lib/elfNameEntries";
 
@@ -33,52 +33,54 @@ export default function RaceTemplateGenerator({
 
           <div className="mt-6 flex justify-center">
             <div className="w-full max-w-3xl mx-auto">
-              <NameGenerator
-                hideHeader
-                title={title}
-                description={description}
-                entries={entries}
-                parts={{
-                  first: ["Ae", "Eli", "Lia", "Syl", "Fa", "Tha", "Ari", "Ili", "Ely", "Nae"],
-                  second: [
-                    "rin",
-                    "lith",
-                    "syl",
-                    "vyr",
-                    "thas",
-                    "riel",
-                    "nor",
-                    "wen",
-                    "lian",
-                    "mir",
-                  ],
-                  lastA: [
-                    "Moon",
-                    "Star",
-                    "Silver",
-                    "Dawn",
-                    "Night",
-                    "Sun",
-                    "Leaf",
-                    "Wind",
-                    "Mist",
-                    "Song",
-                  ],
-                  lastB: [
-                    "whisper",
-                    "bloom",
-                    "runner",
-                    "shade",
-                    "weaver",
-                    "song",
-                    "glade",
-                    "dancer",
-                    "brook",
-                    "watcher",
-                  ],
-                }}
-                initialCount={10}
-              />
+              <Suspense fallback={<div className="h-24" />}>
+                <NameGenerator
+                  hideHeader
+                  title={title}
+                  description={description}
+                  entries={entries}
+                  parts={{
+                    first: ["Ae", "Eli", "Lia", "Syl", "Fa", "Tha", "Ari", "Ili", "Ely", "Nae"],
+                    second: [
+                      "rin",
+                      "lith",
+                      "syl",
+                      "vyr",
+                      "thas",
+                      "riel",
+                      "nor",
+                      "wen",
+                      "lian",
+                      "mir",
+                    ],
+                    lastA: [
+                      "Moon",
+                      "Star",
+                      "Silver",
+                      "Dawn",
+                      "Night",
+                      "Sun",
+                      "Leaf",
+                      "Wind",
+                      "Mist",
+                      "Song",
+                    ],
+                    lastB: [
+                      "whisper",
+                      "bloom",
+                      "runner",
+                      "shade",
+                      "weaver",
+                      "song",
+                      "glade",
+                      "dancer",
+                      "brook",
+                      "watcher",
+                    ],
+                  }}
+                  initialCount={10}
+                />
+              </Suspense>
             </div>
           </div>
         </div>
