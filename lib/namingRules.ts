@@ -107,6 +107,16 @@ export const NAMING_RULES = {
     default: PLACEHOLDER_DEFAULT,
     advanced: PLACEHOLDER_ADVANCED,
   },
+  aasimar: {
+    raceLabel: "Aasimar",
+    default: PLACEHOLDER_DEFAULT,
+    advanced: PLACEHOLDER_ADVANCED,
+  },
+  goliath: {
+    raceLabel: "Goliath",
+    default: PLACEHOLDER_DEFAULT,
+    advanced: PLACEHOLDER_ADVANCED,
+  },
 } satisfies Record<string, NamingRuleConfig>;
 
 export type RaceSlug = keyof typeof NAMING_RULES;
