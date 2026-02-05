@@ -20,7 +20,8 @@ export default function Page() {
       path={c.path}
       raceSlug={c.raceSlug}
       faq={c.faq}
-      generatorConfig={c.generatorConfig}
+      parts={c.parts}
+      includeSurnameDefault={c.includeSurnameDefault}
     />
   );
 }

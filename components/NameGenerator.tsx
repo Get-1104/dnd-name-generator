@@ -1,5 +1,7 @@
 "use client";
 
+// ELF-ONLY. Do not import this component in non-elf pages. Use race-specific generators (e.g., HumanGenerator) instead.
+
 import type { ForwardedRef, MouseEvent } from "react";
 import { forwardRef, memo, startTransition, useCallback, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -81,6 +83,11 @@ type Props = {
   /** Advanced mode state */
   isAdvanced?: boolean;
   onAdvancedToggle?: () => void;
+
+  /** Generator UI/logic variant */
+  variant?: "elf" | "simple";
+  /** For variant=simple: default include surname */
+  simpleIncludeSurnameDefault?: boolean;
 
   /**
    * CJK（中文）名字模式
@@ -561,7 +568,7 @@ function makeNameCjk(
   return base;
 }
 
-export default function NameGenerator({
+export default function ElfNameGenerator({
   title,
   description,
   backHref = "/", // 目前 UI 不显示 back，这里保留兼容
@@ -590,11 +597,40 @@ export default function NameGenerator({
   cjkTitlePrefixLabel = "Title·Name",
   cjkTitleSuffixLabel = "Name·Title",
 
+  variant = "elf",
+  simpleIncludeSurnameDefault = true,
+
   isAdvanced,
   onAdvancedToggle,
 }: Props) {
   const entriesSource = useMemo(() => entries ?? ELF_NAME_ENTRIES, [entries]);
   const [internalAdvanced, setInternalAdvanced] = useState(false);
+  const [simpleIncludeSurname, setSimpleIncludeSurname] = useState<boolean>(simpleIncludeSurnameDefault);
+
+  function pickFrom(arr: string[]) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  function makeSimpleName(includeSurname: boolean) {
+    const given = `${pickFrom(parts.first)}${pickFrom(parts.second)}`;
+    if (!includeSurname) return given;
+    const surname = `${pickFrom(parts.lastA)}${pickFrom(parts.lastB)}`;
+    return `${given}${separator}${surname}`.trim();
+  }
+
+  function makeSimpleBatch(count: number, includeSurname: boolean) {
+    const out: string[] = [];
+    const seen = new Set<string>();
+    let guard = 0;
+    while (out.length < count && guard < count * 50) {
+      guard++;
+      const n = makeSimpleName(includeSurname);
+      if (seen.has(n)) continue;
+      seen.add(n);
+      out.push(n);
+    }
+    return out;
+  }
   const isAdvancedActive = typeof isAdvanced === "boolean" ? isAdvanced : internalAdvanced;
   const handleAdvancedToggle = onAdvancedToggle ?? (() => setInternalAdvanced((prev) => !prev));
   const hasCjk = cjkMode !== "off";
@@ -1089,6 +1125,11 @@ export default function NameGenerator({
 
   async function regenerate(nextMode?: "two" | "three") {
     const mode = nextMode ?? effectiveCjkMode;
+    if (variant === "simple") {
+      const next = makeSimpleBatch(batchCount, simpleIncludeSurname);
+      startTransition(() => setNames(next));
+      return;
+    }
     void mode;
     const weightSelections = buildWeightSelections();
     const result = buildResultsFromEntriesFast(
@@ -1125,8 +1166,11 @@ export default function NameGenerator({
   }
 
   const [names, setNames] = useState<string[]>(() => {
+    if (variant === "simple") {
+      return makeSimpleBatch(batchCount, simpleIncludeSurname);
+    }
     const weightSelections = buildWeightSelections();
-    return buildResultsFromEntriesFast(
+    const result = buildResultsFromEntriesFast(
       entriesSource,
       {
         nation: weightSelections.nation,
@@ -1140,7 +1184,8 @@ export default function NameGenerator({
       },
       batchCount,
       (entry) => buildElfName(entry.name)
-    ).names;
+    );
+    return result.names;
   });
 
 
@@ -1338,6 +1383,20 @@ export default function NameGenerator({
               }}
             >
               <div className="mt-3 space-y-6">
+                {variant === "simple" ? (
+                  <div className="rounded-xl border border-zinc-200 bg-white p-4">
+                    <label className="flex items-center gap-2 text-sm text-zinc-800">
+                      <input
+                        type="checkbox"
+                        className="h-4 w-4"
+                        checked={simpleIncludeSurname}
+                        onChange={(e) => setSimpleIncludeSurname(e.target.checked)}
+                      />
+                      <span>Include surname</span>
+                    </label>
+                    <p className="mt-2 text-xs text-zinc-600">Tip: turn this off for single-word names.</p>
+                  </div>
+                ) : (<>
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm font-semibold text-zinc-900">Advanced options</div>
                   <div className="flex items-center gap-2">
@@ -1565,6 +1624,8 @@ export default function NameGenerator({
                     </div>
                   </div>
                 </section>
+                </>
+                )}
               </div>
             </div>
 

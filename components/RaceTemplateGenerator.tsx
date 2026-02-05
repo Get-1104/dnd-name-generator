@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import NameGenerator from "@/components/NameGenerator";
+import ElfNameGenerator from "@/components/NameGenerator";
 import type { NameEntry } from "@/lib/elfNameEntries";
 
 type RaceTemplateGeneratorProps = {
@@ -34,7 +34,7 @@ export default function RaceTemplateGenerator({
           <div className="mt-6 flex justify-center">
             <div className="w-full max-w-3xl mx-auto">
               <Suspense fallback={<div className="h-24" />}>
-                <NameGenerator
+                <ElfNameGenerator
                   hideHeader
                   title={title}
                   description={description}

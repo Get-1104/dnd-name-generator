@@ -1,8 +1,5 @@
-import RacePageClient from "../[race]/RacePageClient";
-import { getRaceBySlug } from "@/lib/races";
+import HumanPageClient from "./HumanPageClient";
 
 export default function HumanPage() {
-  const race = getRaceBySlug("human");
-  if (!race) return null;
-  return <RacePageClient race={race} />;
+  return <HumanPageClient />;
 }

@@ -45,7 +45,11 @@ function capFirst(s: string) {
   return s[0].toUpperCase() + s.slice(1);
 }
 
-function makeSyllableName(parts: SyllableParts) {
+function makeSyllableName(parts?: SyllableParts) {
+  if (!parts?.first || parts.first.length === 0) {
+    // Missing config: prevent crash on new pages (e.g., human) during rollout
+    return "Unnamed";
+  }
   const a = pick(parts.first);
   const b = parts.second && parts.second.length ? pick(parts.second) : "";
   const c = parts.third && parts.third.length ? pick(parts.third) : "";
